@@ -20,10 +20,10 @@ struct SensorData { // .bss
 
 SensorData currentSensorData; // .bss
 
-void readSensor(SensorData *data);      // No memory is allocated
-void printData(const SensorData *data); // No memory is allocated
-void blinkLed(int pin);                 // No memory is allocated
-void checkMemory();                     // No memory is allocated
+void readSensor(SensorData *data);      // No RAM is allocated
+void printData(const SensorData *data); // No RAM is allocated
+void blinkLed(int pin);                 // No RAM is allocated
+void checkMemory();                     // No RAM is allocated
 
 // --------------
 
