@@ -1,12 +1,9 @@
 // src/types.h
 
-#ifndef TYPES_H
-#define TYPES_H
+#pragma once
 
 struct SensorData {
   float temperature;
   float humidity;
   unsigned long worktime;
 };
-
-#endif

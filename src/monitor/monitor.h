@@ -1,11 +1,9 @@
 // src/monitor/monitor.h
 
-#ifndef MONITOR_H
-#define MONITOR_H
+#pragma once
 
 #include "../types.h"
 
+void monitor_init();
 void monitorData(const SensorData *data);
 void checkMemory();
-
-#endif

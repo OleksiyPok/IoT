@@ -1,6 +1,9 @@
 // src/main.cpp
 
 #include "config.h"
+#include "dht_sensor/dht_sensor.h"
+#include "indication/indication.h"
+#include "ldr_sensor/ldr_sensor.h"
 #include "monitor/monitor.h"
 #include "sensors/sensors.h"
 
@@ -10,20 +13,15 @@ unsigned long lastMemoryCheckMs = 0;
 
 SensorData currentSensorData;
 
-void blinkLed(int pin);
-
 // --------------
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println();
-  Serial.println("=== Device started ===");
-  Serial.println();
+  monitor_init();
+  dht_sensor_init();
+  ldr_sensor_init();
+  indication_init();
 
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(LED_BUILTIN_PIN, OUTPUT);
-
-  delay(500);
+  // delay(100);
 }
 
 void loop() {
@@ -53,12 +51,4 @@ void loop() {
   }
 
   delay(10); // To simplify the simulation process
-}
-
-// --------------
-
-void blinkLed(int pin) {
-  digitalWrite(pin, HIGH);
-  delay(LED_ON_TIME_MS);
-  digitalWrite(pin, LOW);
 }

@@ -3,6 +3,13 @@
 #include "monitor.h"
 #include <Arduino.h>
 
+void monitor_init() {
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println("=== Device started ===");
+  Serial.println();
+};
+
 void monitorData(const SensorData *data) {
   static int callCount = 0;
   callCount++;
