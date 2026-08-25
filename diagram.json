@@ -7,31 +7,71 @@
       "type": "board-esp32-devkit-v1",
       "id": "esp",
       "top": -2.72,
-      "left": 4.8,
+      "left": 14.4,
       "attrs": {}
     },
     {
       "type": "wokwi-led",
       "id": "led1",
-      "top": -13.2,
-      "left": 119.4,
-      "attrs": { "color": "orange", "flip": "1" }
+      "top": -51.6,
+      "left": 157.4,
+      "attrs": { "color": "orange", "flip": "" }
     },
     {
       "type": "wokwi-resistor",
       "id": "r1",
-      "top": 80.2,
-      "left": 104.75,
+      "top": 22.6,
+      "left": 162.35,
       "rotate": 270,
       "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": 100.8,
+      "left": -180.9,
+      "rotate": 270,
+      "attrs": {
+        "color": "yellow",
+        "bounce": "1",
+        "label": "ON/OFF"
+      }
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": -35.2,
+      "left": -268,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": 163.2,
+      "left": 160,
+      "rotate": 90,
+      "attrs": {
+        "color": "yellow",
+        "bounce": "1",
+        "label": "ON/OFF"
+      }
     }
   ],
   "connections": [
+    ["ldr1:GND", "esp:GND.2", "black", ["h86", "v153"]],
+    ["ldr1:VCC", "esp:3V3", "red", ["h230", "v172"]],
+    ["dht1:GND", "esp:GND.2", "black", ["h86", "v0"]],
+    ["dht1:VCC", "esp:3V3", "red", ["h96", "v-192", "h134", "v172"]],
+    ["dht1:SDA", "esp:D13", "green", ["h57", "v-28"]],
+    ["ldr1:DO", "esp:D32", "green", ["h57", "v66"]],
+    ["ldr1:AO", "esp:D33", "limegreen", ["h48", "v66"]],
+    ["btn1:2.l", "esp:GND.1", "black", ["v-24", "h-57.51"]],
+    ["btn1:1.l", "esp:D15", "green", ["v-34", "h-76.31"]],
+    ["led1:C", "esp:GND.1", "black", ["h0", "v153"]],
+    ["led1:A", "r1:2", "orange", ["h9"]],
+    ["r1:1", "esp:D4", "orange", ["v0"]],
     ["esp:TX0", "$serialMonitor:RX", "", []],
-    ["esp:RX0", "$serialMonitor:TX", "", []],
-    ["esp:GND.1", "led1:C", "black", []],
-    ["led1:A", "r1:2", "orange", ["v0"]],
-    ["r1:1", "esp:D4", "orange", ["v0"]]
+    ["esp:RX0", "$serialMonitor:TX", "", []]
   ],
   "dependencies": {},
   "attrs": {
