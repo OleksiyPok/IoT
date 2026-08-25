@@ -1,3 +1,5 @@
+// src/main.cpp
+
 #include "config.h"
 #include "monitor/monitor.h"
 #include "sensors/sensors.h"
