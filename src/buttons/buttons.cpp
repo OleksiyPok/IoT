@@ -58,7 +58,7 @@ void handleButtons(unsigned char *buttonsState) {
 
   // Reset after button 0 release
   // if (readBit(buttonsHandled, 0) && digitalRead(BUTTON_0_PIN) == HIGH) {
-  if (button0Handled && digitalRead(BUTTON_1_PIN) == HIGH) {
+  if (button0Handled && digitalRead(BUTTON_0_PIN) == HIGH) {
     button0Handled = false;
     // clearBit(buttonsHandled, 0);
   }
