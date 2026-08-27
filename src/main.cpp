@@ -58,7 +58,7 @@ void loop() {
     handleIndication(&ledState);
   }
 
-  // // Data monitor
+  // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_PERIOD_MS) {
     lastDataMonitorMs = now;
 

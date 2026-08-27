@@ -13,7 +13,7 @@ void initIndication() {
 }
 
 void handleIndication(unsigned char *ledState) {
-  if (*ledState) {
+  if (readBit(*ledState, 1)) {
     digitalWrite(LED_PIN, HIGH);
   } else {
     digitalWrite(LED_PIN, LOW);
