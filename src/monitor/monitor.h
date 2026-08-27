@@ -4,6 +4,6 @@
 
 #include "../types.h"
 
-void monitor_init();
-void monitorData(const SensorData *data);
+void initMonitor();
+void handleMonitor(const SensorData *data);
 void checkMemory();

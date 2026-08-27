@@ -1,17 +1,27 @@
 // src/indication/indication.cpp
 
 #include "indication.h"
+#include "bit_utils.h"
 #include "config.h"
 #include <Arduino.h>
 
+#define LED_BLINK_TIME_MS 100
 
-void indication_init() {
+void initIndication() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(LED_BUILTIN_PIN, OUTPUT);
-};
+}
+
+void handleIndication(unsigned char *ledState) {
+  if (*ledState) {
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+}
 
 void blinkLed(int pin) {
   digitalWrite(pin, HIGH);
-  delay(LED_ON_TIME_MS);
+  delay(LED_BLINK_TIME_MS);
   digitalWrite(pin, LOW);
 }

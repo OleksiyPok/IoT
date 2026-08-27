@@ -2,5 +2,7 @@
 
 #pragma once
 
-void indication_init();
+void initIndication();
+void handleIndication(unsigned char *ledState);
+
 void blinkLed(int pin);

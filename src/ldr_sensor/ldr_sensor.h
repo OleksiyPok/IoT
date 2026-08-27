@@ -4,4 +4,4 @@
 
 #include "../types.h"
 
-void ldr_sensor_init();
+void initLdrSensor();

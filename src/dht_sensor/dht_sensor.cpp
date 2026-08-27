@@ -4,6 +4,6 @@
 #include "config.h"
 #include <Arduino.h>
 
-void dht_sensor_init() {
+void initDhtSensor() {
 
 };

@@ -1,12 +1,20 @@
 // src/main.cpp
 
+#include "bit_utils.h"
+#include "buttons/buttons.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
 #include "monitor/monitor.h"
 #include "sensors/sensors.h"
+#include <Arduino.h>
 
+unsigned char buttonsState = 0x00; // Button state register (8 buttons)
+unsigned char ledState = 0x00;     // LED state register (8 leds)
+
+unsigned long lastButtonsReadMs = 0;
+unsigned long lastIndicationChangeMs = 0;
 unsigned long lastSensorReadMs = 0;
 unsigned long lastDataMonitorMs = 0;
 unsigned long lastMemoryCheckMs = 0;
@@ -16,39 +24,60 @@ SensorData currentSensorData;
 // --------------
 
 void setup() {
-  monitor_init();
-  dht_sensor_init();
-  ldr_sensor_init();
-  indication_init();
-
-  // delay(100);
+  initMonitor();
+  // initDhtSensor();
+  // initLdrSensor();
+  initButtons();
+  initIndication();
 }
 
 void loop() {
+
   unsigned long now = millis();
 
-  // Sensor reading
-  if (now - lastSensorReadMs >= SENSOR_READ_PERIOD_MS) {
-    lastSensorReadMs = now;
-    blinkLed(LED_PIN);
+  // Sensors reading
+  // if (now - lastSensorReadMs >= SENSORS_READ_PERIOD_MS) {
+  // lastSensorReadMs = now;
+  // blinkLed(LED_PIN);
 
-    readSensor(&currentSensorData);
+  // readSensor(&currentSensorData);
+  // }
+
+  // Buttons reading
+  if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
+    lastButtonsReadMs = now;
+
+    handleButtons(&buttonsState);
   }
 
-  // Data monitor
+  // Indication
+  if (now - lastIndicationChangeMs >= INDICATION_CHANGE_PERIOD_MS) {
+    lastIndicationChangeMs = now;
+
+    ledState = buttonsState;
+    handleIndication(&ledState);
+  }
+
+  // // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_PERIOD_MS) {
     lastDataMonitorMs = now;
-    blinkLed(LED_BUILTIN_PIN);
 
-    monitorData(&currentSensorData);
+    Serial.print("buttonsState = ");
+    Serial.print(buttonsState);
+    Serial.print("  ");
+    Serial.print("ledState = ");
+    Serial.println(ledState);
+
+    //   handleMonitor(&currentSensorData);
+    //   blinkLed(LED_BUILTIN_PIN);
   }
 
-  // Memory check
-  if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
-    lastMemoryCheckMs = now;
+  // // Memory check
+  // if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
+  //   lastMemoryCheckMs = now;
 
-    checkMemory();
-  }
+  //   checkMemory();
+  // }
 
-  delay(10); // To simplify the simulation process
+  // delay(10); // To simplify the simulation process
 }

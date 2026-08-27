@@ -4,4 +4,6 @@
 
 #include "../types.h"
 
-void dht_sensor_init();
+#define DHTT_TYPE DHT22
+
+void initDhtSensor();

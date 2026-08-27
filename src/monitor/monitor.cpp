@@ -1,14 +1,20 @@
 // src/monitor/monitor.cpp
 
 #include "monitor.h"
+#include "config.h"
+#include "indication/indication.h"
 #include <Arduino.h>
 
-void monitor_init() {
+void monitorData(const SensorData *data);
+
+void initMonitor() {
   Serial.begin(115200);
   Serial.println();
   Serial.println("=== Device started ===");
   Serial.println();
 };
+
+void handleMonitor(const SensorData *data) { monitorData(data); }
 
 void monitorData(const SensorData *data) {
   static int callCount = 0;
