@@ -2,8 +2,6 @@
 
 #pragma once
 
-#define DHT_TYPE DHT22
-
 struct DHTData {
   float temperature; // °C
   float humidity;    // %

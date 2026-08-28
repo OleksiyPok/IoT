@@ -6,8 +6,11 @@
 #include "dht_sensor/dht_sensor.h"
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
+#include "memory/memory.h"
 #include "monitor/monitor.h"
 #include <Arduino.h>
+
+// ---------------------------------
 
 unsigned char buttonsState = 0x00; // Button state register (8 buttons)
 unsigned char ledState = 0x00;     // LED state register (8 leds)
@@ -22,7 +25,7 @@ unsigned long lastSendDataMs = 0;
 
 SensorData currentSensorData;
 
-// --------------
+// ---------------------------------
 
 void setup() {
   initMonitor();
@@ -47,6 +50,8 @@ void loop() {
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
     lastLdrSensorReadMs = now;
+
+    handleLdrSensor(currentSensorData.ldr);
   }
 
   // Buttons reading
@@ -81,12 +86,12 @@ void loop() {
     handleMonitor(currentSensorData);
   }
 
-  // // Memory check
-  // if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
-  //   lastMemoryCheckMs = now;
+  // Memory check
+  if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
+    lastMemoryCheckMs = now;
 
-  //   checkMemory();
-  // }
+    checkMemory();
+  }
 
   // delay(10); // To simplify the simulation process
 }

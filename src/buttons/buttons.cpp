@@ -5,6 +5,8 @@
 #include "config.h"
 #include <Arduino.h>
 
+// ---------------------------------
+
 unsigned long lastDebounce0 = 0;
 unsigned long lastDebounce1 = 0;
 
@@ -15,6 +17,8 @@ unsigned char buttonsHandled = 0x00; // Buttons press handled flag
 
 void IRAM_ATTR onButton0Press();
 void IRAM_ATTR onButton1Press();
+
+// ---------------------------------
 
 void initButtons() {
   pinMode(BUTTON_0_PIN, INPUT_PULLUP);
@@ -30,18 +34,18 @@ void handleButtons(unsigned char &buttonsState) {
   if (button0Pressed) {
     button0Pressed = false;
     if (!readBit(buttonsHandled, 0) && (now - lastDebounce0 >= DEBOUNCE)) {
-      lastDebounce0 = now;         // Update debounce time
+      lastDebounce0 = now;        // Update debounce time
       toggleBit(buttonsState, 0); // Toggle button 0 state
-      setBit(buttonsHandled, 0);   // Mark button 0 as handled
+      setBit(buttonsHandled, 0);  // Mark button 0 as handled
     }
   }
 
   if (button1Pressed) {
     button1Pressed = false;
     if (!readBit(buttonsHandled, 1) && (now - lastDebounce0 >= DEBOUNCE)) {
-      lastDebounce1 = now;         // Update debounce time
+      lastDebounce1 = now;        // Update debounce time
       toggleBit(buttonsState, 1); // Toggle button 1 state
-      setBit(buttonsHandled, 1);   // Mark button 1 as handled
+      setBit(buttonsHandled, 1);  // Mark button 1 as handled
     }
   }
 

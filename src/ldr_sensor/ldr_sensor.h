@@ -8,3 +8,4 @@ struct LDRData {
 };
 
 void initLdrSensor();
+void handleLdrSensor(LDRData &data);

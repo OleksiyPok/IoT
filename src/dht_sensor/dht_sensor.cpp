@@ -4,8 +4,16 @@
 #include "config.h"
 #include <DHT.h>
 
+// ---------------------------------
+
+#define DHT_TYPE DHT22
+
 DHT dht(DHT_PIN, DHT_TYPE);
+
 void dhtReadData(DHTData &data);
+void validateDhtSensorData(DHTData &data);
+
+// ---------------------------------
 
 void initDhtSensor() { dht.begin(); }
 
@@ -19,10 +27,10 @@ void dhtReadData(DHTData &data) {
   data.temperature = dht.readTemperature();
 }
 
-// void validateDhtSensorData(DHTData &data) {
-//   if (isnan(data.temperature) || isnan(data.humidity) ||
-//       data.temperature < -40 || data.temperature > 80 || data.humidity < 0 ||
-//       data.humidity > 100) {
-//     status |= STATUS_DHT_ERR;
-//   }
-// }
+void validateDhtSensorData(DHTData &data) {
+  //   if (isnan(data.temperature) || isnan(data.humidity) ||
+  //       data.temperature < -40 || data.temperature > 80 || data.humidity < 0
+  //       || data.humidity > 100) {
+  //     status |= STATUS_DHT_ERR;
+  //   }
+}

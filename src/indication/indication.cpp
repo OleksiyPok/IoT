@@ -5,6 +5,10 @@
 #include "config.h"
 #include <Arduino.h>
 
+// ---------------------------------
+
+// ---------------------------------
+
 void initIndication() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(LED_BUILTIN_PIN, OUTPUT);
