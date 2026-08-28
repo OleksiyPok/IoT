@@ -33,7 +33,7 @@ void handleButtons(uint8_t &buttonsState) {
 
   if (button0Pressed) {
     button0Pressed = false;
-    if (!readBit(buttonsHandled, 0) && (now - lastDebounce0 >= DEBOUNCE)) {
+    if (!isBitSet(buttonsHandled, 0) && (now - lastDebounce0 >= DEBOUNCE)) {
       lastDebounce0 = now;        // Update debounce time
       toggleBit(buttonsState, 0); // Toggle button 0 state
       setBit(buttonsHandled, 0);  // Mark button 0 as handled
@@ -42,7 +42,7 @@ void handleButtons(uint8_t &buttonsState) {
 
   if (button1Pressed) {
     button1Pressed = false;
-    if (!readBit(buttonsHandled, 1) && (now - lastDebounce0 >= DEBOUNCE)) {
+    if (!isBitSet(buttonsHandled, 1) && (now - lastDebounce0 >= DEBOUNCE)) {
       lastDebounce1 = now;        // Update debounce time
       toggleBit(buttonsState, 1); // Toggle button 1 state
       setBit(buttonsHandled, 1);  // Mark button 1 as handled
@@ -50,12 +50,12 @@ void handleButtons(uint8_t &buttonsState) {
   }
 
   // Reset after button 0 release
-  if (readBit(buttonsHandled, 0) && digitalRead(BUTTON_0_PIN) == HIGH) {
+  if (isBitSet(buttonsHandled, 0) && digitalRead(BUTTON_0_PIN) == HIGH) {
     clearBit(buttonsHandled, 0);
   }
 
   // Reset after button 1 release
-  if (readBit(buttonsHandled, 1) && digitalRead(BUTTON_1_PIN) == HIGH) {
+  if (isBitSet(buttonsHandled, 1) && digitalRead(BUTTON_1_PIN) == HIGH) {
     clearBit(buttonsHandled, 1);
   }
 }

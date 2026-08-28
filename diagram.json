@@ -15,7 +15,7 @@
       "id": "led1",
       "top": -51.6,
       "left": 167.4,
-      "attrs": { "color": "orange", "flip": "1" }
+      "attrs": { "color": "white", "flip": "1" }
     },
     {
       "type": "wokwi-resistor",
@@ -45,7 +45,7 @@
       "id": "btn1",
       "top": 170.6,
       "left": 163.2,
-      "attrs": { "color": "yellow", "xray": "1", "label": "light" }
+      "attrs": { "color": "white", "xray": "1", "label": "light" }
     },
     {
       "type": "wokwi-pushbutton-6mm",

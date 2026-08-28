@@ -15,7 +15,7 @@ void initIndication() {
 }
 
 void handleIndication(uint8_t &ledState) {
-  if (readBit(ledState, 0)) {
+  if (isBitSet(ledState, 0)) {
     digitalWrite(LED_PIN, HIGH);
   } else {
     digitalWrite(LED_PIN, LOW);

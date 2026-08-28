@@ -1,8 +1,8 @@
 // src/dht_sensor/dht_sensor.h
 
-#include <Arduino.h>
-
 #pragma once
+
+#include <Arduino.h>
 
 struct DHTData {
   float temperature; // °C
