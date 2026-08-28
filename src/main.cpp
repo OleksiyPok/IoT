@@ -12,16 +12,16 @@
 
 // ---------------------------------
 
-unsigned char buttonsState = 0x00; // Button state register (8 buttons)
-unsigned char ledState = 0x00;     // LED state register (8 leds)
+uint8_t buttonsState = 0x00; // Button state register (8 buttons)
+uint8_t ledState = 0x00;     // LED state register (8 leds)
 
-unsigned long lastButtonsReadMs = 0;
-unsigned long lastIndicationChangeMs = 0;
-unsigned long lastLdrSensorReadMs = 0;
-unsigned long lastDhtSensorReadMs = 0;
-unsigned long lastDataMonitorMs = 0;
-unsigned long lastMemoryCheckMs = 0;
-unsigned long lastSendDataMs = 0;
+uint32_t lastButtonsReadMs = 0;
+uint32_t lastIndicationChangeMs = 0;
+uint32_t lastLdrSensorReadMs = 0;
+uint32_t lastDhtSensorReadMs = 0;
+uint32_t lastDataMonitorMs = 0;
+uint32_t lastMemoryCheckMs = 0;
+uint32_t lastSendDataMs = 0;
 
 Telemetry telemetryData;
 
@@ -37,7 +37,7 @@ void setup() {
 
 void loop() {
 
-  unsigned long now = millis();
+  uint32_t now = millis();
 
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {

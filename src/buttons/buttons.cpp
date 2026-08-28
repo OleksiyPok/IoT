@@ -7,13 +7,13 @@
 
 // ---------------------------------
 
-unsigned long lastDebounce0 = 0;
-unsigned long lastDebounce1 = 0;
+uint32_t lastDebounce0 = 0;
+uint32_t lastDebounce1 = 0;
 
 volatile bool button0Pressed = false; // Button 0 press flag
 volatile bool button1Pressed = false; // Button 1 press flag
 
-unsigned char buttonsHandled = 0x00; // Buttons press handled flag
+uint8_t buttonsHandled = 0x00; // Buttons press handled flag
 
 void IRAM_ATTR onButton0Press();
 void IRAM_ATTR onButton1Press();
@@ -28,8 +28,8 @@ void initButtons() {
   attachInterrupt(BUTTON_1_PIN, onButton1Press, FALLING);
 }
 
-void handleButtons(unsigned char &buttonsState) {
-  unsigned long now = millis();
+void handleButtons(uint8_t &buttonsState) {
+  uint32_t now = millis();
 
   if (button0Pressed) {
     button0Pressed = false;

@@ -2,7 +2,9 @@
 
 #pragma once
 
+#include <Arduino.h>
+
 #define DEBOUNCE 50
 
 void initButtons();
-void handleButtons(unsigned char &buttonsState);
+void handleButtons(uint8_t &buttonsState);

@@ -1,11 +1,13 @@
 // src/dht_sensor/dht_sensor.h
 
+#include <Arduino.h>
+
 #pragma once
 
 struct DHTData {
   float temperature; // °C
   float humidity;    // %
-  unsigned char status;
+  uint8_t status;
 };
 
 void initDhtSensor();

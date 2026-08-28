@@ -4,6 +4,7 @@
 
 #include "dht_sensor/dht_sensor.h"
 #include "ldr_sensor/ldr_sensor.h"
+#include <Arduino.h>
 
 #define STATUS_OK 0b00000000
 #define STATUS_LDR_ERR 0b00000001  // bit 0: LDR error
@@ -12,8 +13,9 @@
 #define STATUS_MQTT_ERR 0b00001000 // bit 3: MQTT error
 
 struct Telemetry {
+  uint64_t deviceId;
   DHTData dht;
   LDRData ldr;
-  unsigned long worktime;
-  unsigned char status; // system status register
+  uint32_t worktime;
+  uint8_t status; // system status register
 };
