@@ -22,7 +22,6 @@
 #define STATUS_DHT_OK 0b00000000
 #define STATUS_DHT_DEVICE_ERROR 0b00000001
 #define STATUS_DHT_DATA_VALID_ERROR 0b00000010
-
 #define STATUS_DHT_TEMPERATURE_ALARM_MIN 0b00010000
 #define STATUS_DHT_TEMPERATURE_ALARM_MAX 0b00100000
 #define STATUS_DHT_HUMIDITY_ALARM_MIN 0b01000000
@@ -30,24 +29,22 @@
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
+// ---------------------------------
+
 void readDhtData(float &temperature, float &humidity);
-uint8_t validateDhtData(float temperature, float humidity);
-void checkDhtTemperatureAlarm(uint8_t &status, float temperature);
-void checkDhtHumidityAlarm(uint8_t &status, float humidity);
+uint8_t validateDhtData(const float &temperature, const float &humidity);
+void checkDhtTemperatureAlarm(uint8_t &status, const float &temperature);
+void checkDhtHumidityAlarm(uint8_t &status, const float &humidity);
 
 // ---------------------------------
 
 void initDhtSensor() { dht.begin(); }
 
 void handleDhtSensor(DHTData &data) {
-
   float temperature;
   float humidity;
-
   readDhtData(temperature, humidity);
-
   uint8_t status = validateDhtData(temperature, humidity);
-
   data.temperature = temperature;
   data.humidity = humidity;
   data.status = status;
@@ -58,8 +55,9 @@ void readDhtData(float &temperature, float &humidity) {
   temperature = dht.readTemperature();
 }
 
-uint8_t validateDhtData(float temperature, float humidity) {
+uint8_t validateDhtData(const float &temperature, const float &humidity) {
   uint8_t status = STATUS_DHT_OK;
+
   if (isnan(temperature) || isnan(humidity)) {
     setBitsMask(status, STATUS_DHT_DEVICE_ERROR);
     return status;
@@ -73,10 +71,11 @@ uint8_t validateDhtData(float temperature, float humidity) {
 
   checkDhtTemperatureAlarm(status, temperature);
   checkDhtHumidityAlarm(status, humidity);
+
   return status;
 }
 
-void checkDhtTemperatureAlarm(uint8_t &status, float temperature) {
+void checkDhtTemperatureAlarm(uint8_t &status, const float &temperature) {
   if (temperature < DHT_TEMPERATURE_ALARM_MIN) {
     setBitsMask(status, STATUS_DHT_TEMPERATURE_ALARM_MIN);
   } else if (temperature > DHT_TEMPERATURE_ALARM_MAX) {
@@ -84,7 +83,7 @@ void checkDhtTemperatureAlarm(uint8_t &status, float temperature) {
   }
 }
 
-void checkDhtHumidityAlarm(uint8_t &status, float humidity) {
+void checkDhtHumidityAlarm(uint8_t &status, const float &humidity) {
   if (humidity < DHT_HUMIDITY_ALARM_MIN) {
     setBitsMask(status, STATUS_DHT_HUMIDITY_ALARM_MIN);
   } else if (humidity > DHT_HUMIDITY_ALARM_MAX) {
