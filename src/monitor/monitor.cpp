@@ -22,7 +22,7 @@ void handleMonitor(const Telemetry &data) {
   Serial.print("°C,  Humidity: ");
   Serial.print(data.dht.humidity, 1);
   Serial.print("%");
-  Serial.print(" (Status: 0b");
+  Serial.print(" | (Status: 0b");
   for (int8_t i = 7; i >= 0; --i) {
     Serial.print((data.dht.status >> i) & 1);
   }
@@ -30,9 +30,9 @@ void handleMonitor(const Telemetry &data) {
 
   Serial.print("[LDR] ADC: ");
   Serial.print(data.ldr.raw);
-  // Serial.print(" Lux:  ");
-  // Serial.print(data.ldr.lux, 1);
-  Serial.print(" (Status: 0b");
+  Serial.print(", Lux: ");
+  Serial.print(data.ldr.lux, 1);
+  Serial.print(" | (Status: 0b");
   for (int8_t i = 7; i >= 0; --i) {
     Serial.print((data.ldr.status >> i) & 1);
   }
