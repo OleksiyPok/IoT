@@ -24,14 +24,14 @@ void initButtons() {
   attachInterrupt(BUTTON_1_PIN, onButton1Press, FALLING);
 }
 
-void handleButtons(unsigned char *buttonsState) {
+void handleButtons(unsigned char &buttonsState) {
   unsigned long now = millis();
 
   if (button0Pressed) {
     button0Pressed = false;
     if (!readBit(buttonsHandled, 0) && (now - lastDebounce0 >= DEBOUNCE)) {
       lastDebounce0 = now;         // Update debounce time
-      toggleBit(*buttonsState, 0); // Toggle button 0 state
+      toggleBit(buttonsState, 0); // Toggle button 0 state
       setBit(buttonsHandled, 0);   // Mark button 0 as handled
     }
   }
@@ -40,7 +40,7 @@ void handleButtons(unsigned char *buttonsState) {
     button1Pressed = false;
     if (!readBit(buttonsHandled, 1) && (now - lastDebounce0 >= DEBOUNCE)) {
       lastDebounce1 = now;         // Update debounce time
-      toggleBit(*buttonsState, 1); // Toggle button 1 state
+      toggleBit(buttonsState, 1); // Toggle button 1 state
       setBit(buttonsHandled, 1);   // Mark button 1 as handled
     }
   }

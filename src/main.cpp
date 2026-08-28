@@ -53,7 +53,7 @@ void loop() {
   if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
     lastButtonsReadMs = now;
 
-    handleButtons(&buttonsState);
+    handleButtons(buttonsState);
   }
 
   // Indication
@@ -61,7 +61,7 @@ void loop() {
     lastIndicationChangeMs = now;
 
     ledState = buttonsState;
-    handleIndication(&ledState);
+    handleIndication(ledState);
   }
 
   // Data send

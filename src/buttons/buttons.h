@@ -5,4 +5,4 @@
 #define DEBOUNCE 50
 
 void initButtons();
-void handleButtons(unsigned char *buttonsState);
+void handleButtons(unsigned char &buttonsState);

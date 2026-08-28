@@ -10,8 +10,8 @@ void initIndication() {
   pinMode(LED_BUILTIN_PIN, OUTPUT);
 }
 
-void handleIndication(unsigned char *ledState) {
-  if (readBit(*ledState, 0)) {
+void handleIndication(unsigned char &ledState) {
+  if (readBit(ledState, 0)) {
     digitalWrite(LED_PIN, HIGH);
   } else {
     digitalWrite(LED_PIN, LOW);
