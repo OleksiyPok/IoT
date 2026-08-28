@@ -5,6 +5,7 @@
 struct LDRData {
   int raw;   // ADC data (0–4095)
   float lux; // data in the lux
+  unsigned char status;
 };
 
 void initLdrSensor();

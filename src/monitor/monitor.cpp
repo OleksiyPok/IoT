@@ -16,7 +16,7 @@ void initMonitor() {
   Serial.println();
 };
 
-void handleMonitor(const SensorData &data) {
+void handleMonitor(const Telemetry &data) {
   Serial.print("[DHT] Temperature: ");
   Serial.print(data.dht.temperature, 1);
   Serial.print("°C,  Humidity: ");

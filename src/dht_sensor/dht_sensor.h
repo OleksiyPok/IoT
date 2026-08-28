@@ -5,6 +5,7 @@
 struct DHTData {
   float temperature; // °C
   float humidity;    // %
+  unsigned char status;
 };
 
 void initDhtSensor();

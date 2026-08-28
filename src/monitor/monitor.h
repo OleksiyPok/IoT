@@ -5,5 +5,5 @@
 #include "../types.h"
 
 void initMonitor();
-void handleMonitor(const SensorData &data);
+void handleMonitor(const Telemetry &data);
 // void checkMemory();

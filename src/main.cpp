@@ -23,7 +23,7 @@ unsigned long lastDataMonitorMs = 0;
 unsigned long lastMemoryCheckMs = 0;
 unsigned long lastSendDataMs = 0;
 
-SensorData currentSensorData;
+Telemetry telemetryData;
 
 // ---------------------------------
 
@@ -43,15 +43,15 @@ void loop() {
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
     lastDhtSensorReadMs = now;
 
-    handleDhtSensor(currentSensorData.dht);
-    // dhtReadData(currentSensorData.dht);
+    handleDhtSensor(telemetryData.dht);
+    // dhtReadData(telemetryData.dht);
   }
 
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
     lastLdrSensorReadMs = now;
 
-    handleLdrSensor(currentSensorData.ldr);
+    handleLdrSensor(telemetryData.ldr);
   }
 
   // Buttons reading
@@ -83,7 +83,7 @@ void loop() {
     // Serial.print("ledState = ");
     // Serial.println(ledState);
 
-    handleMonitor(currentSensorData);
+    handleMonitor(telemetryData);
   }
 
   // Memory check

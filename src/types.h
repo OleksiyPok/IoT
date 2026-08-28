@@ -11,9 +11,9 @@
 #define STATUS_WIFI_ERR 0b00000100 // bit 2: Wi-Fi error
 #define STATUS_MQTT_ERR 0b00001000 // bit 3: MQTT error
 
-struct SensorData {
+struct Telemetry {
   DHTData dht;
   LDRData ldr;
   unsigned long worktime;
-  unsigned char statuscheck; // system status register
+  unsigned char status; // system status register
 };
