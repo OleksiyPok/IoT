@@ -7,7 +7,6 @@
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
 #include "monitor/monitor.h"
-#include "sensors/sensors.h"
 #include <Arduino.h>
 
 unsigned char buttonsState = 0x00; // Button state register (8 buttons)
@@ -15,9 +14,11 @@ unsigned char ledState = 0x00;     // LED state register (8 leds)
 
 unsigned long lastButtonsReadMs = 0;
 unsigned long lastIndicationChangeMs = 0;
-unsigned long lastSensorReadMs = 0;
+unsigned long lastLdrSensorReadMs = 0;
+unsigned long lastDhtSensorReadMs = 0;
 unsigned long lastDataMonitorMs = 0;
 unsigned long lastMemoryCheckMs = 0;
+unsigned long lastSendDataMs = 0;
 
 SensorData currentSensorData;
 
@@ -25,7 +26,7 @@ SensorData currentSensorData;
 
 void setup() {
   initMonitor();
-  // initDhtSensor();
+  initDhtSensor();
   // initLdrSensor();
   initButtons();
   initIndication();
@@ -35,13 +36,18 @@ void loop() {
 
   unsigned long now = millis();
 
-  // Sensors reading
-  // if (now - lastSensorReadMs >= SENSORS_READ_PERIOD_MS) {
-  // lastSensorReadMs = now;
-  // blinkLed(LED_PIN);
+  // DHT sensor reading
+  if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
+    lastDhtSensorReadMs = now;
 
-  // readSensor(&currentSensorData);
-  // }
+    handleDhtSensor(currentSensorData.dht);
+    // dhtReadData(currentSensorData.dht);
+  }
+
+  // LDR sensor reading
+  if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
+    lastLdrSensorReadMs = now;
+  }
 
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
@@ -58,18 +64,21 @@ void loop() {
     handleIndication(&ledState);
   }
 
+  // Data send
+  if (now - lastSendDataMs >= SEND_DATA_PERIOD_MS) {
+  }
+
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_PERIOD_MS) {
     lastDataMonitorMs = now;
 
-    Serial.print("buttonsState = ");
-    Serial.print(buttonsState);
-    Serial.print("  ");
-    Serial.print("ledState = ");
-    Serial.println(ledState);
+    // Serial.print("buttonsState = ");
+    // Serial.print(buttonsState);
+    // Serial.print("  ");
+    // Serial.print("ledState = ");
+    // Serial.println(ledState);
 
-    //   handleMonitor(&currentSensorData);
-    //   blinkLed(LED_BUILTIN_PIN);
+    handleMonitor(currentSensorData);
   }
 
   // // Memory check

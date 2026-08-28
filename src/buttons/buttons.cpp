@@ -5,8 +5,6 @@
 #include "config.h"
 #include <Arduino.h>
 
-#define DEBOUNCE 50
-
 unsigned long lastDebounce0 = 0;
 unsigned long lastDebounce1 = 0;
 

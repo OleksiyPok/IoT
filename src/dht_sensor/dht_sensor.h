@@ -2,8 +2,12 @@
 
 #pragma once
 
-#include "../types.h"
+#define DHT_TYPE DHT22
 
-#define DHTT_TYPE DHT22
+struct DHTData {
+  float temperature; // °C
+  float humidity;    // %
+};
 
 void initDhtSensor();
+void handleDhtSensor(DHTData &data);

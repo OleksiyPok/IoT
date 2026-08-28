@@ -5,8 +5,6 @@
 #include "config.h"
 #include <Arduino.h>
 
-#define LED_BLINK_TIME_MS 100
-
 void initIndication() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(LED_BUILTIN_PIN, OUTPUT);
