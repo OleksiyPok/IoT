@@ -1,23 +1,23 @@
 // src/indication/indication.cpp
 
 #include "indication.h"
-#include "bit_utils.h"
 #include "config.h"
 #include <Arduino.h>
 
 // ---------------------------------
 #define LED_BLINK_TIME_MS 100
 
-uint8_t ledState = 0x00;
+uint8_t ledState = 0;
 
 static const uint8_t LED_PINS[] = {
     LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
-    LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN};
+    LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN,
+    LED_HUMIDITY_MIN_PIN, LED_HUMIDITY_MAX_PIN};
 
-static const uint8_t LED_MASKS[] = {
-    LED_LIGHT_MANUAL_MASK, LED_LIGHT_AUTO_MASK,      LED_LIGHT_MIN_MASK,
-    LED_LIGHT_MAX_MASK,    LED_TEMPERATURE_MIN_MASK, LED_TEMPERATURE_MAX_MASK};
-
+static const uint8_t LED_MASKS[] = {LED_LIGHT_MANUAL,    LED_LIGHT_AUTO,
+                                    LED_LIGHT_MIN,       LED_LIGHT_MAX,
+                                    LED_TEMPERATURE_MIN, LED_TEMPERATURE_MAX,
+                                    LED_HUMIDITY_MIN,    LED_HUMIDITY_MAX};
 // ---------------------------------
 
 void initIndication() {
@@ -32,8 +32,9 @@ void initIndication() {
 }
 
 void handleIndication(uint8_t &ledState) {
-  for (uint8_t bit = 0; bit < sizeof(LED_PINS); ++bit)
-    digitalWrite(LED_PINS[bit], areBitsSetMask(ledState, LED_MASKS[bit]));
+  for (uint8_t i = 0; i < sizeof(LED_PINS); ++i) {
+    digitalWrite(LED_PINS[i], (ledState & LED_MASKS[i]) != 0);
+  }
 }
 
 void blinkLed(int pin) {

@@ -1,6 +1,6 @@
 // src/main.cpp
 
-#include "bit_utils.h"
+#include "main.h"
 #include "buttons/buttons.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
@@ -11,12 +11,6 @@
 #include <Arduino.h>
 
 // ---------------------------------
-
-#define STATUS_OK 0b00000000
-#define STATUS_LDR_ERR 0b00000001  // bit 0: LDR error
-#define STATUS_DHT_ERR 0b00000100  // bit 2: DHT22 error
-#define STATUS_MQTT_ERR 0b01000000 // bit 6: MQTT error
-#define STATUS_WIFI_ERR 0b10000000 // bit 7: Wi-Fi error
 
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastIndicationChangeMs = 0;
@@ -45,50 +39,43 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
     lastDhtSensorReadMs = now;
-
     handleDhtSensor(telemetryData.dht, ledState);
-    // dhtReadData(telemetryData.dht);
   }
 
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
     lastLdrSensorReadMs = now;
-
     handleLdrSensor(telemetryData.ldr, ledState);
   }
 
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
     lastButtonsReadMs = now;
-
     handleButtons(ledState);
   }
 
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_PERIOD_MS) {
     lastIndicationChangeMs = now;
-
     handleIndication(ledState);
   }
 
   // Data send
   if (now - lastSendDataMs >= SEND_DATA_PERIOD_MS) {
+    lastSendDataMs = now;
   }
 
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_PERIOD_MS) {
     lastDataMonitorMs = now;
-    Serial.println(ledState, BIN);
-
     handleMonitor(telemetryData);
   }
 
   // Memory check
   if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
     lastMemoryCheckMs = now;
-
     checkMemory();
   }
 
-  // delay(10); // To simplify the simulation process
+  delay(10); // To simplify the simulation process
 }

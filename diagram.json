@@ -38,7 +38,7 @@
       "top": 100.8,
       "left": -180.9,
       "rotate": 270,
-      "attrs": { "color": "yellow", "bounce": "1", "label": "ON/OFF" }
+      "attrs": {}
     },
     {
       "type": "wokwi-photoresistor-sensor",
@@ -177,14 +177,14 @@
       "id": "label-led1",
       "top": 201.6,
       "left": -249.6,
-      "attrs": { "text": "Min" }
+      "attrs": { "text": "T < min" }
     },
     {
       "type": "wokwi-text",
       "id": "label-led5",
       "top": 201.6,
       "left": -144,
-      "attrs": { "text": "Max" }
+      "attrs": { "text": "T > max" }
     }
   ],
   "connections": [
