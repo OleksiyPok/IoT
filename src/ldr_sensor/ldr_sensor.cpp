@@ -8,9 +8,6 @@
 
 // ---------------------------------
 
-#define LDR_MIN_VALID_ADC 0
-#define LDR_MAX_VALID_ADC 4095
-
 #define LDR_ADC_VALID_MIN 10
 #define LDR_ADC_VALID_MAX 10000
 
