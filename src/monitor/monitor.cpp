@@ -54,7 +54,7 @@ static void printDeviceId(const Telemetry &data) {
 static void printTelemetryWorktime(const Telemetry &data) {
   Serial.print("[TELEMETRY] Worktime: ");
   Serial.print(data.worktime);
-  Serial.println(" sek");
+  Serial.println(" sec");
 };
 
 static void printDhdData(const Telemetry &data) {

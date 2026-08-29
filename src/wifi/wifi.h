@@ -4,7 +4,8 @@
 
 #define WIFI_SSID "Wokwi-GUEST" // SSID
 #define WIFI_PASSWORD ""        // Password (empty for Wokwi-GUEST)
-#define WIFI_TIMEOUT 10000      // timeout connection, ms
+#define WIFI_RECONNECT_INTERVAL_MS 3000
+#define WIFI_TIMEOUT_MS 10000 // timeout connection, ms
 
 #define SERVER_URL "http://httpbun.com/post" // HTTP POST
 
@@ -12,3 +13,4 @@
 
 bool connectWifi();
 bool isWifiConnected();
+void updateWifiStatus();

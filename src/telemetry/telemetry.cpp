@@ -40,5 +40,6 @@ void updateTelemetry(Telemetry &telemetryData) {
     telemetryData.status &= ~STATUS_WIFI_ERR;
   } else {
     telemetryData.status |= STATUS_WIFI_ERR;
+    connectWifi();
   }
 }

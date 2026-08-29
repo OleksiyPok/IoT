@@ -7,33 +7,55 @@
 
 // ---------------------------------
 
+static unsigned long wifiConnectStartedAt = 0;
+static unsigned long wifiLastReconnectAt = 0;
+static bool wifiConnecting = false;
+static wl_status_t wifiLastStatus = WL_IDLE_STATUS;
+
 // ---------------------------------
 
 bool isWifiConnected() { return WiFi.status() == WL_CONNECTED; }
 
 bool connectWifi() {
-
-  if (isWifiConnected()) {
+  const wl_status_t status = WiFi.status();
+  if (status == WL_CONNECTED) {
+    if (wifiLastStatus != WL_CONNECTED) {
+      Serial.println("[Wi-Fi] Connected");
+      Serial.print("[Wi-Fi] IP: ");
+      Serial.println(WiFi.localIP());
+      wifiLastStatus = WL_CONNECTED;
+      wifiConnecting = false;
+    }
     return true;
   }
 
-  Serial.print("[Wi-Fi] Connecting .... ");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
-
-  unsigned long start = millis();
-
-  while (WiFi.status() != WL_CONNECTED) {
-    if (millis() - start > WIFI_TIMEOUT) {
-      Serial.println(".... Connection timeout");
-      return false;
-    }
-    delay(500);
-    Serial.print(".");
+  if (status != wifiLastStatus) {
+    Serial.print("[Wi-Fi] Status: ");
+    Serial.println(status);
+    wifiLastStatus = status;
   }
 
-  Serial.println(" OK");
-  Serial.print("[Wi-Fi] IP: ");
-  Serial.println(WiFi.localIP());
-  Serial.println();
-  return true;
+  const unsigned long now = millis();
+
+  if (wifiConnecting) {
+    if (now - wifiConnectStartedAt >= WIFI_TIMEOUT_MS) {
+      Serial.print("[Wi-Fi] Connection timeout. Status: ");
+      Serial.println(WiFi.status());
+      wifiConnecting = false;
+    }
+    return false;
+  }
+
+  if (now - wifiLastReconnectAt < WIFI_RECONNECT_INTERVAL_MS) {
+    return false;
+  }
+
+  wifiLastReconnectAt = now;
+  wifiConnectStartedAt = now;
+  wifiConnecting = true;
+
+  Serial.println("[Wi-Fi] Connecting...");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
+
+  return false;
 }
