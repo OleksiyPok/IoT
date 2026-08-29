@@ -1,3 +1,5 @@
+// src/device_info/device_info.cpp
+
 #include "device_info.h"
 #include "esp_mac.h"
 #include <Arduino.h>
@@ -10,6 +12,8 @@ bool getDeviceId(uint64_t &deviceId) {
   uint8_t mac[6];
 
   if (esp_read_mac(mac, ESP_MAC_WIFI_STA) != ESP_OK) {
+    Serial.println("Failed to get device ID");
+    deviceId = 000000000000;
     return false;
   }
 

@@ -23,7 +23,10 @@ DHT dht(DHT_PIN, DHT_TYPE);
 
 // ---------------------------------
 
-void initDhtSensor() { dht.begin(); }
+void initDhtSensor(DHTData &data) {
+  dht.begin();
+  data.status |= STATUS_DHT_INIT_ERR;
+}
 
 void handleDhtSensor(DHTData &data, uint8_t &ledState) {
   float temperature = dht.readTemperature();
@@ -35,7 +38,7 @@ void handleDhtSensor(DHTData &data, uint8_t &ledState) {
   if (isnan(temperature) || isnan(humidity)) {
 
     ledState &= ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX);
-    status |= STATUS_DHT_DEVICE_ERROR;
+    status |= STATUS_DHT_DEVICE_ERR;
 
     data.temperature = -1;
     data.humidity = -1;
@@ -48,7 +51,7 @@ void handleDhtSensor(DHTData &data, uint8_t &ledState) {
   if (temperature < DHT_TEMPERATURE_VALID_MIN ||
       temperature > DHT_TEMPERATURE_VALID_MAX ||
       humidity < DHT_HUMIDITY_VALID_MIN || humidity > DHT_HUMIDITY_VALID_MAX) {
-    status |= STATUS_DHT_DATA_VALID_ERROR;
+    status |= STATUS_DHT_DATA_VALID_ERR;
   }
 
   // Temperature alarm

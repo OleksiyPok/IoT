@@ -1,20 +1,27 @@
 // src/wifi/wifi.cpp
 
-#include "wifi.h"
-
+#include "WiFi.h"
+#include "../telemetry/telemetry.h"
 #include <Arduino.h>
 #include <HTTPClient.h>
-#include <WiFi.h>
 
 // ---------------------------------
 
 // ---------------------------------
+
+bool isWifiConnected() { return WiFi.status() == WL_CONNECTED; }
 
 bool connectWifi() {
+
+  if (isWifiConnected()) {
+    return true;
+  }
+
   Serial.print("[Wi-Fi] Connecting .... ");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
 
   unsigned long start = millis();
+
   while (WiFi.status() != WL_CONNECTED) {
     if (millis() - start > WIFI_TIMEOUT) {
       Serial.println(".... Connection timeout");

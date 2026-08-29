@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../types.h"
+#include "../telemetry/telemetry.h"
 
 void initMonitor();
 void handleMonitor(const Telemetry &data);

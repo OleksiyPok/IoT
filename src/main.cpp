@@ -1,14 +1,13 @@
 // src/main.cpp
 
-#include "main.h"
 #include "buttons/buttons.h"
 #include "config.h"
-#include "device_info/device_info.h"
 #include "dht_sensor/dht_sensor.h"
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
 #include "memory/memory.h"
 #include "monitor/monitor.h"
+#include "telemetry/telemetry.h"
 #include "wifi/wifi.h"
 #include <Arduino.h>
 
@@ -20,19 +19,19 @@ uint32_t lastLdrSensorReadMs = 0;
 uint32_t lastDhtSensorReadMs = 0;
 uint32_t lastDataMonitorMs = 0;
 uint32_t lastMemoryCheckMs = 0;
+uint32_t lastUpdateTelemetryMs = 0;
 uint32_t lastSendDataMs = 0;
 
 Telemetry telemetryData;
-void deviceInfo();
 
 // ---------------------------------
 
 void setup() {
   initMonitor();
   connectWifi();
-  deviceInfo();
-  initDhtSensor();
-  initLdrSensor();
+  initTelemetry(telemetryData);
+  initDhtSensor(telemetryData.dht);
+  initLdrSensor(telemetryData.ldr);
   initButtons();
   initIndication();
 }
@@ -44,13 +43,13 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
     lastDhtSensorReadMs = now;
-    // handleDhtSensor(telemetryData.dht, ledState);
+    handleDhtSensor(telemetryData.dht, ledState);
   }
 
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
     lastLdrSensorReadMs = now;
-    // handleLdrSensor(telemetryData.ldr, ledState);
+    handleLdrSensor(telemetryData.ldr, ledState);
   }
 
   // Buttons reading
@@ -62,11 +61,17 @@ void loop() {
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_PERIOD_MS) {
     lastIndicationChangeMs = now;
-    // handleIndication(ledState);
+    handleIndication(ledState);
+  }
+
+  // Telemetry update
+  if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_PERIOD_MS) {
+    lastUpdateTelemetryMs = now;
+    updateTelemetry(telemetryData);
   }
 
   // Data send
-  if (now - lastSendDataMs >= SEND_DATA_PERIOD_MS) {
+  if (now - lastSendDataMs >= DATA_SEND_PERIOD_MS) {
     lastSendDataMs = now;
   }
 
@@ -84,9 +89,3 @@ void loop() {
 
   delay(50); // To simplify the simulation process
 }
-
-void deviceInfo() {
-  if (!getDeviceId(telemetryData.deviceId)) {
-    Serial.println("Failed to get device ID");
-  }
-};

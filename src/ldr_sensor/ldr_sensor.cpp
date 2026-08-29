@@ -24,7 +24,10 @@ float adcToLux(const uint16_t &adcValue);
 
 // ---------------------------------
 
-void initLdrSensor() { pinMode(LDR_ADC_PIN, INPUT); }
+void initLdrSensor(LDRData &data) {
+  pinMode(LDR_ADC_PIN, INPUT);
+  data.status |= STATUS_LDR_INIT_ERR;
+}
 
 void handleLdrSensor(LDRData &data, uint8_t &ledState) {
   uint16_t raw = analogRead(LDR_ADC_PIN);
@@ -36,7 +39,7 @@ void handleLdrSensor(LDRData &data, uint8_t &ledState) {
   if (isnan(lux)) {
 
     ledState &= ~(LED_LIGHT_MIN | LED_LIGHT_MAX);
-    status |= STATUS_LDR_DEVICE_ERROR;
+    status |= STATUS_LDR_DEVICE_ERR;
 
     data.raw = -1;
     data.lux = -1;
@@ -45,9 +48,9 @@ void handleLdrSensor(LDRData &data, uint8_t &ledState) {
     return;
   }
 
-  // ADC light validation
+  // ADC light validation (in LUX)
   if (lux < LDR_LUX_VALID_MIN || lux > LDR_LUX_VALID_MAX) {
-    status |= STATUS_LDR_DATA_VALID_ERROR;
+    status |= STATUS_LDR_DATA_VALID_ERR;
   }
 
   // Light alarm
