@@ -13,6 +13,11 @@ uint8_t ledState = 0x00;
 static const uint8_t LED_PINS[] = {
     LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
     LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN};
+
+static const uint8_t LED_MASKS[] = {
+    LED_LIGHT_MANUAL_MASK, LED_LIGHT_AUTO_MASK,      LED_LIGHT_MIN_MASK,
+    LED_LIGHT_MAX_MASK,    LED_TEMPERATURE_MIN_MASK, LED_TEMPERATURE_MAX_MASK};
+
 // ---------------------------------
 
 void initIndication() {
@@ -28,7 +33,7 @@ void initIndication() {
 
 void handleIndication(uint8_t &ledState) {
   for (uint8_t bit = 0; bit < sizeof(LED_PINS); ++bit)
-    digitalWrite(LED_PINS[bit], isBitSet(ledState, bit));
+    digitalWrite(LED_PINS[bit], areBitsSetMask(ledState, LED_MASKS[bit]));
 }
 
 void blinkLed(int pin) {
