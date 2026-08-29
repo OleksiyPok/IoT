@@ -8,8 +8,8 @@
 
 struct Telemetry {
   uint64_t deviceId;
+  uint32_t worktime;
   DHTData dht;
   LDRData ldr;
-  uint32_t worktime;
   uint8_t status; // system status register
 };

@@ -9,3 +9,5 @@
 #define SERVER_URL "http://httpbun.com/post" // HTTP POST
 
 #define SEND_INTERVAL 30000
+
+bool connectWifi();

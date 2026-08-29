@@ -3,11 +3,13 @@
 #include "main.h"
 #include "buttons/buttons.h"
 #include "config.h"
+#include "device_info/device_info.h"
 #include "dht_sensor/dht_sensor.h"
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
 #include "memory/memory.h"
 #include "monitor/monitor.h"
+#include "wifi/wifi.h"
 #include <Arduino.h>
 
 // ---------------------------------
@@ -21,11 +23,14 @@ uint32_t lastMemoryCheckMs = 0;
 uint32_t lastSendDataMs = 0;
 
 Telemetry telemetryData;
+void deviceInfo();
 
 // ---------------------------------
 
 void setup() {
   initMonitor();
+  connectWifi();
+  deviceInfo();
   initDhtSensor();
   initLdrSensor();
   initButtons();
@@ -39,25 +44,25 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
     lastDhtSensorReadMs = now;
-    handleDhtSensor(telemetryData.dht, ledState);
+    // handleDhtSensor(telemetryData.dht, ledState);
   }
 
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
     lastLdrSensorReadMs = now;
-    handleLdrSensor(telemetryData.ldr, ledState);
+    // handleLdrSensor(telemetryData.ldr, ledState);
   }
 
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
     lastButtonsReadMs = now;
-    handleButtons(ledState);
+    // handleButtons(ledState);
   }
 
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_PERIOD_MS) {
     lastIndicationChangeMs = now;
-    handleIndication(ledState);
+    // handleIndication(ledState);
   }
 
   // Data send
@@ -74,8 +79,14 @@ void loop() {
   // Memory check
   if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
     lastMemoryCheckMs = now;
-    checkMemory();
+    // checkMemory();
   }
 
-  delay(10); // To simplify the simulation process
+  delay(50); // To simplify the simulation process
 }
+
+void deviceInfo() {
+  if (!getDeviceId(telemetryData.deviceId)) {
+    Serial.println("Failed to get device ID");
+  }
+};
