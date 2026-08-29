@@ -73,6 +73,7 @@ void loop() {
   // Data send
   if (now - lastSendDataMs >= DATA_SEND_PERIOD_MS) {
     lastSendDataMs = now;
+    // handleSendData(telemetryData);
   }
 
   // Data monitor

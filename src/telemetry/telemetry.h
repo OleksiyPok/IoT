@@ -24,11 +24,11 @@ struct Telemetry {
   uint8_t status; // system status register
 };
 
-#define STATUS_OK 0b00000000
-#define STATUS_LDR_ERR 0b00000001  // bit 0: LDR error
-#define STATUS_DHT_ERR 0b00000100  // bit 2: DHT22 error
-#define STATUS_MQTT_ERR 0b01000000 // bit 6: MQTT error
-#define STATUS_WIFI_ERR 0b10000000 // bit 7: Wi-Fi error
+#define STATUS_OK 0U
+#define STATUS_LDR_ERR (1U << 0)  // LDR error
+#define STATUS_DHT_ERR (1U << 2)  // DHT22 error
+#define STATUS_MQTT_ERR (1U << 6) // MQTT error
+#define STATUS_WIFI_ERR (1U << 7) // Wi-Fi error
 
 #define STATUS_INIT_ERR                                                        \
   (STATUS_LDR_ERR | STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR)
