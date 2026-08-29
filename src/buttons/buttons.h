@@ -7,4 +7,4 @@
 #define DEBOUNCE 50
 
 void initButtons();
-void handleButtons(uint8_t &buttonsState);
+void handleButtons(uint8_t &ledState);

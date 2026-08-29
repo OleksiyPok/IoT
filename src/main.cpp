@@ -18,9 +18,6 @@
 #define STATUS_MQTT_ERR 0b01000000 // bit 6: MQTT error
 #define STATUS_WIFI_ERR 0b10000000 // bit 7: Wi-Fi error
 
-uint8_t buttonsState = 0x00; // Button state register (8 buttons)
-uint8_t ledState = 0x00;     // LED state register (8 leds)
-
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastIndicationChangeMs = 0;
 uint32_t lastLdrSensorReadMs = 0;
@@ -36,7 +33,7 @@ Telemetry telemetryData;
 void setup() {
   initMonitor();
   initDhtSensor();
-  // initLdrSensor();
+  initLdrSensor();
   initButtons();
   initIndication();
 }
@@ -49,7 +46,7 @@ void loop() {
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
     lastDhtSensorReadMs = now;
 
-    handleDhtSensor(telemetryData.dht);
+    handleDhtSensor(telemetryData.dht, ledState);
     // dhtReadData(telemetryData.dht);
   }
 
@@ -57,21 +54,20 @@ void loop() {
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
     lastLdrSensorReadMs = now;
 
-    handleLdrSensor(telemetryData.ldr);
+    handleLdrSensor(telemetryData.ldr, ledState);
   }
 
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
     lastButtonsReadMs = now;
 
-    handleButtons(buttonsState);
+    handleButtons(ledState);
   }
 
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_PERIOD_MS) {
     lastIndicationChangeMs = now;
 
-    ledState = buttonsState;
     handleIndication(ledState);
   }
 
@@ -82,12 +78,7 @@ void loop() {
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_PERIOD_MS) {
     lastDataMonitorMs = now;
-
-    // Serial.print("buttonsState = ");
-    // Serial.print(buttonsState);
-    // Serial.print("  ");
-    // Serial.print("ledState = ");
-    // Serial.println(ledState);
+    Serial.println(ledState, BIN);
 
     handleMonitor(telemetryData);
   }

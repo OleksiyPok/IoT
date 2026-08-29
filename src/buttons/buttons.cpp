@@ -28,24 +28,24 @@ void initButtons() {
   attachInterrupt(BUTTON_1_PIN, onButton1Press, FALLING);
 }
 
-void handleButtons(uint8_t &buttonsState) {
+void handleButtons(uint8_t &ledState) {
   uint32_t now = millis();
 
   if (button0Pressed) {
     button0Pressed = false;
     if (!isBitSet(buttonsHandled, 0) && (now - lastDebounce0 >= DEBOUNCE)) {
-      lastDebounce0 = now;        // Update debounce time
-      toggleBit(buttonsState, 0); // Toggle button 0 state
-      setBit(buttonsHandled, 0);  // Mark button 0 as handled
+      lastDebounce0 = now;       // Update debounce time
+      toggleBit(ledState, 0);    // Toggle button 0 state
+      setBit(buttonsHandled, 0); // Mark button 0 as handled
     }
   }
 
   if (button1Pressed) {
     button1Pressed = false;
-    if (!isBitSet(buttonsHandled, 1) && (now - lastDebounce0 >= DEBOUNCE)) {
-      lastDebounce1 = now;        // Update debounce time
-      toggleBit(buttonsState, 1); // Toggle button 1 state
-      setBit(buttonsHandled, 1);  // Mark button 1 as handled
+    if (!isBitSet(buttonsHandled, 1) && (now - lastDebounce1 >= DEBOUNCE)) {
+      lastDebounce1 = now;       // Update debounce time
+      toggleBit(ledState, 1);    // Toggle button 1 state
+      setBit(buttonsHandled, 1); // Mark button 1 as handled
     }
   }
 

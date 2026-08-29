@@ -11,4 +11,4 @@ struct DHTData {
 };
 
 void initDhtSensor();
-void handleDhtSensor(DHTData &data);
+void handleDhtSensor(DHTData &data, uint8_t &ledState);

@@ -11,4 +11,4 @@ struct LDRData {
 };
 
 void initLdrSensor();
-void handleLdrSensor(LDRData &data);
+void handleLdrSensor(LDRData &data, uint8_t &ledState);

@@ -6,7 +6,13 @@
 #include <Arduino.h>
 
 // ---------------------------------
+#define LED_BLINK_TIME_MS 100
 
+uint8_t ledState = 0x00;
+
+static const uint8_t LED_PINS[] = {
+    LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
+    LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN};
 // ---------------------------------
 
 void initIndication() {
@@ -21,11 +27,8 @@ void initIndication() {
 }
 
 void handleIndication(uint8_t &ledState) {
-  if (isBitSet(ledState, 0)) {
-    digitalWrite(LED_LIGHT_MANUAL_PIN, HIGH);
-  } else {
-    digitalWrite(LED_LIGHT_MANUAL_PIN, LOW);
-  }
+  for (uint8_t bit = 0; bit < sizeof(LED_PINS); ++bit)
+    digitalWrite(LED_PINS[bit], isBitSet(ledState, bit));
 }
 
 void blinkLed(int pin) {
