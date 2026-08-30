@@ -7,8 +7,8 @@
 
 // ---------------------------------
 
-#define BUTTON_0_MASK 0b00000001
-#define BUTTON_1_MASK 0b00000010
+#define BUTTON_0_MASK (1U << 0)
+#define BUTTON_1_MASK (1U << 1)
 
 uint32_t lastDebounce0 = 0;
 uint32_t lastDebounce1 = 0;

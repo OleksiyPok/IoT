@@ -3,6 +3,7 @@
 #include "buttons/buttons.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
+#include "http/http.h"
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
 #include "memory/memory.h"
@@ -42,55 +43,55 @@ void loop() {
   uint32_t now = millis();
 
   // WiFi check connection
-  if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_PERIOD_MS) {
+  if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_INTERVAL_MS) {
     lastWiFiCheckConnectionMs = now;
     handleWiFi();
   }
 
   // DHT sensor reading
-  if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
+  if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
     handleDhtSensor(telemetryData.dht, ledState);
   }
 
   // LDR sensor reading
-  if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_PERIOD_MS) {
+  if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
     lastLdrSensorReadMs = now;
     handleLdrSensor(telemetryData.ldr, ledState);
   }
 
   // Buttons reading
-  if (now - lastButtonsReadMs >= BUTTONS_READ_PERIOD_MS) {
+  if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
     // handleButtons(ledState);
   }
 
   // Indication
-  if (now - lastIndicationChangeMs >= INDICATION_CHANGE_PERIOD_MS) {
+  if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
     handleIndication(ledState);
   }
 
   // Telemetry update
-  if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_PERIOD_MS) {
+  if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
     updateTelemetry(telemetryData);
   }
 
   // Data send
-  if (now - lastSendDataMs >= DATA_SEND_PERIOD_MS) {
+  if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
     lastSendDataMs = now;
-    // handleSendData(telemetryData);
+    handleSendData(telemetryData);
   }
 
   // Data monitor
-  if (now - lastDataMonitorMs >= DATA_MONITOR_PERIOD_MS) {
+  if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
     handleMonitor(telemetryData);
   }
 
   // Memory check
-  if (now - lastMemoryCheckMs >= MEMORY_CHECK_PERIOD_MS) {
+  if (now - lastMemoryCheckMs >= MEMORY_CHECK_INTERVAL_MS) {
     lastMemoryCheckMs = now;
     // checkMemory();
   }
