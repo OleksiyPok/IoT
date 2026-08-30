@@ -11,7 +11,7 @@ static uint32_t wifiLastReconnectAt = 0;
 static bool wifiConnecting = false;
 static wl_status_t wifiLastStatus = WL_IDLE_STATUS;
 
-// void printWifiStatus(wl_status_t status);
+void printWifiStatus(wl_status_t status);
 
 // ---------------------------------
 
@@ -22,9 +22,9 @@ void handleWiFi() {
   const wl_status_t status = WiFi.status();
 
   if (status != wifiLastStatus) {
-    // Serial.print("[Wi-Fi] Status: ");
-    // Serial.print(status);
-    // printWifiStatus(status);
+    Serial.print("[Wi-Fi] Status: ");
+    Serial.print(status);
+    printWifiStatus(status);
     wifiLastStatus = status;
   }
 
@@ -72,31 +72,31 @@ bool connectWifi() {
   return true;
 }
 
-// void printWifiStatus(wl_status_t status) {
-//   switch (status) {
-//   case WL_IDLE_STATUS:
-//     Serial.println(" (IDLE)");
-//     break;
-//   case WL_NO_SSID_AVAIL:
-//     Serial.println(" (NO_SSID)");
-//     break;
-//   case WL_SCAN_COMPLETED:
-//     Serial.println(" (SCAN_COMPLETED)");
-//     break;
-//   case WL_CONNECTED:
-//     Serial.println(" (CONNECTED)");
-//     break;
-//   case WL_CONNECT_FAILED:
-//     Serial.println(" (CONNECT_FAILED)");
-//     break;
-//   case WL_CONNECTION_LOST:
-//     Serial.println(" (CONNECTION_LOST)");
-//     break;
-//   case WL_DISCONNECTED:
-//     Serial.println(" (DISCONNECTED)");
-//     break;
-//   default:
-//     Serial.println(" (UNKNOWN)");
-//     break;
-//   }
-// }
+void printWifiStatus(wl_status_t status) {
+  switch (status) {
+  case WL_IDLE_STATUS:
+    Serial.println(" (IDLE)");
+    break;
+  case WL_NO_SSID_AVAIL:
+    Serial.println(" (NO_SSID)");
+    break;
+  case WL_SCAN_COMPLETED:
+    Serial.println(" (SCAN_COMPLETED)");
+    break;
+  case WL_CONNECTED:
+    Serial.println(" (CONNECTED)");
+    break;
+  case WL_CONNECT_FAILED:
+    Serial.println(" (CONNECT_FAILED)");
+    break;
+  case WL_CONNECTION_LOST:
+    Serial.println(" (CONNECTION_LOST)");
+    break;
+  case WL_DISCONNECTED:
+    Serial.println(" (DISCONNECTED)");
+    break;
+  default:
+    Serial.println(" (UNKNOWN)");
+    break;
+  }
+}

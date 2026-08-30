@@ -12,7 +12,8 @@
 // ---------------------------------
 
 static void printDeviceId(const Telemetry &data);
-static void printTelemetryWorktime(const Telemetry &data);
+static void printTelemetryTimestamp(const Telemetry &data);
+static void printTelemetryUptime(const Telemetry &data);
 static void printDhdData(const Telemetry &data);
 static void printLdrData(const Telemetry &data);
 static void printDhtStatus(const uint8_t &status);
@@ -32,7 +33,8 @@ void initMonitor() {
 
 void handleMonitor(const Telemetry &data) {
   printDeviceId(data);
-  printTelemetryWorktime(data);
+  printTelemetryTimestamp(data);
+  printTelemetryUptime(data);
   printTelemetryStatus(data.status);
   // printLdrData(data);
   // printLdrStatus(data.ldr.status);
@@ -51,11 +53,40 @@ static void printDeviceId(const Telemetry &data) {
   // Serial.println(data.deviceId);
 }
 
-static void printTelemetryWorktime(const Telemetry &data) {
-  Serial.print("[TELEMETRY] Worktime: ");
-  Serial.print(data.worktime);
-  Serial.println(" sec");
-};
+static void printTelemetryTimestamp(const Telemetry &data) {
+  time_t timestamp = data.timestamp;
+
+  struct tm timeInfo;
+  gmtime_r(&timestamp, &timeInfo);
+
+  Serial.printf(
+      "[TELEMETRY] Timestamp: %04d-%02d-%02d %02d:%02d:%02d UTC (%lu)\r\n",
+      timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
+      timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec,
+      static_cast<unsigned long>(data.timestamp));
+
+  // Serial.print(" (");
+  // Serial.print(data.timestamp);
+  // Serial.println(")");
+}
+
+// static void printTelemetryUptime(const Telemetry &data) {
+//   Serial.print("[TELEMETRY] Uptime: ");
+//   Serial.print(data.uptime);
+//   Serial.println(" sec");
+// };
+
+static void printTelemetryUptime(const Telemetry &data) {
+  uint32_t hours = data.uptime / 3600;
+  uint32_t minutes = (data.uptime % 3600) / 60;
+  uint32_t seconds = data.uptime % 60;
+
+  Serial.printf("[TELEMETRY] Uptime: %02lu:%02lu:%02lu (%lu sec)\r\n",
+                static_cast<unsigned long>(hours),
+                static_cast<unsigned long>(minutes),
+                static_cast<unsigned long>(seconds),
+                static_cast<unsigned long>(data.uptime));
+}
 
 static void printDhdData(const Telemetry &data) {
   Serial.print("[DHT] Temperature: ");

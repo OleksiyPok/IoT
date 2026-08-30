@@ -18,7 +18,8 @@ struct LDRData {
 
 struct Telemetry {
   uint64_t deviceId;
-  uint32_t worktime;
+  uint32_t timestamp;
+  uint32_t uptime;
   DHTData dht;
   LDRData ldr;
   uint8_t status; // system status register

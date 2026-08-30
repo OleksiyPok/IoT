@@ -11,13 +11,14 @@
 
 // ---------------------------------
 void initTelemetry(Telemetry &telemetryData) {
-  telemetryData.worktime = millis() / 1000;
+  telemetryData.uptime = millis() / 1000;
   getDeviceId(telemetryData.deviceId);
   telemetryData.status |= STATUS_INIT_ERR;
 }
 
 void updateTelemetry(Telemetry &telemetryData) {
-  telemetryData.worktime = millis() / 1000;
+  // Update "uptime"
+  telemetryData.uptime = millis() / 1000;
 
   // Update DHT system status
   if (telemetryData.dht.status &
