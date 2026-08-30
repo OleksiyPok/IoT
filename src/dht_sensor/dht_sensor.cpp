@@ -69,15 +69,10 @@ void handleDhtSensor(DHTData &data, uint8_t &ledState) {
 
   // Humidity alarm
   if (humidity < DHT_HUMIDITY_ALARM_MIN) {
-    ledState &= ~LED_HUMIDITY_MAX;
     ledState |= LED_HUMIDITY_MIN;
     status |= STATUS_DHT_HUMIDITY_ALARM_MIN;
-  } else if (humidity > DHT_HUMIDITY_ALARM_MAX) {
-    ledState &= ~LED_HUMIDITY_MIN;
-    ledState |= LED_HUMIDITY_MAX;
-    status |= STATUS_DHT_HUMIDITY_ALARM_MAX;
   } else {
-    ledState &= ~(LED_HUMIDITY_MIN | LED_HUMIDITY_MAX);
+    ledState &= ~(LED_HUMIDITY_MIN);
   }
 
   data.temperature = temperature;

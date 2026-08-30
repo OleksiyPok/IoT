@@ -179,8 +179,8 @@ static void printLedState(const uint8_t &state) {
   Serial.println((state & LED_TEMPERATURE_MAX) ? "ON" : "OFF");
 
   Serial.print("  HUMIDITY_MIN:           ");
-  Serial.println((state & LED_HUMIDITY_MAX) ? "ON" : "OFF");
+  Serial.println((state & LED_HUMIDITY_MIN) ? "ON" : "OFF");
 
-  Serial.print("  HUMIDITY_MAX:           ");
-  Serial.println((state & LED_HUMIDITY_MAX) ? "ON" : "OFF");
+  Serial.print("  SERIAL_MONITOR:           ");
+  Serial.println((state & LED_SERIAL_MONITOR) ? "ON" : "OFF");
 }

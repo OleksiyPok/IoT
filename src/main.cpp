@@ -70,6 +70,7 @@ void loop() {
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
     handleIndication(ledState);
+    ledState &= ~LED_SERIAL_MONITOR;
   }
 
   // Telemetry update
@@ -88,6 +89,7 @@ void loop() {
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
     handleMonitor(telemetryData);
+    ledState |= LED_SERIAL_MONITOR;
   }
 
   // Memory check

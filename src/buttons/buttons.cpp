@@ -10,26 +10,32 @@
 
 #define BUTTON_0_MASK (1U << 0)
 #define BUTTON_1_MASK (1U << 1)
+#define BUTTON_2_MASK (1U << 2)
 
 uint32_t lastDebounce0 = 0;
 uint32_t lastDebounce1 = 0;
+uint32_t lastDebounce2 = 0;
 
 volatile bool button0Pressed = false; // Button 0 press flag
 volatile bool button1Pressed = false; // Button 1 press flag
+volatile bool button2Pressed = false; // Button 2 press flag
 
 uint8_t buttonsHandled = 0x00; // Buttons press handled flag
 
 void IRAM_ATTR onButton0Press();
 void IRAM_ATTR onButton1Press();
+void IRAM_ATTR onButton2Press();
 
 // ---------------------------------
 
 void initButtons() {
   pinMode(BUTTON_0_PIN, INPUT_PULLUP);
   pinMode(BUTTON_1_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_2_PIN, INPUT_PULLUP);
 
   attachInterrupt(BUTTON_0_PIN, onButton0Press, FALLING);
   attachInterrupt(BUTTON_1_PIN, onButton1Press, FALLING);
+  attachInterrupt(BUTTON_2_PIN, onButton2Press, FALLING);
 }
 
 void handleButtons(uint8_t &ledState) {
@@ -49,12 +55,22 @@ void handleButtons(uint8_t &ledState) {
     button1Pressed = false;
 
     if (!(buttonsHandled & BUTTON_1_MASK) && now - lastDebounce1 >= DEBOUNCE) {
-      lastDebounce1 = now; // Update debounce time
-      //
-      Serial.println("[TEST] WiFi disconnect");
-      WiFi.disconnect();
-      //
+      lastDebounce1 = now;             // Update debounce time
+      ledState ^= LED_SERIAL_MONITOR;  // Toggle led
       buttonsHandled |= BUTTON_1_MASK; // Mark button 1 as handled
+    }
+  }
+
+  if (button2Pressed) {
+    button2Pressed = false;
+
+    if (!(buttonsHandled & BUTTON_2_MASK) && now - lastDebounce2 >= DEBOUNCE) {
+      lastDebounce2 = now; // Update debounce time
+      Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
+      Serial.println("[TEST] WiFi disconnect");
+      Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
+      WiFi.disconnect();
+      buttonsHandled |= BUTTON_2_MASK; // Mark button 1 as handled
     }
   }
 
@@ -67,7 +83,13 @@ void handleButtons(uint8_t &ledState) {
   if ((buttonsHandled & BUTTON_1_MASK) && digitalRead(BUTTON_1_PIN) == HIGH) {
     buttonsHandled &= ~BUTTON_1_MASK;
   }
+
+  // Reset after button 2 release
+  if ((buttonsHandled & BUTTON_2_MASK) && digitalRead(BUTTON_2_PIN) == HIGH) {
+    buttonsHandled &= ~BUTTON_2_MASK;
+  }
 }
 
 void IRAM_ATTR onButton0Press() { button0Pressed = true; }
 void IRAM_ATTR onButton1Press() { button1Pressed = true; }
+void IRAM_ATTR onButton2Press() { button2Pressed = true; }
