@@ -9,7 +9,5 @@ void handleSendData(Telemetry &telemetryData);
 // ---------------------------------
 
 void handleSendData(Telemetry &telemetryData) {
-  if (!isWifiConnected()) {
-    connectWifi();
-  };
+
 };

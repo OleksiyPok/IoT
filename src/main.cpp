@@ -13,6 +13,7 @@
 
 // ---------------------------------
 
+uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastIndicationChangeMs = 0;
 uint32_t lastLdrSensorReadMs = 0;
@@ -28,17 +29,23 @@ Telemetry telemetryData;
 
 void setup() {
   initMonitor();
-  connectWifi();
   initTelemetry(telemetryData);
   initDhtSensor(telemetryData.dht);
   initLdrSensor(telemetryData.ldr);
   initButtons();
   initIndication();
+  connectWifi();
 }
 
 void loop() {
 
   uint32_t now = millis();
+
+  // WiFi check connection
+  if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_PERIOD_MS) {
+    lastWiFiCheckConnectionMs = now;
+    handleWiFi();
+  }
 
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_PERIOD_MS) {
