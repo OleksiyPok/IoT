@@ -32,10 +32,10 @@ void initMonitor() {
 };
 
 void handleMonitor(const Telemetry &data) {
-  printDeviceId(data);
-  printTelemetryTimestamp(data);
+  // printDeviceId(data);
+  // printTelemetryTimestamp(data);
   printTelemetryUptime(data);
-  printTelemetryStatus(data.status);
+  // printTelemetryStatus(data.status);
   // printLdrData(data);
   // printLdrStatus(data.ldr.status);
   // printDhdData(data);
@@ -64,17 +64,7 @@ static void printTelemetryTimestamp(const Telemetry &data) {
       timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
       timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec,
       static_cast<unsigned long>(data.timestamp));
-
-  // Serial.print(" (");
-  // Serial.print(data.timestamp);
-  // Serial.println(")");
 }
-
-// static void printTelemetryUptime(const Telemetry &data) {
-//   Serial.print("[TELEMETRY] Uptime: ");
-//   Serial.print(data.uptime);
-//   Serial.println(" sec");
-// };
 
 static void printTelemetryUptime(const Telemetry &data) {
   uint32_t hours = data.uptime / 3600;

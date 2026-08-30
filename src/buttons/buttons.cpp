@@ -8,9 +8,9 @@
 
 // ---------------------------------
 
-#define BUTTON_0_MASK (1U << 0)
-#define BUTTON_1_MASK (1U << 1)
-#define BUTTON_2_MASK (1U << 2)
+#define BUTTON_0_MASK BUTTON_LIGHT_MASK
+#define BUTTON_1_MASK BUTTON_SERIAL_MONITOR_MASK
+#define BUTTON_2_MASK BUTTON_WIFI_DISABLE
 
 uint32_t lastDebounce0 = 0;
 uint32_t lastDebounce1 = 0;
