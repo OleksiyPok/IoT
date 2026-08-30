@@ -63,7 +63,7 @@ void loop() {
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
-    // handleButtons(ledState);
+    handleButtons(ledState);
   }
 
   // Indication

@@ -45,7 +45,7 @@ void handleMonitor(const Telemetry &data) {
 }
 
 static void printDeviceId(const Telemetry &data) {
-  Serial.print("[Device] MAC: ");
+  Serial.print("[TELEMETRY] DeviceId (MAC): ");
   Serial.printf("%02X:%02X:%02X:%02X:%02X:%02X\r\n",
                 (uint8_t)(data.deviceId >> 40), (uint8_t)(data.deviceId >> 32),
                 (uint8_t)(data.deviceId >> 24), (uint8_t)(data.deviceId >> 16),

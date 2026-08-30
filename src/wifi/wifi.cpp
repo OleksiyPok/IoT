@@ -21,13 +21,6 @@ void handleWiFi() {
   const uint32_t now = millis();
   const wl_status_t status = WiFi.status();
 
-  if (status != wifiLastStatus) {
-    Serial.print("[Wi-Fi] Status: ");
-    Serial.print(status);
-    printWifiStatus(status);
-    wifiLastStatus = status;
-  }
-
   if (status == WL_CONNECTED) {
     if (wifiConnecting) {
       Serial.println("[Wi-Fi] Connected");
@@ -35,6 +28,7 @@ void handleWiFi() {
       Serial.println(WiFi.localIP());
       wifiConnecting = false;
     }
+    wifiLastStatus = status;
     return;
   }
 
@@ -44,9 +38,18 @@ void handleWiFi() {
       WiFi.disconnect();
       wifiConnecting = false;
       wifiLastReconnectAt = now;
+      wifiLastStatus = WiFi.status();
     }
     return;
   }
+
+  if (status != wifiLastStatus) {
+    Serial.print("[Wi-Fi] Status: ");
+    Serial.print(status);
+    printWifiStatus(status);
+    wifiLastStatus = status;
+  }
+
   if (now - wifiLastReconnectAt < WIFI_RECONNECT_INTERVAL_MS) {
     return;
   }
@@ -66,7 +69,6 @@ bool connectWifi() {
   wifiConnecting = true;
 
   Serial.println("[Wi-Fi] Connecting...");
-
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
 
   return true;

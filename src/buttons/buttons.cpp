@@ -4,6 +4,7 @@
 #include "../indication/indication.h"
 #include "config.h"
 #include <Arduino.h>
+#include <WiFi.h>
 
 // ---------------------------------
 
@@ -50,7 +51,10 @@ void handleButtons(uint8_t &ledState) {
     if (!(buttonsHandled & BUTTON_1_MASK) && now - lastDebounce1 >= DEBOUNCE) {
       lastDebounce1 = now; // Update debounce time
       //
-      buttonsHandled |= BUTTON_1_MASK;
+      Serial.println("[TEST] WiFi disconnect");
+      WiFi.disconnect();
+      //
+      buttonsHandled |= BUTTON_1_MASK; // Mark button 1 as handled
     }
   }
 
