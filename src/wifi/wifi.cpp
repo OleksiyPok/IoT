@@ -1,8 +1,9 @@
 // src/wifi/wifi.cpp
 
-#include "wifi.h"
 #include <Arduino.h>
 #include <WiFi.h>
+
+#include "wifi.h"
 
 // ---------------------------------
 

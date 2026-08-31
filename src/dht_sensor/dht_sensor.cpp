@@ -1,9 +1,11 @@
 // src/dht_sensor/dht_sensor.cpp
 
-#include "dht_sensor.h"
+#include <DHT.h>
+
 #include "../indication/indication.h"
 #include "config.h"
-#include <DHT.h>
+#include "dht_sensor.h"
+
 
 // ---------------------------------
 

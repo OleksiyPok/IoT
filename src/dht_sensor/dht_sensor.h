@@ -1,10 +1,10 @@
 // src/dht_sensor/dht_sensor.h
 
+#include <Arduino.h>
+
 #pragma once
 
 #include "../telemetry/telemetry.h"
-#include <Arduino.h>
-
 #define STATUS_DHT_OK (0U)
 
 #define STATUS_DHT_DEVICE_ERR (1U << 0)

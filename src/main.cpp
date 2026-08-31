@@ -1,5 +1,7 @@
 // src/main.cpp
 
+#include <Arduino.h>
+
 #include "actions/actions.h"
 #include "buttons/buttons.h"
 #include "config.h"
@@ -11,7 +13,6 @@
 #include "monitor/monitor.h"
 #include "telemetry/telemetry.h"
 #include "wifi/wifi.h"
-#include <Arduino.h>
 
 // ---------------------------------
 
@@ -89,7 +90,7 @@ void loop() {
   // Data send
   if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
     lastSendDataMs = now;
-    // handleSendData(telemetryData);
+    handleSendData(telemetryData);
   }
 
   // Data monitor

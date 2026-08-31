@@ -1,10 +1,11 @@
 // src/buttons/buttons.cpp
 
-#include "buttons.h"
-#include "../indication/indication.h"
-#include "config.h"
 #include <Arduino.h>
 #include <WiFi.h>
+
+#include "../indication/indication.h"
+#include "buttons.h"
+#include "config.h"
 
 // ---------------------------------
 

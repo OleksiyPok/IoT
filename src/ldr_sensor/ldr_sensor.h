@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "../telemetry/telemetry.h"
 #include <Arduino.h>
+
+#include "../telemetry/telemetry.h"
 
 #define STATUS_LDR_OK 0U
 

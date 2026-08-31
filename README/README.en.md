@@ -1,12 +1,10 @@
 # IoT Project
 
-[🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
+[🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md) | [🏠 Main README](../README.md)
 
-
-![Wokwi schema](./images/wokwi.png)
+![Wokwi schema](../images/wokwi.png)
 
 ## Project Description
-
 
 The project is divided into modules, each with its own responsibility and individual call interval settings.
 
@@ -88,4 +86,4 @@ The current values of thresholds, intervals, and other parameters are primarily 
 
 ### Examples of data
 
-![Wokwi schema](./images/data_01.png)
+![Wokwi schema](../images/data_01.png)

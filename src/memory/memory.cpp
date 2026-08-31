@@ -1,7 +1,8 @@
 // src/memory/memory.cpp
 
-#include "memory.h"
 #include <Arduino.h>
+
+#include "memory.h"
 // ---------------------------------
 
 // ---------------------------------

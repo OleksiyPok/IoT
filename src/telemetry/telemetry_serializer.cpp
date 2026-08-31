@@ -1,9 +1,9 @@
 // src/telemetry/telemetry_serializer.cpp
 
-#include "telemetry_serializer.h"
-
 #include <Arduino.h>
 #include <inttypes.h>
+
+#include "telemetry_serializer.h"
 
 // ---------------------------------
 

@@ -1,7 +1,8 @@
 // src/telemetry/telemetry_serializer_aj.cpp
 
-#include "telemetry_serializer_aj.h"
 #include <ArduinoJson.h>
+
+#include "telemetry_serializer_aj.h"
 
 // ---------------------------------
 

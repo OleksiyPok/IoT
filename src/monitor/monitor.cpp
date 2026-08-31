@@ -1,5 +1,7 @@
 // src/monitor/monitor.cpp
 
+#include <Arduino.h>
+
 #include "monitor.h"
 #include "../buttons/buttons.h"
 #include "../config.h"
@@ -8,7 +10,6 @@
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../telemetry/telemetry.h"
 #include "esp_mac.h"
-#include <Arduino.h>
 
 // ---------------------------------
 
@@ -34,16 +35,18 @@ void initMonitor() {
 };
 
 void handleMonitor(const Telemetry &data) {
-  // printDeviceId(data);
+  printDeviceId(data);
   // printTelemetryTimestamp(data);
   printTelemetryUptime(data);
   printTelemetryStatus(data.status);
-  // printLdrData(data);
+  Serial.println();
+  printLdrData(data);
   printLdrStatus(data.ldr.status);
-  // printDhdData(data);
+  Serial.println();
+  printDhdData(data);
   printDhtStatus(data.dht.status);
   // printButtonsState(buttonsState);
-  printLedState(ledState);
+  // printLedState(ledState);
   Serial.println("------------");
 }
 

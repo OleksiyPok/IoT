@@ -1,8 +1,9 @@
 // src/device_info/device_info.cpp
 
+#include <Arduino.h>
+
 #include "device_info.h"
 #include "esp_mac.h"
-#include <Arduino.h>
 
 // --------------------------------------------------
 // Get WiFi STA MAC

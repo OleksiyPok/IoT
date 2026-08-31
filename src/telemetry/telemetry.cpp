@@ -1,11 +1,12 @@
 // src/telemetry/telemetry.cpp
 
-#include "telemetry.h"
+#include <Arduino.h>
+
 #include "../dht_sensor/dht_sensor.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../wifi/wifi.h"
 #include "device_info/device_info.h"
-#include <Arduino.h>
+#include "telemetry.h"
 
 // ---------------------------------
 

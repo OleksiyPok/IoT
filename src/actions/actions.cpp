@@ -1,4 +1,5 @@
 // src/actions/actions.cpp
+
 #include <WiFi.h>
 
 #include "../buttons/buttons.h"
@@ -10,8 +11,8 @@
 
 // ---------------------------------
 
-static void updateDhtIndication(const DHTData &data, uint8_t &ledState);
-static void updateLdrIndication(const LDRData &data, uint8_t &ledState);
+static void updateDhtStatus(const DHTData &data, uint8_t &ledState);
+static void updateLdrStatus(const LDRData &data, uint8_t &ledState);
 
 // ---------------------------------
 
@@ -37,11 +38,11 @@ void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
     WiFi.disconnect();
   }
 
-  updateLdrIndication(telemetryData.ldr, ledState);
-  updateDhtIndication(telemetryData.dht, ledState);
+  updateLdrStatus(telemetryData.ldr, ledState);
+  updateDhtStatus(telemetryData.dht, ledState);
 }
 
-static void updateDhtIndication(const DHTData &data, uint8_t &ledState) {
+static void updateDhtStatus(const DHTData &data, uint8_t &ledState) {
   ledState &= ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX | LED_HUMIDITY_MIN);
 
   if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
@@ -61,7 +62,7 @@ static void updateDhtIndication(const DHTData &data, uint8_t &ledState) {
   // }
 }
 
-static void updateLdrIndication(const LDRData &data, uint8_t &ledState) {
+static void updateLdrStatus(const LDRData &data, uint8_t &ledState) {
   ledState &= ~(LED_LIGHT_MIN | LED_LIGHT_MAX | LED_LIGHT_AUTO);
 
   if (data.status & STATUS_LDR_LUX_ALARM_MIN) {

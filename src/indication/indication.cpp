@@ -1,8 +1,10 @@
 // src/indication/indication.cpp
 
-#include "indication.h"
-#include "config.h"
 #include <Arduino.h>
+
+#include "config.h"
+#include "indication.h"
+
 
 // ---------------------------------
 #define LED_BLINK_TIME_MS 50
