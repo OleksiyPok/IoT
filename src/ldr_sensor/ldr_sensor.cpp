@@ -6,14 +6,13 @@
 #include "config.h"
 #include "ldr_sensor.h"
 
-
 // ---------------------------------
 
-#define LDR_LUX_VALID_MIN 10
-#define LDR_LUX_ALARM_MIN 200
+#define LDR_LUX_VALID_MIN 1
+#define LDR_LUX_ALARM_MIN 10
 #define LDR_LUX_THRESHOLD_LIGHT_LOW 600
-#define LDR_LUX_ALARM_MAX 5000
-#define LDR_LUX_VALID_MAX 80000
+#define LDR_LUX_ALARM_MAX 10000
+#define LDR_LUX_VALID_MAX 70000
 
 #define GAMMA 0.7f // нахил графіка log(R)/log(lux) — атрибут Wokwi "gamma"
 #define RL10 50.0f // опір LDR при 10 lux, кОм — атрибут Wokwi "rl10"
