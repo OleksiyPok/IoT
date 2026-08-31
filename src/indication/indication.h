@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 
-extern uint8_t ledState; // LED state register (8 leds)
 // "ledState" bits
 #define LED_LIGHT_MANUAL (1U << 0)
 #define LED_LIGHT_AUTO (1U << 1)

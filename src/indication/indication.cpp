@@ -5,11 +5,8 @@
 #include "config.h"
 #include "indication.h"
 
-
 // ---------------------------------
 #define LED_BLINK_TIME_MS 50
-
-uint8_t ledState = 0;
 
 static const uint8_t LED_PINS[] = {
     LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,

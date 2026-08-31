@@ -16,6 +16,9 @@
 
 // ---------------------------------
 
+uint8_t buttonsState = 0x00;
+uint8_t ledState = 0x00;
+
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
@@ -66,7 +69,7 @@ void loop() {
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
-    handleButtons();
+    handleButtons(buttonsState);
   }
 
   // Actions
