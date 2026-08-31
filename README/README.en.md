@@ -93,3 +93,4 @@ The current values of thresholds, intervals, and other parameters are primarily 
 ### Examples of data
 
 <img src="../images/data_01.png" alt="Data examples" width="700">
+<img src="../images/data_02.png" alt="Data examples" width="700">
