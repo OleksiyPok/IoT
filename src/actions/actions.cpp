@@ -11,6 +11,7 @@
 
 // ---------------------------------
 
+static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState);
 static void updateDhtStatus(const DHTData &data, uint8_t &ledState);
 static void updateLdrStatus(const LDRData &data, uint8_t &ledState);
 
@@ -18,6 +19,13 @@ static void updateLdrStatus(const LDRData &data, uint8_t &ledState);
 
 void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
                    uint8_t &ledState) {
+
+  updateLedState(buttonsState, ledState);
+  updateLdrStatus(telemetryData.ldr, ledState);
+  updateDhtStatus(telemetryData.dht, ledState);
+}
+
+static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState) {
 
   if (buttonsState & BUTTON_LIGHT_MASK) {
     ledState |= LED_LIGHT_MANUAL;
@@ -37,10 +45,7 @@ void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
     // Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
     WiFi.disconnect();
   }
-
-  updateLdrStatus(telemetryData.ldr, ledState);
-  updateDhtStatus(telemetryData.dht, ledState);
-}
+};
 
 static void updateDhtStatus(const DHTData &data, uint8_t &ledState) {
   ledState &= ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX | LED_HUMIDITY_MIN);
