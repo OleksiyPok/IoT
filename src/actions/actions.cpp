@@ -1,15 +1,15 @@
 // src/actions/actions.cpp
 
-#include <WiFi.h>
-
+#include "actions.h"
 #include "../buttons/buttons.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../telemetry/telemetry.h"
-#include "actions.h"
+#include "../wifi/wifi.h"
 
 // ---------------------------------
+static uint8_t previousButtonsState = 0;
 
 static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState);
 static void updateDhtStatus(const DHTData &data, uint8_t &ledState);
@@ -39,12 +39,13 @@ static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState) {
     ledState &= ~LED_SERIAL_MONITOR;
   }
 
-  if (buttonsState & BUTTON_WIFI_DISABLE) {
-    // Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
+  if ((buttonsState & BUTTON_WIFI_DISABLE) &&
+      !(previousButtonsState & BUTTON_WIFI_DISABLE)) {
     Serial.println("[TEST] WiFi disconnect");
-    // Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
-    WiFi.disconnect();
+    disconnectWiFi();
   }
+
+  previousButtonsState = buttonsState;
 };
 
 static void updateDhtStatus(const DHTData &data, uint8_t &ledState) {

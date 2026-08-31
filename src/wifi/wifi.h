@@ -10,5 +10,6 @@
 #define SEND_INTERVAL 30000
 
 bool connectWifi();
+bool disconnectWiFi();
 bool isWifiConnected();
 void handleWiFi();
