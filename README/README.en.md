@@ -2,7 +2,7 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md) | [🏠 Main README](../README.md)
 
-![Wokwi schema](../images/wokwi.png)
+<img src="../images/wokwi.png" alt="Project Circuit" width="700">
 
 ## Project Description
 
@@ -92,4 +92,4 @@ The current values of thresholds, intervals, and other parameters are primarily 
 
 ### Examples of data
 
-![Wokwi schema](../images/data_01.png)
+<img src="../images/data_01.png" alt="Data examples" width="700">

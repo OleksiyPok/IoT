@@ -2,7 +2,7 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md) | [🏠 Головний README](../README.md)
 
-![Wokwi schema](../images/wokwi.png)
+<img src="../images/wokwi.png" alt="Project Circuit" width="700">
 
 ## Опис проєкту
 
@@ -91,4 +91,4 @@ struct Telemetry {
 
 ### Examples of data
 
-![Wokwi schema](../images/data_01.png)
+<img src="../images/data_01.png" alt="Data examples" width="700">
