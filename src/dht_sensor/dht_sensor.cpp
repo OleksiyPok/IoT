@@ -24,20 +24,20 @@ DHT dht(DHT_PIN, DHT_TYPE);
 // ---------------------------------
 
 void initDhtSensor(DHTData &data) {
+  pinMode(DHT_PIN, INPUT);
   dht.begin();
   data.status |= STATUS_DHT_INIT_ERR;
 }
 
-void handleDhtSensor(DHTData &data, uint8_t &ledState) {
+void handleDhtSensor(DHTData &data) {
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
 
-  uint8_t status = 0;
+  uint8_t status = STATUS_DHT_OK;
 
   // Is NaN
   if (isnan(temperature) || isnan(humidity)) {
 
-    ledState &= ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX);
     status |= STATUS_DHT_DEVICE_ERR;
 
     data.temperature = -1;
@@ -47,32 +47,29 @@ void handleDhtSensor(DHTData &data, uint8_t &ledState) {
     return;
   }
 
-  // Temperature and humidity validation
+  // Temperature validation
   if (temperature < DHT_TEMPERATURE_VALID_MIN ||
-      temperature > DHT_TEMPERATURE_VALID_MAX ||
-      humidity < DHT_HUMIDITY_VALID_MIN || humidity > DHT_HUMIDITY_VALID_MAX) {
+      temperature > DHT_TEMPERATURE_VALID_MAX) {
+    status |= STATUS_DHT_DATA_VALID_ERR;
+  }
+
+  // Humidity validation
+  if (humidity < DHT_HUMIDITY_VALID_MIN || humidity > DHT_HUMIDITY_VALID_MAX) {
     status |= STATUS_DHT_DATA_VALID_ERR;
   }
 
   // Temperature alarm
   if (temperature < DHT_TEMPERATURE_ALARM_MIN) {
-    ledState &= ~LED_TEMPERATURE_MAX;
-    ledState |= LED_TEMPERATURE_MIN;
     status |= STATUS_DHT_TEMPERATURE_ALARM_MIN;
   } else if (temperature > DHT_TEMPERATURE_ALARM_MAX) {
-    ledState &= ~LED_TEMPERATURE_MIN;
-    ledState |= LED_TEMPERATURE_MAX;
     status |= STATUS_DHT_TEMPERATURE_ALARM_MAX;
-  } else {
-    ledState &= ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX);
   }
 
   // Humidity alarm
   if (humidity < DHT_HUMIDITY_ALARM_MIN) {
-    ledState |= LED_HUMIDITY_MIN;
     status |= STATUS_DHT_HUMIDITY_ALARM_MIN;
-  } else {
-    ledState &= ~(LED_HUMIDITY_MIN);
+  } else if (humidity > DHT_HUMIDITY_ALARM_MAX) {
+    status |= STATUS_DHT_HUMIDITY_ALARM_MAX;
   }
 
   data.temperature = temperature;

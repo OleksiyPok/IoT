@@ -13,6 +13,7 @@ extern uint8_t ledState; // LED state register (8 leds)
 #define LED_TEMPERATURE_MIN (1U << 4)
 #define LED_TEMPERATURE_MAX (1U << 5)
 #define LED_HUMIDITY_MIN (1U << 6)
+// #define LED_HUMIDITY_MIN (1U << 7)
 #define LED_SERIAL_MONITOR (1U << 7)
 
 void initIndication();

@@ -2,8 +2,9 @@
 
 #pragma once
 
-// #include "../buttons/buttons.h"
-// #include "../indication/indication.h"
 #include <Arduino.h>
 
-void handleActions(uint8_t &buttonsState, uint8_t &ledState);
+#include "../telemetry/telemetry.h"
+
+void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
+                   uint8_t &ledState);

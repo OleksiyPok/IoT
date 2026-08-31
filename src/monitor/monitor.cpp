@@ -34,16 +34,16 @@ void initMonitor() {
 };
 
 void handleMonitor(const Telemetry &data) {
-  printDeviceId(data);
+  // printDeviceId(data);
   // printTelemetryTimestamp(data);
   printTelemetryUptime(data);
   printTelemetryStatus(data.status);
-  printLdrData(data);
-  // printLdrStatus(data.ldr.status);
-  printDhdData(data);
-  // printDhtStatus(data.dht.status);
+  // printLdrData(data);
+  printLdrStatus(data.ldr.status);
+  // printDhdData(data);
+  printDhtStatus(data.dht.status);
   // printButtonsState(buttonsState);
-  // printLedState(ledState);
+  printLedState(ledState);
   Serial.println("------------");
 }
 
@@ -166,27 +166,27 @@ static void printButtonsState(const uint8_t &state) {
 static void printLedState(const uint8_t &state) {
   Serial.println("[LED] State:");
 
-  Serial.print("  LIGHT_MANUAL:           ");
+  Serial.print("  LIGHT_MANUAL:    ");
   Serial.println((state & LED_LIGHT_MANUAL) ? "ON" : "OFF");
 
-  Serial.print("  LIGHT_AUTO:             ");
+  Serial.print("  LIGHT_AUTO:      ");
   Serial.println((state & LED_LIGHT_AUTO) ? "ON" : "OFF");
 
-  Serial.print("  LIGHT_MIN:              ");
+  Serial.print("  LIGHT_MIN:       ");
   Serial.println((state & LED_LIGHT_MIN) ? "ON" : "OFF");
 
-  Serial.print("  LIGHT_MAX:              ");
+  Serial.print("  LIGHT_MAX:       ");
   Serial.println((state & LED_LIGHT_MAX) ? "ON" : "OFF");
 
-  Serial.print("  TEMPERATURE_MIN:        ");
+  Serial.print("  TEMPERATURE_MIN: ");
   Serial.println((state & LED_TEMPERATURE_MIN) ? "ON" : "OFF");
 
-  Serial.print("  TEMPERATURE_MAX:        ");
+  Serial.print("  TEMPERATURE_MAX: ");
   Serial.println((state & LED_TEMPERATURE_MAX) ? "ON" : "OFF");
 
-  Serial.print("  HUMIDITY_MIN:           ");
+  Serial.print("  HUMIDITY_MIN:    ");
   Serial.println((state & LED_HUMIDITY_MIN) ? "ON" : "OFF");
 
-  Serial.print("  SERIAL_MONITOR:           ");
+  Serial.print("  SERIAL_MONITOR:  ");
   Serial.println((state & LED_SERIAL_MONITOR) ? "ON" : "OFF");
 }

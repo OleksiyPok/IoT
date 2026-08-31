@@ -22,4 +22,4 @@
    STATUS_DHT_HUMIDITY_ALARM_MIN | STATUS_DHT_HUMIDITY_ALARM_MAX)
 
 void initDhtSensor(DHTData &data);
-void handleDhtSensor(DHTData &data, uint8_t &ledState);
+void handleDhtSensor(DHTData &data);

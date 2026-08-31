@@ -7,11 +7,9 @@
 
 // ---------------------------------
 
-// #define LDR_ADC_VALID_MIN 10
-// #define LDR_ADC_VALID_MAX 4000
 #define LDR_LUX_VALID_MIN 10
 #define LDR_LUX_ALARM_MIN 200
-#define LDR_LUX_THRESHOLD 600
+#define LDR_LUX_THRESHOLD_LIGHT_LOW 600
 #define LDR_LUX_ALARM_MAX 5000
 #define LDR_LUX_VALID_MAX 80000
 
@@ -29,16 +27,15 @@ void initLdrSensor(LDRData &data) {
   data.status |= STATUS_LDR_INIT_ERR;
 }
 
-void handleLdrSensor(LDRData &data, uint8_t &ledState) {
+void handleLdrSensor(LDRData &data) {
   uint16_t raw = analogRead(LDR_ADC_PIN);
   float lux = adcToLux(raw);
 
-  uint8_t status = 0;
+  uint8_t status = STATUS_LDR_OK;
 
   // Is NaN
   if (isnan(lux)) {
 
-    ledState &= ~(LED_LIGHT_MIN | LED_LIGHT_MAX);
     status |= STATUS_LDR_DEVICE_ERR;
 
     data.raw = -1;
@@ -55,22 +52,16 @@ void handleLdrSensor(LDRData &data, uint8_t &ledState) {
 
   // Light alarm
   if (lux < LDR_LUX_ALARM_MIN) {
-    ledState &= ~LED_LIGHT_MAX;
-    ledState |= LED_LIGHT_MIN;
     status |= STATUS_LDR_LUX_ALARM_MIN;
   } else if (lux > LDR_LUX_ALARM_MAX) {
-    ledState &= ~LED_LIGHT_MIN;
-    ledState |= LED_LIGHT_MAX;
     status |= STATUS_LDR_LUX_ALARM_MAX;
-  } else {
-    ledState &= ~(LED_LIGHT_MIN | LED_LIGHT_MAX);
   }
 
   // Light threshold
-  if (lux < LDR_LUX_THRESHOLD) {
-    ledState |= LED_LIGHT_AUTO;
+  if (lux < LDR_LUX_THRESHOLD_LIGHT_LOW) {
+    status |= STATUS_LDR_LIGHT_LOW;
   } else {
-    ledState &= ~LED_LIGHT_AUTO;
+    status &= ~STATUS_LDR_LIGHT_LOW;
   }
 
   data.raw = raw;
