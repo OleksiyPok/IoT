@@ -20,6 +20,7 @@ volatile bool button0Pressed = false; // Button 0 press flag
 volatile bool button1Pressed = false; // Button 1 press flag
 volatile bool button2Pressed = false; // Button 2 press flag
 
+uint8_t buttonsState = 0x00;
 uint8_t buttonsHandled = 0x00; // Buttons press handled flag
 
 void IRAM_ATTR onButton0Press();
@@ -38,15 +39,16 @@ void initButtons() {
   attachInterrupt(BUTTON_2_PIN, onButton2Press, FALLING);
 }
 
-void handleButtons(uint8_t &ledState) {
+void handleButtons() {
   uint32_t now = millis();
 
   if (button0Pressed) {
     button0Pressed = false;
 
     if (!(buttonsHandled & BUTTON_0_MASK) && now - lastDebounce0 >= DEBOUNCE) {
-      lastDebounce0 = now;             // Update debounce time
-      ledState ^= LED_LIGHT_MANUAL;    // Toggle led
+      lastDebounce0 = now; // Update debounce time
+
+      buttonsState ^= BUTTON_0_MASK;   // Toggled
       buttonsHandled |= BUTTON_0_MASK; // Mark button 0 as handled
     }
   }
@@ -55,8 +57,9 @@ void handleButtons(uint8_t &ledState) {
     button1Pressed = false;
 
     if (!(buttonsHandled & BUTTON_1_MASK) && now - lastDebounce1 >= DEBOUNCE) {
-      lastDebounce1 = now;             // Update debounce time
-      ledState ^= LED_SERIAL_MONITOR;  // Toggle led
+      lastDebounce1 = now; // Update debounce time
+
+      buttonsState ^= BUTTON_1_MASK;   // Toggled
       buttonsHandled |= BUTTON_1_MASK; // Mark button 1 as handled
     }
   }
@@ -66,11 +69,9 @@ void handleButtons(uint8_t &ledState) {
 
     if (!(buttonsHandled & BUTTON_2_MASK) && now - lastDebounce2 >= DEBOUNCE) {
       lastDebounce2 = now; // Update debounce time
-      Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
-      Serial.println("[TEST] WiFi disconnect");
-      Serial.println("~~~~~~~~~~~~~~~~~~~~~~");
-      WiFi.disconnect();
-      buttonsHandled |= BUTTON_2_MASK; // Mark button 1 as handled
+
+      buttonsState ^= BUTTON_2_MASK;   // Toggled
+      buttonsHandled |= BUTTON_2_MASK; // Mark button 2 as handled
     }
   }
 
@@ -86,6 +87,7 @@ void handleButtons(uint8_t &ledState) {
 
   // Reset after button 2 release
   if ((buttonsHandled & BUTTON_2_MASK) && digitalRead(BUTTON_2_PIN) == HIGH) {
+    buttonsState &= ~BUTTON_2_MASK; // uncomm: Released, comm: Fix state
     buttonsHandled &= ~BUTTON_2_MASK;
   }
 }

@@ -50,29 +50,29 @@
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn1",
-      "top": 268.2,
+      "top": 300,
       "left": 159.8,
       "attrs": { "color": "white", "xray": "1" }
     },
     {
       "type": "wokwi-text",
       "id": "label-btn1",
-      "top": 259.2,
+      "top": 300,
       "left": 86.4,
       "attrs": { "text": "Light\nOn / Off" }
     },
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn2",
-      "top": 266.6,
+      "top": 300,
       "left": 201.6,
       "attrs": { "color": "blue", "xray": "1" }
     },
     {
       "type": "wokwi-text",
       "id": "label-btn2",
-      "top": 259.2,
-      "left": 240,
+      "top": 300,
+      "left": 250,
       "attrs": { "text": "Serial Monitor\nOn / Off" }
     },
     {

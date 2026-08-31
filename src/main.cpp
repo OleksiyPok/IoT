@@ -1,5 +1,6 @@
 // src/main.cpp
 
+#include "actions/actions.h"
 #include "buttons/buttons.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
@@ -16,6 +17,7 @@
 
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
+uint32_t lastActionsMs = 0;
 uint32_t lastIndicationChangeMs = 0;
 uint32_t lastLdrSensorReadMs = 0;
 uint32_t lastDhtSensorReadMs = 0;
@@ -63,7 +65,13 @@ void loop() {
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
-    handleButtons(ledState);
+    handleButtons();
+  }
+
+  // Actions
+  if (now - lastActionsMs >= ACTIONS_MS) {
+    lastActionsMs = now;
+    handleActions(buttonsState, ledState);
   }
 
   // Indication
@@ -87,7 +95,10 @@ void loop() {
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetryData);
+
+    if (buttonsState & BUTTON_SERIAL_MONITOR_MASK) {
+      handleMonitor(telemetryData);
+    }
   }
 
   // Memory check

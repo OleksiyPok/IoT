@@ -10,5 +10,7 @@
 #define BUTTON_SERIAL_MONITOR_MASK (1U << 1)
 #define BUTTON_WIFI_DISABLE (1U << 2)
 
+extern uint8_t buttonsState;
+
 void initButtons();
-void handleButtons(uint8_t &ledState);
+void handleButtons();

@@ -1,6 +1,7 @@
 // src/monitor/monitor.cpp
 
 #include "monitor.h"
+#include "../buttons/buttons.h"
 #include "../config.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
@@ -19,6 +20,7 @@ static void printLdrData(const Telemetry &data);
 static void printDhtStatus(const uint8_t &status);
 static void printLdrStatus(const uint8_t &status);
 static void printTelemetryStatus(const uint8_t &status);
+static void printButtonsState(const uint8_t &state);
 static void printLedState(const uint8_t &state);
 
 // ---------------------------------
@@ -40,7 +42,8 @@ void handleMonitor(const Telemetry &data) {
   // printLdrStatus(data.ldr.status);
   // printDhdData(data);
   // printDhtStatus(data.dht.status);
-  // printLedState(ledState);
+  printButtonsState(buttonsState);
+  printLedState(ledState);
   Serial.println("------------");
 }
 
@@ -145,6 +148,19 @@ static void printDhtStatus(const uint8_t &status) {
 
   Serial.print("  HUMIDITY_ALARM_MAX:     ");
   Serial.println((status & STATUS_DHT_HUMIDITY_ALARM_MAX) ? "ALARM" : "OK");
+}
+
+static void printButtonsState(const uint8_t &state) {
+  Serial.println("[BUTTONS] State:");
+
+  Serial.print("  BUTTON_0:               ");
+  Serial.println((state & BUTTON_LIGHT_MASK) ? "ON" : "OFF");
+
+  Serial.print("  BUTTON_1:               ");
+  Serial.println((state & BUTTON_SERIAL_MONITOR_MASK) ? "ON" : "OFF");
+
+  Serial.print("  BUTTON_2:               ");
+  Serial.println((state & BUTTON_WIFI_DISABLE) ? "ON" : "OFF");
 }
 
 static void printLedState(const uint8_t &state) {
