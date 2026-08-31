@@ -12,7 +12,11 @@ The project is divided into modules, each with its own responsibility and indivi
 
 The `actions` module is at the center of the project. It combines functions and transfers data between modules.
 
+Data processing is handled by the `telemetry` module.
+
 ### Data Structure
+
+The data structures used in the project are presented below.
 
 ```cpp
 struct DHTData {
@@ -36,8 +40,9 @@ struct Telemetry {
     uint8_t status; // system status register
 };
 ```
+### Internal status register
 
-Two status flag registers, `buttonStatus` and `ledStatus`, are used to preserve the state of buttons and indicators and to make their state remotely readable and controllable.
+Two status flag registers, `buttonStatus` and `ledStatus`, are used to preserve the state of buttons and indicators and to make their state remotely readable and controllable (in a future).
 
 All possible pin constants, states, intervals, and bit masks are defined using `#define`.
 
