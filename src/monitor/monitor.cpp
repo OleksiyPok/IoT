@@ -34,16 +34,16 @@ void initMonitor() {
 };
 
 void handleMonitor(const Telemetry &data) {
-  // printDeviceId(data);
+  printDeviceId(data);
   // printTelemetryTimestamp(data);
   printTelemetryUptime(data);
-  // printTelemetryStatus(data.status);
-  // printLdrData(data);
+  printTelemetryStatus(data.status);
+  printLdrData(data);
   // printLdrStatus(data.ldr.status);
-  // printDhdData(data);
+  printDhdData(data);
   // printDhtStatus(data.dht.status);
-  printButtonsState(buttonsState);
-  printLedState(ledState);
+  // printButtonsState(buttonsState);
+  // printLedState(ledState);
   Serial.println("------------");
 }
 

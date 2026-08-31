@@ -32,12 +32,12 @@ Telemetry telemetryData;
 
 void setup() {
   initMonitor();
-  // initTelemetry(telemetryData);
-  // initDhtSensor(telemetryData.dht);
-  // initLdrSensor(telemetryData.ldr);
+  initTelemetry(telemetryData);
+  initDhtSensor(telemetryData.dht);
+  initLdrSensor(telemetryData.ldr);
   initButtons();
   initIndication();
-  // connectWifi();
+  connectWifi();
 }
 
 void loop() {
@@ -47,19 +47,19 @@ void loop() {
   // WiFi check connection
   if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_INTERVAL_MS) {
     lastWiFiCheckConnectionMs = now;
-    // handleWiFi();
+    handleWiFi();
   }
 
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    // handleDhtSensor(telemetryData.dht, ledState);
+    handleDhtSensor(telemetryData.dht, ledState);
   }
 
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
     lastLdrSensorReadMs = now;
-    // handleLdrSensor(telemetryData.ldr, ledState);
+    handleLdrSensor(telemetryData.ldr, ledState);
   }
 
   // Buttons reading
@@ -89,7 +89,7 @@ void loop() {
   // Data send
   if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
     lastSendDataMs = now;
-    // handleSendData(telemetryData);
+    handleSendData(telemetryData);
   }
 
   // Data monitor

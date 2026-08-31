@@ -1,43 +1,57 @@
 // src/http/http.cpp
 
-#include "http.h"
-#include "../config.h"
-#include "../wifi/wifi.h"
 #include <Arduino.h>
 #include <HTTPClient.h>
+#include <WiFi.h>
+
+#include "../config.h"
+#include "http.h"
+
+#if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
+#include "../telemetry/telemetry_serializer_aj.h"
+#else
+#include "../telemetry/telemetry_serializer.h"
+#endif
 
 // ---------------------------------
-void handleSendData(Telemetry &telemetryData);
-void sendData(const float &temperature, const float &humidity,
-              const float &lux);
+
+static void sendData(const Telemetry &telemetryData);
+
 // ---------------------------------
 
-void handleSendData(Telemetry &telemetryData) {
+void handleSendData(const Telemetry &telemetryData) {
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("[HTTP] Wi-Fi does not connected");
+    Serial.println("[HTTP] Wi-Fi does not connect");
     return;
   }
 
-  sendData(telemetryData.dht.temperature, telemetryData.dht.humidity,
-           telemetryData.ldr.lux);
-};
+  sendData(telemetryData);
+}
 
-void sendData(const float &temperature, const float &humidity,
-              const float &lux) {
-
+static void sendData(const Telemetry &telemetryData) {
   HTTPClient http;
   http.begin(SERVER_URL);
   http.addHeader("Content-Type", "application/json");
 
-  char payload[128];
-  snprintf(payload, sizeof(payload),
-           "{\"temperature\":%.1f,\"humidity\":%.1f,\"lux\":%.1f}", temperature,
-           humidity, lux);
+  char payload[256];
+
+#if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
+  if (!serializeTelemetryArduinoJson(telemetryData, payload, sizeof(payload))) {
+#else
+  if (!serializeTelemetry(telemetryData, payload, sizeof(payload))) {
+// #error "No telemetry serializer selected"
+#endif
+
+    Serial.println("[HTTP] Failed to serialize telemetry");
+    http.end();
+    return;
+  }
 
   Serial.print("[HTTP] Sending: ");
   Serial.println(payload);
 
-  int httpCode = http.POST((uint8_t *)payload, strlen(payload));
+  int httpCode =
+      http.POST(reinterpret_cast<uint8_t *>(payload), strlen(payload));
 
   if (httpCode == 200) {
     Serial.println(
@@ -48,4 +62,4 @@ void sendData(const float &temperature, const float &humidity,
   }
 
   http.end();
-};
+}
