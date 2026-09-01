@@ -13,7 +13,7 @@
 #define LED_TEMPERATURE_MAX (1U << 5)
 #define LED_HUMIDITY_MIN (1U << 6)
 // #define LED_HUMIDITY_MIN (1U << 7)
-#define LED_SELENT (1U << 7)
+#define LED_SILENT (1U << 7)
 
 void initIndication();
 void handleIndication(uint8_t &ledState);

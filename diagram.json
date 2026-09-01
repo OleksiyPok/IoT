@@ -66,19 +66,19 @@
       "id": "btn2",
       "top": 300,
       "left": 201.6,
-      "attrs": { "color": "blue" }
+      "attrs": { "color": "orange" }
     },
     {
       "type": "wokwi-text",
       "id": "label-btn2",
       "top": 300,
       "left": 250,
-      "attrs": { "text": "Serial Monitor\nOn / Off" }
+      "attrs": { "text": "Silent mode\nOn / Off" }
     },
     {
       "type": "wokwi-led",
       "id": "led2",
-      "top": 66.4,
+      "top": 66,
       "left": -190.6,
       "rotate": 270,
       "attrs": { "color": "magenta" }
@@ -103,7 +103,7 @@
       "id": "led3",
       "top": -118.8,
       "left": -255.4,
-      "attrs": { "color": "yellow" }
+      "attrs": { "color": "#00BFFF" }
     },
     {
       "type": "wokwi-text",
@@ -147,7 +147,7 @@
       "id": "led5",
       "top": 226.8,
       "left": -255.4,
-      "attrs": { "color": "yellow" }
+      "attrs": { "color": "#00BFFF" }
     },
     {
       "type": "wokwi-led",
@@ -206,7 +206,7 @@
       "top": 222.4,
       "left": 195.8,
       "rotate": 180,
-      "attrs": { "color": "#87CEEB", "lightColor": "#00BFFF", "flip": "1" }
+      "attrs": { "color": "orange", "flip": "1" }
     },
     {
       "type": "wokwi-resistor",

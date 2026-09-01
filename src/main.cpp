@@ -57,7 +57,7 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    if (buttonsState & BUTTON_SELENT_MASK) {
+    if (buttonsState & BUTTON_SILENT_MASK) {
       handleDhtSensor(telemetryData.dht);
     }
   }
@@ -102,7 +102,7 @@ void loop() {
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
 
-    if (buttonsState & BUTTON_SELENT_MASK) {
+    if (buttonsState & BUTTON_SILENT_MASK) {
       handleMonitor(telemetryData, buttonsState, ledState);
     }
   }

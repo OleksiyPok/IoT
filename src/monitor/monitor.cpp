@@ -221,7 +221,7 @@ static void printButtonsState(const uint8_t &state) {
   Serial.println((state & BUTTON_LIGHT_MASK) ? "ON" : "OFF");
 
   Serial.print("  BUTTON_1:         ");
-  Serial.println((state & BUTTON_SELENT_MASK) ? "ON" : "OFF");
+  Serial.println((state & BUTTON_SILENT_MASK) ? "ON" : "OFF");
 
   Serial.print("  BUTTON_2:         ");
   Serial.println((state & BUTTON_WIFI_DISABLE) ? "ON" : "OFF");
@@ -251,6 +251,6 @@ static void printLedState(const uint8_t &state) {
   Serial.print("  HUMIDITY_MIN:     ");
   Serial.println((state & LED_HUMIDITY_MIN) ? "ON" : "OFF");
 
-  Serial.print("  SELENT:           ");
-  Serial.println((state & LED_SELENT) ? "ON" : "OFF");
+  Serial.print("  SILENT:           ");
+  Serial.println((state & LED_SILENT) ? "ON" : "OFF");
 }
