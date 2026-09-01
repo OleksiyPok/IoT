@@ -22,7 +22,7 @@
       "id": "label-led1",
       "top": -115.2,
       "left": 201.6,
-      "attrs": { "text": "LIGHT\n(MANUAL)" }
+      "attrs": { "text": "''LIGHT''\n(MANUAL)" }
     },
     {
       "type": "wokwi-resistor",
@@ -88,7 +88,7 @@
       "id": "label-led2",
       "top": 57.6,
       "left": -254.4,
-      "attrs": { "text": "LIGHT\n(AUTO)" }
+      "attrs": { "text": "''LIGHT''\n(AUTO)" }
     },
     {
       "type": "wokwi-resistor",
@@ -105,6 +105,15 @@
       "left": -255.4,
       "attrs": { "color": "#00BFFF" }
     },
+
+    {
+      "type": "wokwi-text",
+      "id": "label-led3-led4",
+      "top": -165,
+      "left": -240,
+      "attrs": { "text": "''LIGHT ALARM''" }
+    },
+
     {
       "type": "wokwi-text",
       "id": "label-led3",
@@ -207,6 +216,13 @@
       "left": 195.8,
       "rotate": 180,
       "attrs": { "color": "orange", "flip": "1" }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "label-led7",
+      "top": 245,
+      "left": 250,
+      "attrs": { "text": "''SILENT''" }
     },
     {
       "type": "wokwi-resistor",

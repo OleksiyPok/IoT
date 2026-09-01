@@ -6,4 +6,4 @@
 
 #define SERVER_URL "http://httpbun.com/post" // HTTP POST
 
-void handleSendData(const Telemetry &telemetryData);
+void handleSendData(Telemetry &telemetryData);
