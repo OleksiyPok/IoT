@@ -7,4 +7,4 @@
 #include "../telemetry/telemetry.h"
 
 void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
-                   uint8_t &ledState);
+                   uint8_t &systemState);

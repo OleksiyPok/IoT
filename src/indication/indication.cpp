@@ -31,9 +31,9 @@ void initIndication() {
   pinMode(LED_SILENT_PIN, OUTPUT);
 }
 
-void handleIndication(uint8_t &ledState) {
+void handleIndication(uint8_t &systemState) {
   for (uint8_t i = 0; i < sizeof(LED_PINS) / sizeof(LED_PINS[0]); ++i) {
-    digitalWrite(LED_PINS[i], (ledState & LED_MASKS[i]) != 0);
+    digitalWrite(LED_PINS[i], (systemState & LED_MASKS[i]) != 0);
   }
 }
 

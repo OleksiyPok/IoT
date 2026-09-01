@@ -37,7 +37,7 @@ void initMonitor() {
 };
 
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
-                   const uint8_t &ledState) {
+                   const uint8_t &systemState) {
 #if PRINT_MODE == PRINT_MODE_DEVICEID
   printTelemetryUptime(data);
   printDeviceId(data);
@@ -72,7 +72,7 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
 #elif PRINT_MODE == PRINT_MODE_BUTTON_LED_STATE
   printTelemetryUptime(data);
   printButtonsState(buttonsState);
-  printLedState(ledState);
+  printLedState(systemState);
 #else
   printDeviceId(data);
   printTelemetryTimestamp(data);
@@ -85,7 +85,7 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printDhdData(data);
   printDhtStatus(data.dht.status);
   printButtonsState(buttonsState);
-  printLedState(ledState);
+  printLedState(systemState);
 #endif
   Serial.println("------------");
 }

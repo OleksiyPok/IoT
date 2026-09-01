@@ -4,7 +4,7 @@
 
 #include <Arduino.h>
 
-// "ledState" bits
+// "systemState" bits
 #define LED_LIGHT_MANUAL (1U << 0)
 #define LED_LIGHT_AUTO (1U << 1)
 #define LED_LIGHT_MIN (1U << 2)
@@ -16,6 +16,6 @@
 #define LED_SILENT (1U << 7)
 
 void initIndication();
-void handleIndication(uint8_t &ledState);
+void handleIndication(uint8_t &systemState);
 
 void blinkLed(int pin);

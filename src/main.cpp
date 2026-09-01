@@ -17,7 +17,7 @@
 // ---------------------------------
 
 uint8_t buttonsState = 0x00;
-uint8_t ledState = 0x00;
+uint8_t systemState = 0x00;
 
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
@@ -77,13 +77,13 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, ledState);
+    handleActions(telemetryData, buttonsState, systemState);
   }
 
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
-    handleIndication(ledState);
+    handleIndication(systemState);
   }
 
   // Telemetry update
@@ -103,7 +103,7 @@ void loop() {
     lastDataMonitorMs = now;
 
     if (buttonsState & BUTTON_SILENT_MASK) {
-      handleMonitor(telemetryData, buttonsState, ledState);
+      handleMonitor(telemetryData, buttonsState, systemState);
     }
   }
 
