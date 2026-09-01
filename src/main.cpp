@@ -57,7 +57,9 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    handleDhtSensor(telemetryData.dht);
+    if (buttonsState & BUTTON_SERIAL_MONITOR_MASK) {
+      handleDhtSensor(telemetryData.dht);
+    }
   }
 
   // LDR sensor reading

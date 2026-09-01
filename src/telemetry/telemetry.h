@@ -25,14 +25,17 @@ struct Telemetry {
   uint8_t status; // system status register
 };
 
-#define STATUS_OK 0U
-#define STATUS_LDR_ERR (1U << 0)  // LDR error
-#define STATUS_DHT_ERR (1U << 2)  // DHT22 error
-#define STATUS_MQTT_ERR (1U << 6) // MQTT error
-#define STATUS_WIFI_ERR (1U << 7) // Wi-Fi error
+#define STATUS_OK (0U)
+
+#define STATUS_DEVICE_SILENT_MODE (1U << 1) // SILENT mode
+#define STATUS_LDR_ERR (1U << 2)            // LDR error
+#define STATUS_DHT_ERR (1U << 3)            // DHT22 error
+#define STATUS_MQTT_ERR (1U << 6)           // MQTT error
+#define STATUS_WIFI_ERR (1U << 7)           // Wi-Fi error
 
 #define STATUS_INIT_ERR                                                        \
-  (STATUS_LDR_ERR | STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR)
+  (STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR | STATUS_DHT_ERR |               \
+   STATUS_MQTT_ERR | STATUS_WIFI_ERR)
 
 void initTelemetry(Telemetry &telemetryData);
 void updateTelemetry(Telemetry &telemetryData);

@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 
-#include "monitor.h"
 #include "../buttons/buttons.h"
 #include "../config.h"
 #include "../dht_sensor/dht_sensor.h"
@@ -10,6 +9,7 @@
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../telemetry/telemetry.h"
 #include "esp_mac.h"
+#include "monitor.h"
 
 // ---------------------------------
 
@@ -102,6 +102,9 @@ static void printLdrData(const Telemetry &data) {
 static void printTelemetryStatus(const uint8_t &status) {
   Serial.println("[TELEMETRY] Status:");
 
+  Serial.print("  SILENT_MODE:            ");
+  Serial.println((status & STATUS_DEVICE_SILENT_MODE) ? "SILENT" : "OK");
+
   Serial.print("  LDR_ERR:                ");
   Serial.println((status & STATUS_LDR_ERR) ? "ERROR" : "OK");
 
@@ -121,6 +124,9 @@ static void printLdrStatus(const uint8_t &status) {
   Serial.print("  DEVICE_ERR:             ");
   Serial.println((status & STATUS_LDR_DEVICE_ERR) ? "ERROR" : "OK");
 
+  Serial.print("  DATA_STALE:             ");
+  Serial.println((status & STATUS_LDR_DATA_STALE) ? "STALE" : "OK");
+
   Serial.print("  DATA_VALID_ERR:         ");
   Serial.println((status & STATUS_LDR_DATA_VALID_ERR) ? "ERROR" : "OK");
 
@@ -129,6 +135,9 @@ static void printLdrStatus(const uint8_t &status) {
 
   Serial.print("  LUX_ALARM_MAX:          ");
   Serial.println((status & STATUS_LDR_LUX_ALARM_MAX) ? "ALARM" : "OK");
+
+  Serial.print("  LIGHT_LOW:              ");
+  Serial.println((status & STATUS_LDR_LIGHT_LOW) ? "LOW" : "OK");
 }
 
 static void printDhtStatus(const uint8_t &status) {
@@ -136,6 +145,9 @@ static void printDhtStatus(const uint8_t &status) {
 
   Serial.print("  DEVICE_ERR:             ");
   Serial.println((status & STATUS_DHT_DEVICE_ERR) ? "ERROR" : "OK");
+
+  Serial.print("  DATA_STALE:             ");
+  Serial.println((status & STATUS_DHT_DATA_STALE) ? "STALE" : "OK");
 
   Serial.print("  DATA_VALID_ERR:         ");
   Serial.println((status & STATUS_DHT_DATA_VALID_ERR) ? "ERROR" : "OK");
