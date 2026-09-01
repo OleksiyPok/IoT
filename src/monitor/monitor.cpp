@@ -16,6 +16,8 @@
 static void printDeviceId(const Telemetry &data);
 static void printTelemetryTimestamp(const Telemetry &data);
 static void printTelemetryUptime(const Telemetry &data);
+static void printTelemetrySequence(const Telemetry &data);
+static void printTelemetryData(const Telemetry &data);
 static void printDhdData(const Telemetry &data);
 static void printLdrData(const Telemetry &data);
 static void printDhtStatus(const uint8_t &status);
@@ -34,9 +36,41 @@ void initMonitor() {
   Serial.println();
 };
 
-void handleMonitor(const Telemetry &data) {
+void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
+                   const uint8_t &ledState) {
+#if PRINT_MODE == PRINT_MODE_DEVICEID
   printDeviceId(data);
-  // printTelemetryTimestamp(data);
+#elif PRINT_MODE == PRINT_MODE_TIMESTAMP
+  printTelemetryTimestamp(data)
+#elif PRINT_MODE == PRINT_MODE_UPTIME
+  printTelemetryUptime(data);
+#elif PRINT_MODE == PRINT_MODE_TELEMETRY_DATA
+  printDeviceId(data);
+  printTelemetryTimestamp(data);
+  printTelemetryUptime(data);
+  printLdrData(data);
+  printDhdData(data);
+#elif PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS
+  printTelemetryStatus(data.status);
+#elif PRINT_MODE == PRINT_MODE_TELEMETRY_DATA_STATUS
+  printTelemetryData(data);
+  printTelemetryStatus(data.status);
+#elif PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS
+  printLdrData(data);
+  printLdrStatus(data.ldr.status);
+#elif PRINT_MODE == PRINT_MODE_DHT_DATA_STATUS
+  printDhdData(data);
+  printDhtStatus(data.dht.status);
+#elif PRINT_MODE == PRINT_MODE_ALL_STATUS
+  printTelemetryStatus(data.status);
+  printLdrStatus(data.ldr.status);
+  printDhtStatus(data.dht.status);
+#elif PRINT_MODE == PRINT_MODE_BUTTON_LED_STATE
+  printButtonsState(buttonsState);
+  printLedState(ledState);
+#else
+  printDeviceId(data);
+  printTelemetryTimestamp(data);
   printTelemetryUptime(data);
   printTelemetryStatus(data.status);
   Serial.println();
@@ -45,8 +79,9 @@ void handleMonitor(const Telemetry &data) {
   Serial.println();
   printDhdData(data);
   printDhtStatus(data.dht.status);
-  // printButtonsState(buttonsState);
-  // printLedState(ledState);
+  printButtonsState(buttonsState);
+  printLedState(ledState);
+#endif
   Serial.println("------------");
 }
 
@@ -82,6 +117,20 @@ static void printTelemetryUptime(const Telemetry &data) {
                 static_cast<unsigned long>(minutes),
                 static_cast<unsigned long>(seconds),
                 static_cast<unsigned long>(data.uptime));
+}
+
+static void printTelemetrySequence(const Telemetry &data) {
+  Serial.print("[TELEMETRY] Sequence: ");
+  Serial.println(data.sequence);
+}
+
+static void printTelemetryData(const Telemetry &data) {
+  printDeviceId(data);
+  printTelemetryTimestamp(data);
+  printTelemetryUptime(data);
+  printTelemetrySequence(data);
+  printLdrData(data);
+  printDhdData(data);
 }
 
 static void printDhdData(const Telemetry &data) {
@@ -168,40 +217,40 @@ static void printDhtStatus(const uint8_t &status) {
 static void printButtonsState(const uint8_t &state) {
   Serial.println("[BUTTONS] State:");
 
-  Serial.print("  BUTTON_0:               ");
+  Serial.print("  BUTTON_0:         ");
   Serial.println((state & BUTTON_LIGHT_MASK) ? "ON" : "OFF");
 
-  Serial.print("  BUTTON_1:               ");
-  Serial.println((state & BUTTON_SERIAL_MONITOR_MASK) ? "ON" : "OFF");
+  Serial.print("  BUTTON_1:         ");
+  Serial.println((state & BUTTON_SELENT_MASK) ? "ON" : "OFF");
 
-  Serial.print("  BUTTON_2:               ");
+  Serial.print("  BUTTON_2:         ");
   Serial.println((state & BUTTON_WIFI_DISABLE) ? "ON" : "OFF");
 }
 
 static void printLedState(const uint8_t &state) {
   Serial.println("[LED] State:");
 
-  Serial.print("  LIGHT_MANUAL:    ");
+  Serial.print("  LIGHT_MANUAL:     ");
   Serial.println((state & LED_LIGHT_MANUAL) ? "ON" : "OFF");
 
-  Serial.print("  LIGHT_AUTO:      ");
+  Serial.print("  LIGHT_AUTO:       ");
   Serial.println((state & LED_LIGHT_AUTO) ? "ON" : "OFF");
 
-  Serial.print("  LIGHT_MIN:       ");
+  Serial.print("  LIGHT_MIN:        ");
   Serial.println((state & LED_LIGHT_MIN) ? "ON" : "OFF");
 
-  Serial.print("  LIGHT_MAX:       ");
+  Serial.print("  LIGHT_MAX:        ");
   Serial.println((state & LED_LIGHT_MAX) ? "ON" : "OFF");
 
-  Serial.print("  TEMPERATURE_MIN: ");
+  Serial.print("  TEMPERATURE_MIN:  ");
   Serial.println((state & LED_TEMPERATURE_MIN) ? "ON" : "OFF");
 
-  Serial.print("  TEMPERATURE_MAX: ");
+  Serial.print("  TEMPERATURE_MAX:  ");
   Serial.println((state & LED_TEMPERATURE_MAX) ? "ON" : "OFF");
 
-  Serial.print("  HUMIDITY_MIN:    ");
+  Serial.print("  HUMIDITY_MIN:     ");
   Serial.println((state & LED_HUMIDITY_MIN) ? "ON" : "OFF");
 
-  Serial.print("  SERIAL_MONITOR:  ");
-  Serial.println((state & LED_SERIAL_MONITOR) ? "ON" : "OFF");
+  Serial.print("  SELENT:           ");
+  Serial.println((state & LED_SELENT) ? "ON" : "OFF");
 }

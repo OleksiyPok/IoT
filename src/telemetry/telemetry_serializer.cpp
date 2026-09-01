@@ -6,9 +6,9 @@
 #include "telemetry_serializer.h"
 
 // ---------------------------------
-
 bool serializeTelemetry(const Telemetry &data, char *buffer,
                         size_t bufferSize) {
+
   if (buffer == nullptr || bufferSize == 0) {
     return false;
   }
@@ -18,6 +18,7 @@ bool serializeTelemetry(const Telemetry &data, char *buffer,
                "{\"deviceId\":%" PRIu64 ","
                "\"timestamp\":%" PRIu32 ","
                "\"uptime\":%" PRIu32 ","
+               "\"sequence\":%u,"
                "\"dht\":{"
                "\"temperature\":%.1f,"
                "\"humidity\":%.1f,"
@@ -29,9 +30,9 @@ bool serializeTelemetry(const Telemetry &data, char *buffer,
                "\"status\":%u"
                "},"
                "\"status\":%u}",
-               data.deviceId, data.timestamp, data.uptime, data.dht.temperature,
-               data.dht.humidity, data.dht.status, data.ldr.raw, data.ldr.lux,
-               data.ldr.status, data.status);
+               data.deviceId, data.timestamp, data.uptime, data.sequence,
+               data.dht.temperature, data.dht.humidity, data.dht.status,
+               data.ldr.raw, data.ldr.lux, data.ldr.status, data.status);
 
   if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';

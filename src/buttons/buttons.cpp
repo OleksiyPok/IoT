@@ -10,7 +10,7 @@
 // ---------------------------------
 
 #define BUTTON_0_MASK BUTTON_LIGHT_MASK
-#define BUTTON_1_MASK BUTTON_SERIAL_MONITOR_MASK
+#define BUTTON_1_MASK BUTTON_SELENT_MASK
 #define BUTTON_2_MASK BUTTON_WIFI_DISABLE
 
 uint32_t lastDebounce0 = 0;

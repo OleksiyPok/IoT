@@ -12,6 +12,7 @@
 
 bool serializeTelemetryArduinoJson(const Telemetry &telemetryData, char *buffer,
                                    size_t bufferSize) {
+
   if (buffer == nullptr || bufferSize == 0) {
     return false;
   }
@@ -21,6 +22,7 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetryData, char *buffer,
   doc["deviceId"] = telemetryData.deviceId;
   doc["timestamp"] = telemetryData.timestamp;
   doc["uptime"] = telemetryData.uptime;
+  doc["sequence"] = telemetryData.sequence;
 
   JsonObject dht = doc.createNestedObject("dht");
   dht["temperature"] = telemetryData.dht.temperature;

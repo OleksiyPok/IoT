@@ -11,12 +11,11 @@
 static const uint8_t LED_PINS[] = {
     LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
     LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN,
-    LED_HUMIDITY_MIN_PIN, LED_SERIAL_MONITOR_PIN};
+    LED_HUMIDITY_MIN_PIN, LED_SELENT_PIN};
 
-static const uint8_t LED_MASKS[] = {LED_LIGHT_MANUAL,    LED_LIGHT_AUTO,
-                                    LED_LIGHT_MIN,       LED_LIGHT_MAX,
-                                    LED_TEMPERATURE_MIN, LED_TEMPERATURE_MAX,
-                                    LED_HUMIDITY_MIN,    LED_SERIAL_MONITOR};
+static const uint8_t LED_MASKS[] = {
+    LED_LIGHT_MANUAL,    LED_LIGHT_AUTO,      LED_LIGHT_MIN,    LED_LIGHT_MAX,
+    LED_TEMPERATURE_MIN, LED_TEMPERATURE_MAX, LED_HUMIDITY_MIN, LED_SELENT};
 // ---------------------------------
 
 void initIndication() {
@@ -29,7 +28,7 @@ void initIndication() {
   pinMode(LED_TEMPERATURE_MIN_PIN, OUTPUT);
   pinMode(LED_TEMPERATURE_MAX_PIN, OUTPUT);
   pinMode(LED_HUMIDITY_MIN_PIN, OUTPUT);
-  pinMode(LED_SERIAL_MONITOR_PIN, OUTPUT);
+  pinMode(LED_SELENT_PIN, OUTPUT);
 }
 
 void handleIndication(uint8_t &ledState) {

@@ -33,10 +33,10 @@ static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState) {
     ledState &= ~LED_LIGHT_MANUAL;
   }
 
-  if (buttonsState & BUTTON_SERIAL_MONITOR_MASK) {
-    ledState |= LED_SERIAL_MONITOR;
+  if (buttonsState & BUTTON_SELENT_MASK) {
+    ledState |= LED_SELENT;
   } else {
-    ledState &= ~LED_SERIAL_MONITOR;
+    ledState &= ~LED_SELENT;
   }
 
   if ((buttonsState & BUTTON_WIFI_DISABLE) &&

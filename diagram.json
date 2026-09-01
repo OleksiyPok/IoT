@@ -206,7 +206,7 @@
       "top": 222.4,
       "left": 195.8,
       "rotate": 180,
-      "attrs": { "color": "blue", "flip": "1" }
+      "attrs": { "color": "#87CEEB", "lightColor": "#00BFFF", "flip": "1" }
     },
     {
       "type": "wokwi-resistor",

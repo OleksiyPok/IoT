@@ -58,6 +58,7 @@ static void sendData(const Telemetry &telemetryData) {
   if (httpCode == 200) {
     Serial.println(
         "[HTTP] Server response: '200' (The server has received the data)");
+    Serial.println("------------");
   } else {
     Serial.print("[HTTP] Error: ");
     Serial.println(httpCode);
