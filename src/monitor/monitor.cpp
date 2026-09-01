@@ -39,6 +39,7 @@ void initMonitor() {
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
                    const uint8_t &ledState) {
 #if PRINT_MODE == PRINT_MODE_DEVICEID
+  printTelemetryUptime(data);
   printDeviceId(data);
 #elif PRINT_MODE == PRINT_MODE_TIMESTAMP
   printTelemetryTimestamp(data)
@@ -56,16 +57,20 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printTelemetryData(data);
   printTelemetryStatus(data.status);
 #elif PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS
+  printTelemetryUptime(data);
   printLdrData(data);
   printLdrStatus(data.ldr.status);
 #elif PRINT_MODE == PRINT_MODE_DHT_DATA_STATUS
+  printTelemetryUptime(data);
   printDhdData(data);
   printDhtStatus(data.dht.status);
 #elif PRINT_MODE == PRINT_MODE_ALL_STATUS
+  printTelemetryUptime(data);
   printTelemetryStatus(data.status);
   printLdrStatus(data.ldr.status);
   printDhtStatus(data.dht.status);
 #elif PRINT_MODE == PRINT_MODE_BUTTON_LED_STATE
+  printTelemetryUptime(data);
   printButtonsState(buttonsState);
   printLedState(ledState);
 #else
