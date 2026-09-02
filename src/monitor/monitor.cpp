@@ -43,45 +43,45 @@ void initMonitor() {
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
                    const uint8_t &systemState) {
 
-#if PRINT_MODE == PRINT_MODE_DEVICEID
+#if CURRENT_PRINT_MODE == PRINT_MODE_DEVICEID
   printTelemetryUptime(data);
   printDeviceId(data);
-#elif PRINT_MODE == PRINT_MODE_TIMESTAMP
+#elif CURRENT_PRINT_MODE == PRINT_MODE_TIMESTAMP
   printTelemetryTimestamp(data);
-#elif PRINT_MODE == PRINT_MODE_UPTIME
+#elif CURRENT_PRINT_MODE == PRINT_MODE_UPTIME
   printTelemetryUptime(data);
-#elif PRINT_MODE == PRINT_MODE_TELEMETRY_DATA
+#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_DATA
   printDeviceId(data);
   printTelemetryTimestamp(data);
   printTelemetryUptime(data);
   printLdrData(data);
   printDhdData(data);
-#elif PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS
   printTelemetryUptime(data);
   printTelemetryStatus(data.status);
-#elif PRINT_MODE == PRINT_MODE_TELEMETRY_DATA_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_DATA_STATUS
   printTelemetryData(data);
   printTelemetryStatus(data.status);
-#elif PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS
   printTelemetryUptime(data);
   printLdrData(data);
   printLdrStatus(data.ldr.status);
-#elif PRINT_MODE == PRINT_MODE_DHT_DATA_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_DHT_DATA_STATUS
   printTelemetryUptime(data);
   printDhdData(data);
   printDhtStatus(data.dht.status);
-#elif PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS_DHT_DATA_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS_DHT_DATA_STATUS
   printTelemetryUptime(data);
   printDhdData(data);
   printDhtStatus(data.dht.status);
   printLdrData(data);
   printLdrStatus(data.ldr.status);
-#elif PRINT_MODE == PRINT_MODE_ALL_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_ALL_STATUS
   printTelemetryUptime(data);
   printTelemetryStatus(data.status);
   printLdrStatus(data.ldr.status);
   printDhtStatus(data.dht.status);
-#elif PRINT_MODE == PRINT_MODE_BUTTON_STATE_LED_STATE
+#elif CURRENT_PRINT_MODE == PRINT_MODE_BUTTON_STATE_LED_STATE
   printTelemetryUptime(data);
   printButtonsState(buttonsState);
   printLedState(systemState);
@@ -355,33 +355,33 @@ static void printButtonsState(const uint8_t &state) {
   Serial.println((state & BUTTON_SILENT_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  BUTTON_2:         ");
-  Serial.println((state & BUTTON_WIFI_DISABLE) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & BUTTON_WIFI_DISABLE_MASK) ? "ON (1)" : "OFF (0)");
 }
 
 static void printLedState(const uint8_t &state) {
   Serial.println("[SYSTEM]    State:");
 
   Serial.print("  LIGHT_MANUAL:     ");
-  Serial.println((state & LED_LIGHT_MANUAL) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_LIGHT_MANUAL_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  LIGHT_AUTO:       ");
-  Serial.println((state & LED_LIGHT_AUTO) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_LIGHT_AUTO_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  LIGHT_MIN:        ");
-  Serial.println((state & LED_LIGHT_MIN) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_LIGHT_MIN_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  LIGHT_MAX:        ");
-  Serial.println((state & LED_LIGHT_MAX) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_LIGHT_MAX_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  TEMPERATURE_MIN:  ");
   Serial.println((state & LED_TEMPERATURE_MIN) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  TEMPERATURE_MAX:  ");
-  Serial.println((state & LED_TEMPERATURE_MAX) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_TEMPERATURE_MAX_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  HUMIDITY_MIN:     ");
-  Serial.println((state & LED_HUMIDITY_MIN) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_HUMIDITY_MIN_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  SILENT:           ");
-  Serial.println((state & LED_SILENT) ? "ON (1)" : "OFF (0)");
+  Serial.println((state & LED_SILENT_MASK) ? "ON (1)" : "OFF (0)");
 }

@@ -11,7 +11,7 @@
 
 #define BUTTON_0_MASK BUTTON_LIGHT_MASK
 #define BUTTON_1_MASK BUTTON_SILENT_MASK
-#define BUTTON_2_MASK BUTTON_WIFI_DISABLE
+#define BUTTON_2_MASK BUTTON_WIFI_DISABLE_MASK
 
 uint32_t lastDebounce0 = 0;
 uint32_t lastDebounce1 = 0;
@@ -45,7 +45,8 @@ void handleButtons(uint8_t &buttonsState) {
   if (button0Pressed) {
     button0Pressed = false;
 
-    if (!(buttonsHandled & BUTTON_0_MASK) && now - lastDebounce0 >= DEBOUNCE) {
+    if (!(buttonsHandled & BUTTON_0_MASK) &&
+        now - lastDebounce0 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce0 = now; // Update debounce time
 
       buttonsState ^= BUTTON_0_MASK;   // Toggled
@@ -56,7 +57,8 @@ void handleButtons(uint8_t &buttonsState) {
   if (button1Pressed) {
     button1Pressed = false;
 
-    if (!(buttonsHandled & BUTTON_1_MASK) && now - lastDebounce1 >= DEBOUNCE) {
+    if (!(buttonsHandled & BUTTON_1_MASK) &&
+        now - lastDebounce1 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce1 = now; // Update debounce time
 
       buttonsState ^= BUTTON_1_MASK;   // Toggled
@@ -67,7 +69,8 @@ void handleButtons(uint8_t &buttonsState) {
   if (button2Pressed) {
     button2Pressed = false;
 
-    if (!(buttonsHandled & BUTTON_2_MASK) && now - lastDebounce2 >= DEBOUNCE) {
+    if (!(buttonsHandled & BUTTON_2_MASK) &&
+        now - lastDebounce2 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce2 = now; // Update debounce time
 
       buttonsState ^= BUTTON_2_MASK;   // Toggled

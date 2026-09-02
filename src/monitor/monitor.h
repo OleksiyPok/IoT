@@ -16,7 +16,7 @@
 #define PRINT_MODE_ALL_STATUS 10
 #define PRINT_MODE_BUTTON_STATE_LED_STATE 11
 
-#define PRINT_MODE PRINT_MODE_TELEMETRY_DATA_STATUS
+#define CURRENT_PRINT_MODE PRINT_MODE_TELEMETRY_DATA_STATUS
 
 void initMonitor();
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,

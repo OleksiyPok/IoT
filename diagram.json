@@ -248,9 +248,9 @@
   ],
   "connections": [
     ["ldr1:GND", "esp:GND.2", "black", ["h86", "v153"]],
-    ["ldr1:VCC", "esp:3V3", "red", ["h230", "v172"]],
+    ["ldr1:LDR_VCC_V", "esp:3V3", "red", ["h230", "v172"]],
     ["dht1:GND", "esp:GND.2", "black", ["h86", "v0"]],
-    ["dht1:VCC", "esp:3V3", "red", ["h96", "v-192", "h134", "v172"]],
+    ["dht1:LDR_VCC_V", "esp:3V3", "red", ["h96", "v-192", "h134", "v172"]],
     ["dht1:SDA", "esp:D13", "green", ["h67.2", "v-28.9"]],
     ["ldr1:AO", "esp:D33", "limegreen", ["h76.8", "v56.9"]],
     ["led1:C", "esp:GND.1", "black", ["v67.2", "h-0.4", "v153.6"]],

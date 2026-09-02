@@ -27,7 +27,7 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   telemetryData.uptime = millis() / 1000;
 
   // Update SILENT system status.
-  if (systemState & LED_SILENT) {
+  if (systemState & LED_SILENT_MASK) {
     telemetryData.status |= STATUS_DEVICE_SILENT_MODE;
   } else {
     telemetryData.status &= ~STATUS_DEVICE_SILENT_MODE;

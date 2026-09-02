@@ -15,10 +15,10 @@
 #define LDR_LUX_VALID_MAX 70000
 #define LDR_ADC_VALID_MAX 4045
 
-#define GAMMA 0.7f // нахил графіка log(R)/log(lux) — атрибут Wokwi "gamma"
+#define LDR_GAMMA 0.7f // нахил графіка log(R)/log(lux) — атрибут Wokwi "gamma"
 #define RL10 50.0f // опір LDR при 10 lux, кОм — атрибут Wokwi "rl10"
-#define RDIV 10000.0f // постійний резистор дільника в модулі LDR, Ом
-#define VCC 3.3f      // напруга живлення дільника, В
+#define LDR_R_DIV_OHM 10000.0f // постійний резистор дільника в модулі LDR, Ом
+#define LDR_VCC_V 3.3f // напруга живлення дільника, В
 
 float adcToLux(const uint16_t &adcValue);
 
@@ -79,21 +79,22 @@ float adcToLux(const uint16_t &adcValue) {
     return NAN;
   }
 
-  float voltage = adcValue / 4096.0f * VCC;
+  float voltage = adcValue / 4096.0f * LDR_VCC_V;
 
-  // Prevent division by zero when voltage == VCC
-  if (voltage >= VCC) {
+  // Prevent division by zero when voltage == LDR_VCC_V
+  if (voltage >= LDR_VCC_V) {
     return NAN;
   }
 
-  // R_LDR = RDIV * V / (VCC - V)
-  float resistance = RDIV * voltage / (VCC - voltage);
+  // R_LDR = LDR_R_DIV_OHM * V / (LDR_VCC_V - V)
+  float resistance = LDR_R_DIV_OHM * voltage / (LDR_VCC_V - voltage);
 
   if (resistance <= 0.0f) {
     return NAN;
   }
 
-  float lux = pow(RL10 * 1e3 * pow(10, GAMMA) / resistance, (1.0f / GAMMA));
+  float lux =
+      pow(RL10 * 1e3 * pow(10, LDR_GAMMA) / resistance, (1.0f / LDR_GAMMA));
 
   return lux;
 }
