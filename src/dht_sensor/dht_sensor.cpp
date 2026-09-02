@@ -38,12 +38,6 @@ void handleDhtSensor(DHTData &data) {
 
   // Is NaN
   if (isnan(temperature) || isnan(humidity)) {
-
-    Serial.print("[DEBUG-ERR] Temperature: ");
-    Serial.println(temperature);
-    Serial.print("[DEBUG-ERR] Humidity: ");
-    Serial.println(humidity);
-
     status |= STATUS_DHT_DEVICE_ERR;
     data.status = status;
     return;

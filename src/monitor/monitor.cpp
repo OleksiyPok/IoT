@@ -42,6 +42,7 @@ void initMonitor() {
 
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
                    const uint8_t &systemState) {
+
 #if PRINT_MODE == PRINT_MODE_DEVICEID
   printTelemetryUptime(data);
   printDeviceId(data);
@@ -102,6 +103,16 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
 }
 
 void handleMonitorPayload(const char *payload) {
+
+#if defined(DEBUG_MODE)
+  Serial.println("================================");
+  Serial.println("| !!!!!!!! DEBUG MODE !!!!!!!! |");
+  Serial.println("|  Comment out ''DEBUG_MODE''  |");
+  Serial.println("|    in the configuration      |");
+  Serial.println("| to switch to Production mode |");
+  Serial.println("================================");
+#endif
+
   if (payload == nullptr) {
     Serial.println("[MONITOR] Payload is null");
     return;
@@ -117,8 +128,8 @@ void handleMonitorPayload(const char *payload) {
     return;
   }
 
+  Serial.println();
   Serial.println("[MONITOR] HTTP payload:");
-  Serial.println("↓↓↓↓↓↓↓↓↓↓↓");
 
   printTelemetryPayload(doc);
   printPayloadStatus(doc);
@@ -267,105 +278,110 @@ static void printTelemetryStatus(const uint8_t &status) {
   Serial.println("[TELEMETRY] Status:");
 
   Serial.print("  SILENT_MODE:            ");
-  Serial.println((status & STATUS_DEVICE_SILENT_MODE) ? "SILENT" : "NORMAL");
+  Serial.println((status & STATUS_DEVICE_SILENT_MODE) ? "SILENT (1)"
+                                                      : "NORMAL (0)");
 
   Serial.print("  LDR_ERR:                ");
-  Serial.println((status & STATUS_LDR_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_LDR_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  DHT_ERR:                ");
-  Serial.println((status & STATUS_DHT_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_DHT_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  MQTT_ERR:               ");
-  Serial.println((status & STATUS_MQTT_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_MQTT_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  WIFI_ERR:               ");
-  Serial.println((status & STATUS_WIFI_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_WIFI_ERR) ? "ERROR (1)" : "OK (0)");
 };
 
 static void printLdrStatus(const uint8_t &status) {
   Serial.println("[LDR] Status:");
 
   Serial.print("  DEVICE_ERR:             ");
-  Serial.println((status & STATUS_LDR_DEVICE_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_LDR_DEVICE_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  DATA_STALE:             ");
-  Serial.println((status & STATUS_LDR_DATA_STALE) ? "STALE" : "OK");
+  Serial.println((status & STATUS_LDR_DATA_STALE) ? "STALE (1)" : "OK (0)");
 
   Serial.print("  DATA_VALID_ERR:         ");
-  Serial.println((status & STATUS_LDR_DATA_VALID_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_LDR_DATA_VALID_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  LUX_ALARM_MIN:          ");
-  Serial.println((status & STATUS_LDR_LUX_ALARM_MIN) ? "ALARM" : "OK");
+  Serial.println((status & STATUS_LDR_LUX_ALARM_MIN) ? "ALARM (1)" : "OK (0)");
 
   Serial.print("  LUX_ALARM_MAX:          ");
-  Serial.println((status & STATUS_LDR_LUX_ALARM_MAX) ? "ALARM" : "OK");
+  Serial.println((status & STATUS_LDR_LUX_ALARM_MAX) ? "ALARM (1)" : "OK (0)");
 
   Serial.print("  LIGHT_LOW:              ");
-  Serial.println((status & STATUS_LDR_LIGHT_LOW) ? "LOW" : "OK");
+  Serial.println((status & STATUS_LDR_LIGHT_LOW) ? "LOW (1)" : "OK (0)");
 };
 
 static void printDhtStatus(const uint8_t &status) {
   Serial.println("[DHT] Status:");
 
   Serial.print("  DEVICE_ERR:             ");
-  Serial.println((status & STATUS_DHT_DEVICE_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_DHT_DEVICE_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  DATA_STALE:             ");
-  Serial.println((status & STATUS_DHT_DATA_STALE) ? "STALE" : "OK");
+  Serial.println((status & STATUS_DHT_DATA_STALE) ? "STALE (1)" : "OK (0)");
 
   Serial.print("  DATA_VALID_ERR:         ");
-  Serial.println((status & STATUS_DHT_DATA_VALID_ERR) ? "ERROR" : "OK");
+  Serial.println((status & STATUS_DHT_DATA_VALID_ERR) ? "ERROR (1)" : "OK (0)");
 
   Serial.print("  TEMPERATURE_ALARM_MIN:  ");
-  Serial.println((status & STATUS_DHT_TEMPERATURE_ALARM_MIN) ? "ALARM" : "OK");
+  Serial.println((status & STATUS_DHT_TEMPERATURE_ALARM_MIN) ? "ALARM (1)"
+                                                             : "OK (0)");
 
   Serial.print("  TEMPERATURE_ALARM_MAX:  ");
-  Serial.println((status & STATUS_DHT_TEMPERATURE_ALARM_MAX) ? "ALARM" : "OK");
+  Serial.println((status & STATUS_DHT_TEMPERATURE_ALARM_MAX) ? "ALARM (1)"
+                                                             : "OK (0)");
 
   Serial.print("  HUMIDITY_ALARM_MIN:     ");
-  Serial.println((status & STATUS_DHT_HUMIDITY_ALARM_MIN) ? "ALARM" : "OK");
+  Serial.println((status & STATUS_DHT_HUMIDITY_ALARM_MIN) ? "ALARM (1)"
+                                                          : "OK (0)");
 
   Serial.print("  HUMIDITY_ALARM_MAX:     ");
-  Serial.println((status & STATUS_DHT_HUMIDITY_ALARM_MAX) ? "ALARM" : "OK");
+  Serial.println((status & STATUS_DHT_HUMIDITY_ALARM_MAX) ? "ALARM (1)"
+                                                          : "OK (0)");
 }
 
 static void printButtonsState(const uint8_t &state) {
   Serial.println("[BUTTONS] State:");
 
   Serial.print("  BUTTON_0:         ");
-  Serial.println((state & BUTTON_LIGHT_MASK) ? "ON" : "OFF");
+  Serial.println((state & BUTTON_LIGHT_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  BUTTON_1:         ");
-  Serial.println((state & BUTTON_SILENT_MASK) ? "ON" : "OFF");
+  Serial.println((state & BUTTON_SILENT_MASK) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  BUTTON_2:         ");
-  Serial.println((state & BUTTON_WIFI_DISABLE) ? "ON" : "OFF");
+  Serial.println((state & BUTTON_WIFI_DISABLE) ? "ON (1)" : "OFF (0)");
 }
 
 static void printLedState(const uint8_t &state) {
   Serial.println("[SYSTEM]    State:");
 
   Serial.print("  LIGHT_MANUAL:     ");
-  Serial.println((state & LED_LIGHT_MANUAL) ? "ON" : "OFF");
+  Serial.println((state & LED_LIGHT_MANUAL) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  LIGHT_AUTO:       ");
-  Serial.println((state & LED_LIGHT_AUTO) ? "ON" : "OFF");
+  Serial.println((state & LED_LIGHT_AUTO) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  LIGHT_MIN:        ");
-  Serial.println((state & LED_LIGHT_MIN) ? "ON" : "OFF");
+  Serial.println((state & LED_LIGHT_MIN) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  LIGHT_MAX:        ");
-  Serial.println((state & LED_LIGHT_MAX) ? "ON" : "OFF");
+  Serial.println((state & LED_LIGHT_MAX) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  TEMPERATURE_MIN:  ");
-  Serial.println((state & LED_TEMPERATURE_MIN) ? "ON" : "OFF");
+  Serial.println((state & LED_TEMPERATURE_MIN) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  TEMPERATURE_MAX:  ");
-  Serial.println((state & LED_TEMPERATURE_MAX) ? "ON" : "OFF");
+  Serial.println((state & LED_TEMPERATURE_MAX) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  HUMIDITY_MIN:     ");
-  Serial.println((state & LED_HUMIDITY_MIN) ? "ON" : "OFF");
+  Serial.println((state & LED_HUMIDITY_MIN) ? "ON (1)" : "OFF (0)");
 
   Serial.print("  SILENT:           ");
-  Serial.println((state & LED_SILENT) ? "ON" : "OFF");
+  Serial.println((state & LED_SILENT) ? "ON (1)" : "OFF (0)");
 }

@@ -37,10 +37,6 @@ void handleLdrSensor(LDRData &data) {
   if (raw <= LDR_ADC_VALID_MIN || raw >= LDR_ADC_VALID_MAX) {
     status |= STATUS_LDR_DEVICE_ERR;
     data.status = status;
-
-    Serial.print("[DEBUG-ERR] Raw: ");
-    Serial.println(raw);
-
     return;
   }
 

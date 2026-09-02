@@ -2,6 +2,9 @@
 
 #pragma once
 
+// !!!! Uncomment to see the debug message in the Serial Monitor !!!!
+// #define DEBUG_MODE
+
 #define BUTTONS_READ_INTERVAL_MS 100
 #define ACTIONS_MS 100
 #define INDICATION_CHANGE_INTERVAL_MS 100
@@ -10,10 +13,11 @@
 #define SENSOR_LDR_READ_INTERVAL_MS 5000
 #define DATA_MONITOR_INTERVAL_MS 5000
 
+// Use the smaller interval value
 #define TELEMETRY_UPDATE_INTERVAL_MS                                           \
   ((SENSOR_DHT_READ_INTERVAL_MS < SENSOR_LDR_READ_INTERVAL_MS                  \
         ? SENSOR_DHT_READ_INTERVAL_MS                                          \
-        : SENSOR_LDR_READ_INTERVAL_MS)) // Use the smaller interval value
+        : SENSOR_LDR_READ_INTERVAL_MS))
 
 #define DATA_SEND_INTERVAL_MS 5000
 #define MEMORY_CHECK_INTERVAL_MS 30000

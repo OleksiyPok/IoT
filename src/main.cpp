@@ -102,16 +102,20 @@ void loop() {
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
 
+#if !defined(DEBUG_MODE)
     if (!(buttonsState & BUTTON_SILENT_MASK)) {
       handleMonitor(telemetryData, buttonsState, systemState);
     }
+#endif
   }
 
+#if defined(DEBUG_MODE)
   // Memory check
   if (now - lastMemoryCheckMs >= MEMORY_CHECK_INTERVAL_MS) {
     lastMemoryCheckMs = now;
     // checkMemory();
   }
+#endif
 
   delay(20); // To simplify the simulation process
 }

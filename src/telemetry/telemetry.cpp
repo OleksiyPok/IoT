@@ -11,10 +11,10 @@
 #include "config.h"
 #include "telemetry.h"
 
-
 // ---------------------------------
 
 // ---------------------------------
+
 void initTelemetry(Telemetry &telemetryData) {
   telemetryData.uptime = millis() / 1000;
   getDeviceId(telemetryData.deviceId);
@@ -50,13 +50,13 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   }
 
   // Update STALE status.
-  if (now - telemetryData.dht.updated >= (2UL * SENSOR_DHT_READ_INTERVAL_MS)) {
+  if (now - telemetryData.dht.updated > (SENSOR_DHT_READ_INTERVAL_MS)) {
     telemetryData.dht.status |= STATUS_DHT_DATA_STALE;
   } else {
     telemetryData.dht.status &= ~STATUS_DHT_DATA_STALE;
   }
 
-  if (now - telemetryData.ldr.updated >= (2UL * SENSOR_LDR_READ_INTERVAL_MS)) {
+  if (now - telemetryData.ldr.updated > (SENSOR_LDR_READ_INTERVAL_MS)) {
     telemetryData.ldr.status |= STATUS_LDR_DATA_STALE;
   } else {
     telemetryData.ldr.status &= ~STATUS_LDR_DATA_STALE;

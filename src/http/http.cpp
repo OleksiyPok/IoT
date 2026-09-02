@@ -55,7 +55,9 @@ static void sendData(const Telemetry &telemetryData) {
   Serial.print("[HTTP] Sending: ");
   Serial.println(payload);
 
+#if defined(DEBUG_MODE)
   handleMonitorPayload(payload); // Debug
+#endif
 
   int httpCode =
       http.POST(reinterpret_cast<uint8_t *>(payload), strlen(payload));
