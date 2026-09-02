@@ -7,12 +7,13 @@
 #include "ldr_sensor.h"
 
 // ---------------------------------
-
+#define LDR_ADC_VALID_MIN 50
 #define LDR_LUX_VALID_MIN 1
 #define LDR_LUX_ALARM_MIN 10
 #define LDR_LUX_THRESHOLD_LIGHT_LOW 600
 #define LDR_LUX_ALARM_MAX 10000
 #define LDR_LUX_VALID_MAX 70000
+#define LDR_ADC_VALID_MAX 4045
 
 #define GAMMA 0.7f // нахил графіка log(R)/log(lux) — атрибут Wokwi "gamma"
 #define RL10 50.0f // опір LDR при 10 lux, кОм — атрибут Wokwi "rl10"
@@ -29,19 +30,24 @@ void initLdrSensor(LDRData &data) {
 }
 
 void handleLdrSensor(LDRData &data) {
-  uint16_t raw = analogRead(LDR_ADC_PIN);
-  float lux = adcToLux(raw);
 
   uint8_t status = STATUS_LDR_OK;
+  uint16_t raw = analogRead(LDR_ADC_PIN);
 
-  // Is NaN
-  if (!isfinite(lux) || isnan(lux)) {
+  if (raw <= LDR_ADC_VALID_MIN || raw >= LDR_ADC_VALID_MAX) {
+    status |= STATUS_LDR_DEVICE_ERR;
+    data.raw = raw;
+    data.status = status;
 
     Serial.print("[DEBUG-ERR] Raw: ");
     Serial.println(raw);
-    Serial.print("[DEBUG-ERR] Lux: ");
-    Serial.println(lux);
 
+    return;
+  }
+
+  float lux = adcToLux(raw);
+
+  if (!isfinite(lux)) {
     status |= STATUS_LDR_DEVICE_ERR;
     data.status = status;
     return;
@@ -68,7 +74,6 @@ void handleLdrSensor(LDRData &data) {
     status &= ~STATUS_LDR_LIGHT_LOW;
   }
 
-  data.raw = raw;
   data.lux = lux;
   data.status = status;
 }
