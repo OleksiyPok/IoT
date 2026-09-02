@@ -22,7 +22,7 @@ if len(sys.argv) < 2:
 SOURCE_DIR = Path(sys.argv[1]).expanduser().resolve()
 
 if not SOURCE_DIR.exists() or not SOURCE_DIR.is_dir():
-    print(f"Error: invalid source directory:")
+    print("Error: invalid source directory:")
     print(f"  {SOURCE_DIR}")
     sys.exit(1)
 
@@ -31,16 +31,15 @@ if not SOURCE_DIR.exists() or not SOURCE_DIR.is_dir():
 # Target
 # ============================================================
 
-print(f"Source directory: {SOURCE_DIR}")
+print(f"Source directory:")
+print(f"  {SOURCE_DIR}")
 
-target_input = input("Package to [script directory]: ").strip()
+target_input = input("\nPackage to [script directory]: ").strip()
 
 if target_input == "" or target_input == ".":
     TARGET_BASE_DIR = BASE_DIR
 else:
     TARGET_BASE_DIR = Path(target_input).expanduser().resolve()
-
-TARGET_BASE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================
@@ -56,14 +55,55 @@ CURRENT_TIME = datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
 # ============================================================
-# Info
+# Confirmation
 # ============================================================
 
-print()
-print(f"SOURCE_DIR : {SOURCE_DIR}")
-print(f"TARGET_DIR : {TARGET_DIR}")
-print(f"ARCHIVE    : {ARCHIVE}")
-print(f"TIME       : {CURRENT_TIME}")
+while True:
+    print()
+    print("=" * 60)
+    print("PACKAGE PLAN")
+    print("=" * 60)
+    print(f"SOURCE_DIR : {SOURCE_DIR}")
+    print(f"TARGET_DIR : {TARGET_DIR}")
+    print(f"ARCHIVE    : {ARCHIVE}")
+    print(f"TIME       : {CURRENT_TIME}")
+    print("=" * 60)
+
+    print()
+    print("What would you like to do?")
+    print("  [1] / o = OK, start packaging")
+    print("  [2] / e = Edit target directory")
+    print("  [3] / q = Cancel")
+
+    choice = input("\nChoice: ").strip().lower()
+
+    if choice in ("", "1", "o"):
+        break
+
+    if choice in ("2", "e"):
+        target_input = input("\nPackage to [script directory]: ").strip()
+
+        if target_input == "" or target_input == ".":
+            TARGET_BASE_DIR = BASE_DIR
+        else:
+            TARGET_BASE_DIR = Path(target_input).expanduser().resolve()
+
+        TARGET_DIR = TARGET_BASE_DIR / PACKAGE_NAME
+        ARCHIVE = TARGET_BASE_DIR / f"{PACKAGE_NAME}.zip"
+
+        continue
+
+    if choice in ("3", "q"):
+        print("\nCancelled.")
+        sys.exit(0)
+
+    print("\nInvalid choice. Please enter 1, 2 or 3.")
+
+# ============================================================
+# Prepare target
+# ============================================================
+
+TARGET_BASE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================
