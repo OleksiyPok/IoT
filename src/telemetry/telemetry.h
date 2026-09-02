@@ -7,12 +7,14 @@
 struct DHTData {
   float temperature; // °C
   float humidity;    // %
+  uint32_t updated;
   uint8_t status;
 };
 
 struct LDRData {
   uint16_t raw; // ADC data (0–4095)
   float lux;    // data in the lux
+  uint32_t updated;
   uint8_t status;
 };
 
@@ -39,4 +41,4 @@ struct Telemetry {
    STATUS_MQTT_ERR | STATUS_WIFI_ERR)
 
 void initTelemetry(Telemetry &telemetryData);
-void updateTelemetry(Telemetry &telemetryData);
+void updateTelemetry(Telemetry &telemetryData, uint8_t systemState);

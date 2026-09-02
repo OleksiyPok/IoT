@@ -6,7 +6,6 @@
 #include "config.h"
 #include "dht_sensor.h"
 
-
 // ---------------------------------
 
 #define DHT_TYPE DHT22
@@ -39,15 +38,12 @@ void handleDhtSensor(DHTData &data) {
 
   // Is NaN
   if (isnan(temperature) || isnan(humidity)) {
-
     status |= STATUS_DHT_DEVICE_ERR;
-
-    data.temperature = -1;
-    data.humidity = -1;
     data.status = status;
-
     return;
   }
+
+  data.updated = millis();
 
   // Temperature validation
   if (temperature < DHT_TEMPERATURE_VALID_MIN ||

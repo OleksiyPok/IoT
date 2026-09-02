@@ -12,12 +12,15 @@
 #define PRINT_MODE_TELEMETRY_DATA_STATUS 6
 #define PRINT_MODE_LDR_DATA_STATUS 7
 #define PRINT_MODE_DHT_DATA_STATUS 8
-#define PRINT_MODE_ALL_STATUS 9
-#define PRINT_MODE_BUTTON_LED_STATE 10
+#define PRINT_MODE_LDR_DATA_STATUS_DHD_DATA_STATUS 9
+#define PRINT_MODE_ALL_STATUS 10
+#define PRINT_MODE_BUTTON_STATE_LED_STATE 11
 
-#define PRINT_MODE PRINT_MODE_BUTTON_LED_STATE
+#define PRINT_MODE PRINT_MODE_UPTIME
 
 void initMonitor();
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
                    const uint8_t &systemState);
+
+void handleMonitorPayload(const char *payload);
 // void checkMemory();

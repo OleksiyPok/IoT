@@ -36,15 +36,12 @@ void handleLdrSensor(LDRData &data) {
 
   // Is NaN
   if (isnan(lux)) {
-
     status |= STATUS_LDR_DEVICE_ERR;
-
-    data.raw = -1;
-    data.lux = -1;
     data.status = status;
-
     return;
   }
+
+  data.updated = millis();
 
   // ADC light validation (in LUX)
   if (lux < LDR_LUX_VALID_MIN || lux > LDR_LUX_VALID_MAX) {

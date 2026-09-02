@@ -22,17 +22,20 @@ bool serializeTelemetry(const Telemetry &data, char *buffer,
                "\"dht\":{"
                "\"temperature\":%.1f,"
                "\"humidity\":%.1f,"
+               "\"updated\":%" PRIu32 ","
                "\"status\":%u"
                "},"
                "\"ldr\":{"
                "\"raw\":%u,"
                "\"lux\":%.1f,"
+               "\"updated\":%" PRIu32 ","
                "\"status\":%u"
                "},"
                "\"status\":%u}",
                data.deviceId, data.timestamp, data.uptime, data.sequence,
-               data.dht.temperature, data.dht.humidity, data.dht.status,
-               data.ldr.raw, data.ldr.lux, data.ldr.status, data.status);
+               data.dht.temperature, data.dht.humidity, data.dht.updated,
+               data.dht.status, data.ldr.raw, data.ldr.lux, data.ldr.updated,
+               data.ldr.status, data.status);
 
   if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';

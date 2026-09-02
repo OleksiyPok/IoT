@@ -9,8 +9,13 @@
 #define SENSOR_DHT_READ_INTERVAL_MS 5000
 #define SENSOR_LDR_READ_INTERVAL_MS 5000
 #define DATA_MONITOR_INTERVAL_MS 5000
-#define TELEMETRY_UPDATE_INTERVAL_MS 1000
-#define DATA_SEND_INTERVAL_MS 30000
+
+#define TELEMETRY_UPDATE_INTERVAL_MS                                           \
+  ((SENSOR_DHT_READ_INTERVAL_MS < SENSOR_LDR_READ_INTERVAL_MS                  \
+        ? SENSOR_DHT_READ_INTERVAL_MS                                          \
+        : SENSOR_LDR_READ_INTERVAL_MS)) // Use the smaller interval value
+
+#define DATA_SEND_INTERVAL_MS 5000
 #define MEMORY_CHECK_INTERVAL_MS 30000
 
 #define LDR_ADC_PIN 33

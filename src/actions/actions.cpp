@@ -49,7 +49,8 @@ static void updateLedState(const uint8_t &buttonsState, uint8_t &systemState) {
 };
 
 static void updateDhtStatus(const DHTData &data, uint8_t &systemState) {
-  systemState &= ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX | LED_HUMIDITY_MIN);
+  systemState &=
+      ~(LED_TEMPERATURE_MIN | LED_TEMPERATURE_MAX | LED_HUMIDITY_MIN);
 
   if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
     systemState |= LED_TEMPERATURE_MIN;

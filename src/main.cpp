@@ -54,10 +54,16 @@ void loop() {
     handleWiFi();
   }
 
+  // Buttons reading
+  if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
+    lastButtonsReadMs = now;
+    handleButtons(buttonsState);
+  }
+
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    if (buttonsState & BUTTON_SILENT_MASK) {
+    if (!(buttonsState & BUTTON_SILENT_MASK)) {
       handleDhtSensor(telemetryData.dht);
     }
   }
@@ -66,12 +72,6 @@ void loop() {
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
     lastLdrSensorReadMs = now;
     handleLdrSensor(telemetryData.ldr);
-  }
-
-  // Buttons reading
-  if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
-    lastButtonsReadMs = now;
-    handleButtons(buttonsState);
   }
 
   // Actions
@@ -89,7 +89,7 @@ void loop() {
   // Telemetry update
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
-    updateTelemetry(telemetryData);
+    updateTelemetry(telemetryData, systemState);
   }
 
   // Data send
@@ -102,7 +102,7 @@ void loop() {
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
 
-    if (buttonsState & BUTTON_SILENT_MASK) {
+    if (!(buttonsState & BUTTON_SILENT_MASK)) {
       handleMonitor(telemetryData, buttonsState, systemState);
     }
   }

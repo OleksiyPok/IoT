@@ -2,11 +2,15 @@
 
 #include <Arduino.h>
 
+#include "../buttons/buttons.h"
+#include "../device_info/device_info.h"
 #include "../dht_sensor/dht_sensor.h"
+#include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../wifi/wifi.h"
-#include "device_info/device_info.h"
+#include "config.h"
 #include "telemetry.h"
+
 
 // ---------------------------------
 
@@ -17,9 +21,17 @@ void initTelemetry(Telemetry &telemetryData) {
   telemetryData.status |= STATUS_INIT_ERR;
 }
 
-void updateTelemetry(Telemetry &telemetryData) {
+void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   // Update "uptime"
+  uint32_t now = millis();
   telemetryData.uptime = millis() / 1000;
+
+  // Update SILENT system status.
+  if (systemState & LED_SILENT) {
+    telemetryData.status |= STATUS_DEVICE_SILENT_MODE;
+  } else {
+    telemetryData.status &= ~STATUS_DEVICE_SILENT_MODE;
+  }
 
   // Update DHT system status
   if (telemetryData.dht.status &
@@ -35,6 +47,19 @@ void updateTelemetry(Telemetry &telemetryData) {
     telemetryData.status |= STATUS_LDR_ERR;
   } else {
     telemetryData.status &= ~STATUS_LDR_ERR;
+  }
+
+  // Update STALE status.
+  if (now - telemetryData.dht.updated >= (2UL * SENSOR_DHT_READ_INTERVAL_MS)) {
+    telemetryData.dht.status |= STATUS_DHT_DATA_STALE;
+  } else {
+    telemetryData.dht.status &= ~STATUS_DHT_DATA_STALE;
+  }
+
+  if (now - telemetryData.ldr.updated >= (2UL * SENSOR_LDR_READ_INTERVAL_MS)) {
+    telemetryData.ldr.status |= STATUS_LDR_DATA_STALE;
+  } else {
+    telemetryData.ldr.status &= ~STATUS_LDR_DATA_STALE;
   }
 
   // Update WiFi system status.
