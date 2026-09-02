@@ -70,7 +70,7 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printTelemetryUptime(data);
   printDhdData(data);
   printDhtStatus(data.dht.status);
-#elif PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS_DHD_DATA_STATUS
+#elif PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS_DHT_DATA_STATUS
   printTelemetryUptime(data);
   printDhdData(data);
   printDhtStatus(data.dht.status);
