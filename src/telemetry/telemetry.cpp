@@ -1,8 +1,10 @@
 // src/telemetry/telemetry.cpp
 
 #include <Arduino.h>
+#include <time.h>
 
 #include "../buttons/buttons.h"
+#include "../clock/clock.h"
 #include "../device_info/device_info.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
@@ -10,6 +12,7 @@
 #include "../wifi/wifi.h"
 #include "config.h"
 #include "telemetry.h"
+
 
 // ---------------------------------
 
@@ -22,6 +25,9 @@ void initTelemetry(Telemetry &telemetryData) {
 }
 
 void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
+  // Update timestamp
+  telemetryData.timestamp = getCurrentTimestamp();
+
   // Update "uptime"
   uint32_t now = millis();
   telemetryData.uptime = millis() / 1000;

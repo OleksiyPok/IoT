@@ -13,13 +13,10 @@ static const uint8_t LED_PINS[] = {
     LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN,
     LED_HUMIDITY_MIN_PIN, LED_SILENT_PIN};
 
-static const uint8_t LED_MASKS[] = {LED_LIGHT_MANUAL_MASK,
-                                    LED_LIGHT_AUTO_MASK,
-                                    LELED_LIGHT_MIN_MASK LED_LIGHT_MAX_MASK,
-                                    LED_TEMPERATURE_MIN,
-                                    LED_TEMPERATURE_MAX_MASK,
-                                    LED_HUMIDITY_MIN_MASK,
-                                    LED_SILENT_MASK};
+static const uint8_t LED_MASKS[] = {
+    LED_LIGHT_MANUAL_MASK, LED_LIGHT_AUTO_MASK, LED_LIGHT_MIN_MASK,
+    LED_LIGHT_MAX_MASK,    LED_TEMPERATURE_MIN, LED_TEMPERATURE_MAX_MASK,
+    LED_HUMIDITY_MIN_MASK, LED_SILENT_MASK};
 // ---------------------------------
 
 void initIndication() {

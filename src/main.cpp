@@ -1,9 +1,11 @@
 // src/main.cpp
 
 #include <Arduino.h>
+#include <time.h>
 
 #include "actions/actions.h"
 #include "buttons/buttons.h"
+#include "clock/clock.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
 #include "http/http.h"
@@ -13,6 +15,7 @@
 #include "monitor/monitor.h"
 #include "telemetry/telemetry.h"
 #include "wifi/wifi.h"
+
 
 // ---------------------------------
 
@@ -42,6 +45,7 @@ void setup() {
   initButtons();
   initIndication();
   connectWifi();
+  initClock();
 }
 
 void loop() {
