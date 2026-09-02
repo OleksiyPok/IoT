@@ -19,7 +19,7 @@
 #define MEMORY_CHECK_INTERVAL_MS 30000
 
 #define LDR_ADC_PIN 33
-#define LDR_BIN_PIN 32
+// #define LDR_BIN_PIN 32
 #define DHT_PIN 13
 
 #define BUTTON_0_PIN 18

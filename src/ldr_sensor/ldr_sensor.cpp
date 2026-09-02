@@ -36,7 +36,6 @@ void handleLdrSensor(LDRData &data) {
 
   if (raw <= LDR_ADC_VALID_MIN || raw >= LDR_ADC_VALID_MAX) {
     status |= STATUS_LDR_DEVICE_ERR;
-    data.raw = raw;
     data.status = status;
 
     Serial.print("[DEBUG-ERR] Raw: ");
@@ -52,8 +51,6 @@ void handleLdrSensor(LDRData &data) {
     data.status = status;
     return;
   }
-
-  data.updated = millis();
 
   // ADC light validation (in LUX)
   if (lux < LDR_LUX_VALID_MIN || lux > LDR_LUX_VALID_MAX) {
@@ -74,6 +71,8 @@ void handleLdrSensor(LDRData &data) {
     status &= ~STATUS_LDR_LIGHT_LOW;
   }
 
+  data.updated = millis();
+  data.raw = raw;
   data.lux = lux;
   data.status = status;
 }

@@ -50,7 +50,7 @@
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn1",
-      "top": 164,
+      "top": 221.6,
       "left": 180.2,
       "rotate": 270,
       "attrs": { "color": "white" }
@@ -58,14 +58,14 @@
     {
       "type": "wokwi-text",
       "id": "label-btn1",
-      "top": 211.2,
-      "left": 163.2,
+      "top": 249.6,
+      "left": 153.6,
       "attrs": { "text": "Light\nOn / Off" }
     },
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn2",
-      "top": 163.2,
+      "top": 220.8,
       "left": 223.8,
       "rotate": 90,
       "attrs": { "color": "orange" }
@@ -73,8 +73,8 @@
     {
       "type": "wokwi-text",
       "id": "label-btn2",
-      "top": 211.2,
-      "left": 240,
+      "top": 249.6,
+      "left": 230.4,
       "attrs": { "text": "Silent mode\nOn / Off" }
     },
     {
@@ -154,21 +154,21 @@
     {
       "type": "wokwi-led",
       "id": "led5",
-      "top": 226.8,
+      "top": 217.2,
       "left": -255.4,
       "attrs": { "color": "#00BFFF" }
     },
     {
       "type": "wokwi-led",
       "id": "led6",
-      "top": 226.8,
+      "top": 217.2,
       "left": -149.8,
       "attrs": { "color": "red" }
     },
     {
       "type": "wokwi-resistor",
       "id": "r5",
-      "top": 282.65,
+      "top": 273.05,
       "left": -116.6,
       "rotate": 180,
       "attrs": { "value": "220" }
@@ -176,7 +176,7 @@
     {
       "type": "wokwi-resistor",
       "id": "r6",
-      "top": 263.45,
+      "top": 253.85,
       "left": -116.6,
       "rotate": 180,
       "attrs": { "value": "220" }
@@ -185,14 +185,14 @@
       "type": "wokwi-text",
       "id": "label-led5",
       "top": 201.6,
-      "left": -249.6,
+      "left": -259.2,
       "attrs": { "text": "T < min" }
     },
     {
       "type": "wokwi-text",
       "id": "label-led6",
       "top": 201.6,
-      "left": -144,
+      "left": -163.2,
       "attrs": { "text": "T > max" }
     },
     {
@@ -244,20 +244,6 @@
       "top": 278.4,
       "left": 38.4,
       "attrs": { "text": "Test: DHT" }
-    },
-    {
-      "type": "wokwi-pushbutton-6mm",
-      "id": "btn5",
-      "top": 247.4,
-      "left": 9.6,
-      "attrs": { "color": "red", "xray": "1" }
-    },
-    {
-      "type": "wokwi-text",
-      "id": "label-btn5",
-      "top": 249.6,
-      "left": 38.4,
-      "attrs": { "text": "Test: LDR" }
     }
   ],
   "connections": [
@@ -265,8 +251,8 @@
     ["ldr1:VCC", "esp:3V3", "red", ["h230", "v172"]],
     ["dht1:GND", "esp:GND.2", "black", ["h86", "v0"]],
     ["dht1:VCC", "esp:3V3", "red", ["h96", "v-192", "h134", "v172"]],
-    ["dht1:SDA", "esp:D13", "green", ["h57", "v-28"]],
-    ["ldr1:AO", "esp:D33", "limegreen", ["h48", "v66"]],
+    ["dht1:SDA", "esp:D13", "green", ["h67.2", "v-28.9"]],
+    ["ldr1:AO", "esp:D32", "limegreen", ["h76.8", "v56.9"]],
     ["led1:C", "esp:GND.1", "black", ["v67.2", "h-0.4", "v153.6"]],
     ["led1:A", "r1:1", "orange", ["h9"]],
     ["r1:2", "esp:D21", "orange", ["v77", "h-56.81"]],
@@ -287,17 +273,15 @@
     ["r4:1", "esp:D22", "orange", ["h182.4", "v105.6"]],
     ["r6:2", "led6:A", "orange", ["v0"]],
     ["led5:A", "r5:2", "orange", ["v0"]],
-    ["esp:GND.2", "led6:C", "black", ["h-28.8", "v172.8", "h-125.2"]],
-    ["esp:GND.2", "led5:C", "black", ["h-28.8", "v172.8", "h-230.8"]],
-    ["r6:1", "esp:D14", "green", ["v0"]],
-    ["esp:D12", "r5:1", "green", ["h-38.4", "v163.2"]],
-    ["esp:D5", "btn3:1.r", "green", ["h28.31", "v134.4"]],
+    ["esp:GND.2", "led6:C", "black", ["h-28.8", "v153.6", "h-125.2"]],
+    ["esp:GND.2", "led5:C", "black", ["h-28.8", "v153.6", "h-230.8"]],
+    ["r6:1", "esp:D14", "green", ["h9.6", "v-144"]],
+    ["esp:D12", "r5:1", "green", ["h-57.6", "v153.6"]],
+    ["esp:D5", "btn3:1.r", "green", ["h28.31", "v124.8", "h-106.4"]],
     ["led7:A", "r7:1", "orange", ["v0"]],
     ["r7:2", "esp:D4", "orange", ["v133.2", "h-67.2"]],
     ["esp:GND.1", "led7:C", "black", ["h133.91", "v-220.8"]],
-    ["esp:D33", "btn5:1.l", "limegreen", ["h-67.2", "v153.6"]],
-    ["esp:D13", "btn4:1.l", "green", ["h-57.6", "v124.8"]],
-    ["esp:GND.2", "btn5:2.l", "black", ["h-28.8", "v95.6"]],
+    ["esp:D13", "btn4:1.l", "green", ["h-48", "v144"]],
     ["esp:GND.2", "btn4:2.l", "black", ["h-28.8", "v134"]],
     ["esp:GND.2", "btn3:2.l", "black", ["h-28.8", "v143.6"]]
   ],
