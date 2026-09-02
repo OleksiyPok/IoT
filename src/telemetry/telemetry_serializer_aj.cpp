@@ -33,7 +33,7 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetryData, char *buffer,
   JsonObject ldr = doc.createNestedObject("ldr");
   ldr["raw"] = telemetryData.ldr.raw;
   ldr["lux"] = telemetryData.ldr.lux;
-  dht["updated"] = telemetryData.ldr.updated;
+  ldr["updated"] = telemetryData.ldr.updated;
   ldr["status"] = telemetryData.ldr.status;
 
   doc["status"] = telemetryData.status;

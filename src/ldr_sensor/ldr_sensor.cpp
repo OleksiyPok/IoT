@@ -35,7 +35,13 @@ void handleLdrSensor(LDRData &data) {
   uint8_t status = STATUS_LDR_OK;
 
   // Is NaN
-  if (isnan(lux)) {
+  if (!isfinite(lux) || isnan(lux)) {
+
+    Serial.print("[DEBUG-ERR] Raw: ");
+    Serial.println(raw);
+    Serial.print("[DEBUG-ERR] Lux: ");
+    Serial.println(lux);
+
     status |= STATUS_LDR_DEVICE_ERR;
     data.status = status;
     return;
@@ -68,9 +74,26 @@ void handleLdrSensor(LDRData &data) {
 }
 
 float adcToLux(const uint16_t &adcValue) {
+  // ADC = 0 -> R_LDR = 0 -> division by zero
+  if (adcValue == 0) {
+    return NAN;
+  }
+
   float voltage = adcValue / 4096.0f * VCC;
+
+  // Prevent division by zero when voltage == VCC
+  if (voltage >= VCC) {
+    return NAN;
+  }
+
   // R_LDR = RDIV * V / (VCC - V)
   float resistance = RDIV * voltage / (VCC - voltage);
+
+  if (resistance <= 0.0f) {
+    return NAN;
+  }
+
   float lux = pow(RL10 * 1e3 * pow(10, GAMMA) / resistance, (1.0f / GAMMA));
+
   return lux;
 }
