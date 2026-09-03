@@ -35,22 +35,22 @@ def get_script_dir() -> Path:
     return Path(__file__).resolve().parent
 
 
-def resolve_path(script_dir: Path, value: str) -> Path:
+def resolve_path(base_dir: Path, value: str) -> Path:
     value = value.strip()
 
     if value in ("", "."):
-        return script_dir
+        return base_dir
 
     path = Path(value)
 
     if path.is_absolute():
         return path.resolve()
 
-    return (script_dir / path).resolve()
+    return (base_dir / path).resolve()
 
 
 def request_existing_path(
-    script_dir: Path,
+    base_dir: Path,
     message: str,
 ) -> Path | None:
 
@@ -64,7 +64,7 @@ def request_existing_path(
         if value.lower() in {"q", "quit", "cancel"}:
             return None
 
-        path = resolve_path(script_dir, value)
+        path = resolve_path(base_dir, value)
 
         if path.exists() and path.is_dir():
             return path
@@ -161,6 +161,45 @@ def request_header_specification(
             print("Try again or enter 'q' to cancel.")
 
 
+def format_header_preview(
+    target_dir: Path,
+    specification: str,
+) -> str:
+    """Return a compact example of the header path shown in the plan."""
+    parts = [part for part in specification.replace("\\", "/").split("/") if part]
+
+    remove_count = sum(part == "*" for part in parts)
+    parent_count = sum(part == ".." for part in parts)
+
+    preview_parts = []
+
+    # '*' removes components from the scan path in the header specification.
+    # For the plan, show only the resulting directory prefix and represent
+    # all scanned files by <files>.
+    base_dir = target_dir
+    for _ in range(remove_count):
+        base_dir = base_dir.parent
+
+    for _ in range(parent_count):
+        base_dir = base_dir.parent
+
+    if not parts or parts == ["."]:
+        preview_parts = [target_dir.name]
+    elif parent_count > 0:
+        preview_parts = [target_dir.parents[parent_count - 1].name]
+        if parent_count > 1:
+            preview_parts = [
+                target_dir.parents[index].name
+                for index in range(parent_count - 1, -1, -1)
+            ]
+    elif remove_count > 0:
+        preview_parts = []
+    else:
+        preview_parts = [target_dir.name]
+
+    return "/".join(preview_parts + ["*"])
+
+
 def should_process(
     path: Path,
     target_dir: Path,
@@ -231,70 +270,182 @@ def process_file(
     )
 
 
+def print_help():
+    print("Usage:")
+    print("  py path_header_cpp.py [scan_path]")
+    print()
+    print("Add or update a path header in C/C++ source and header files recursively")
+    print("under the selected Scan path.")
+    print()
+    print("Arguments:")
+    print("  scan_path    Directory to scan recursively. Relative paths are resolved")
+    print(
+        "               from the terminal's current working directory. If omitted, the"
+    )
+    print("               script asks for Scan path interactively.")
+    print()
+    print("Interactive input:")
+    print("  Scan path       Used when the command-line path is missing or invalid.")
+    print(
+        "  Path in header  Controls the path written into each file and is calculated"
+    )
+    print("                  relative to Scan path. '.', '*/' and '../' keep their")
+    print("                  existing meanings.")
+    print()
+    print("The script shows the number of files to be modified before confirmation.")
+    print(
+        "Only files with the supported extensions are processed; excluded directories"
+    )
+    print("are skipped.")
+    print()
+    print("Confirmation:")
+    print("  1 / q = Cancel")
+    print("  2 / e = Edit")
+    print("  3 / o = OK, continue")
+    print("  Empty choice: first time = warning and repeat; second time = exit.")
+
+
 def main():
+    if any(arg in ("-h", "--help") for arg in sys.argv[1:]):
+        print_help()
+        return
+
+    if len(sys.argv) > 2:
+        print("Error: only one command-line path is allowed.")
+        print("Use -h or --help for help.")
+        return
+
+    terminal_dir = Path.cwd()
     script_dir = get_script_dir()
 
-    target_arg = sys.argv[1] if len(sys.argv) > 1 else "."
-
-    target_path = resolve_path(
-        script_dir,
-        target_arg,
+    target_arg = sys.argv[1] if len(sys.argv) == 2 else None
+    target_path = (
+        resolve_path(terminal_dir, target_arg) if target_arg is not None else None
     )
 
-    if not target_path.exists() or not target_path.is_dir():
-        print(f"Target path '{target_arg}' does not exist " "or is not a directory.")
+    print("=" * 60)
+    print("UPDATE C++ PATH HEADERS")
+    print("=" * 60)
+    print("The script will recursively scan the selected Scan path, find files with")
+    print("supported extensions, and update their leading path header.")
+    print(
+        f"Relative filesystem paths are resolved from the terminal directory: {terminal_dir}"
+    )
+    print("Path in header is different: it is calculated relative to Scan path.")
+    print("The script will show the number of files to modify and ask for confirmation")
+    print("before changing anything.")
+    print("Enter 'q' at an input prompt to cancel.")
+    print("=" * 60)
+    print()
 
-        target_path = request_existing_path(
-            script_dir,
-            "Scan path: ",
-        )
-
+    if target_path is None:
+        target_path = request_existing_path(terminal_dir, "Scan path: ")
+        if target_path is None:
+            print("Cancelled.")
+            return
+    elif not target_path.exists() or not target_path.is_dir():
+        print(f"Target path '{target_arg}' does not exist or is not a directory.")
+        target_path = request_existing_path(terminal_dir, "Scan path: ")
         if target_path is None:
             print("Cancelled.")
             return
 
-    print(f"Scanning from: {target_path}")
+    print(f"Selected scan path: {target_path}")
 
-    specification = request_header_specification(
-        target_path,
-    )
-
+    specification = request_header_specification(target_path)
     if specification is None:
         print("Cancelled.")
         return
 
-    lock_path = script_dir / LOCK_FILE
+    empty_choice_seen = False
 
+    while True:
+        files_to_process = [
+            file_path
+            for file_path in target_path.rglob("*")
+            if should_process(file_path, target_path)
+        ]
+
+        print()
+        print("=" * 60)
+        print("UPDATE PLAN")
+        print("=" * 60)
+        print(f"SCAN_PATH  : {target_path}")
+        print(f"PATH HEADER: {specification}")
+        print(f"HEADER PATH: {format_header_preview(target_path, specification)}")
+        print(f"FILES      : {len(files_to_process)}")
+        print("=" * 60)
+        print()
+        print("What would you like to do?")
+        print("  [1] / q = Cancel")
+        print("  [2] / e = Edit")
+        print("  [3] / o = OK, continue")
+
+        choice = input("\nChoice: ").strip().lower()
+        if choice in ("3", "o"):
+            break
+
+        if choice in ("2", "e"):
+            print()
+            print("Edit scan settings:")
+            target_path = request_existing_path(terminal_dir, "Scan path: ")
+            if target_path is None:
+                print("Cancelled.")
+                return
+            specification = request_header_specification(target_path)
+            if specification is None:
+                print("Cancelled.")
+                return
+            continue
+
+        if choice in ("1", "q", "quit", "cancel"):
+            print("\nCancelled.")
+            return
+
+        if choice == "":
+            if not empty_choice_seen:
+                empty_choice_seen = True
+                print("\nYou have not made a selection. Please make a choice.")
+                continue
+            print("\nNo selection was made. Exiting.")
+            return
+
+        print("\nInvalid choice. Please enter 1, 2, 3, e, o or q.")
+
+    lock_path = script_dir / LOCK_FILE
     if lock_path.exists():
         print("Script already running.")
-        sys.exit(1)
+        return
 
     processed_files = 0
+    failed_files = []
 
     try:
-        lock_path.write_text(
-            "lock",
-            encoding="utf-8",
-        )
+        lock_path.write_text("lock", encoding="utf-8")
 
-        for file_path in target_path.rglob("*"):
-            if should_process(
-                file_path,
-                target_path,
-            ):
-                process_file(
-                    file_path,
-                    target_path,
-                    specification,
-                )
-
+        for file_path in files_to_process:
+            try:
+                process_file(file_path, target_path, specification)
                 processed_files += 1
+            except (OSError, UnicodeError, ValueError) as error:
+                failed_files.append((file_path, error))
 
     finally:
         if lock_path.exists():
             lock_path.unlink()
 
-    print(f"Processed {processed_files} C++ file(s).")
+    print()
+    print("RESULT")
+    print("=" * 60)
+    print(f"Scan path : {target_path}")
+    print(f"Requested : {len(files_to_process)} file(s)")
+    print(f"Processed : {processed_files} file(s)")
+    print(f"Failed    : {len(failed_files)} file(s)")
+    if failed_files:
+        print()
+        for file_path, error in failed_files:
+            print(f"  {file_path}: {error}")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
