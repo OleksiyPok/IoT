@@ -75,8 +75,12 @@ def main():
     print("The script will copy the selected source directory to a temporary")
     print("package directory, remove files that are not C/C++ source/header files,")
     print("create a ZIP archive, and then remove the temporary directory.")
-    print(f"Relative paths are resolved from the terminal directory: {terminal_dir}")
-    print("The confirmation plan will show whether existing target items will be replaced.")
+    print(f"Relative paths are resolved from the terminal directory:")
+    print(f"  {terminal_dir}")
+    print(
+        "The confirmation plan will show whether existing target items will be replaced."
+    )
+    print()
     print("Enter 'q' at an input prompt to cancel.")
     print("=" * 60)
     print()
@@ -122,7 +126,9 @@ def main():
         print(f"ARCHIVE    : {archive}")
         print(f"TIME       : {current_time}")
         if target_dir.exists():
-            print("WARNING    : target package directory already exists and will be replaced.")
+            print(
+                "WARNING    : target package directory already exists and will be replaced."
+            )
         if archive.exists():
             print("WARNING    : archive already exists and will be replaced.")
         print("=" * 60)
