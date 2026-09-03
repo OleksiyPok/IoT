@@ -9,7 +9,6 @@
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../telemetry/telemetry.h"
-#include "esp_mac.h"
 #include "monitor.h"
 
 // ---------------------------------
@@ -19,7 +18,7 @@ static void printTelemetryTimestamp(const Telemetry &data);
 static void printTelemetryUptime(const Telemetry &data);
 static void printTelemetrySequence(const Telemetry &data);
 static void printTelemetryData(const Telemetry &data);
-static void printDhdData(const Telemetry &data);
+static void printDhtData(const Telemetry &data);
 static void printLdrData(const Telemetry &data);
 static void printDhtStatus(const uint8_t &status);
 static void printLdrStatus(const uint8_t &status);
@@ -55,7 +54,7 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printTelemetryTimestamp(data);
   printTelemetryUptime(data);
   printLdrData(data);
-  printDhdData(data);
+  printDhtData(data);
 #elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS
   printTelemetryUptime(data);
   printTelemetryStatus(data.status);
@@ -68,11 +67,11 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printLdrStatus(data.ldr.status);
 #elif CURRENT_PRINT_MODE == PRINT_MODE_DHT_DATA_STATUS
   printTelemetryUptime(data);
-  printDhdData(data);
+  printDhtData(data);
   printDhtStatus(data.dht.status);
 #elif CURRENT_PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS_DHT_DATA_STATUS
   printTelemetryUptime(data);
-  printDhdData(data);
+  printDhtData(data);
   printDhtStatus(data.dht.status);
   printLdrData(data);
   printLdrStatus(data.ldr.status);
@@ -94,7 +93,7 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printLdrData(data);
   printLdrStatus(data.ldr.status);
   Serial.println();
-  printDhdData(data);
+  printDhtData(data);
   printDhtStatus(data.dht.status);
   printButtonsState(buttonsState);
   printLedState(systemState);
@@ -250,10 +249,10 @@ static void printTelemetryData(const Telemetry &data) {
   printTelemetryUptime(data);
   printTelemetrySequence(data);
   printLdrData(data);
-  printDhdData(data);
+  printDhtData(data);
 }
 
-static void printDhdData(const Telemetry &data) {
+static void printDhtData(const Telemetry &data) {
   Serial.print("[DHT] Temperature: ");
   Serial.print(data.dht.temperature, 1);
   Serial.print("°C,  Humidity: ");
