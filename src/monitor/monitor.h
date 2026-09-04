@@ -4,6 +4,8 @@
 
 #include "../telemetry/telemetry.h"
 
+// ---------------------------------
+
 #define PRINT_MODE_DEVICEID 1
 #define PRINT_MODE_TIMESTAMP 2
 #define PRINT_MODE_UPTIME 3
@@ -18,9 +20,11 @@
 
 #define CURRENT_PRINT_MODE PRINT_MODE_TELEMETRY_DATA_STATUS
 
+// ---------------------------------
+
 void initMonitor();
+
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
                    const uint8_t &systemState);
 
 void handleMonitorPayload(const char *payload);
-// void checkMemory();
