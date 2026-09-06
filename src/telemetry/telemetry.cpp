@@ -13,13 +13,13 @@
 #include "config.h"
 #include "telemetry.h"
 
-
 // ---------------------------------
 
 // ---------------------------------
 
 void initTelemetry(Telemetry &telemetryData) {
   telemetryData.uptime = millis() / 1000;
+  telemetryData.version = TELEMETRY_PROTOCOL_VERSION;
   getDeviceId(telemetryData.deviceId);
   telemetryData.status |= STATUS_INIT_ERR;
 }

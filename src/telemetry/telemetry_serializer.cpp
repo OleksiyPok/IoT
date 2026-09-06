@@ -15,7 +15,8 @@ bool serializeTelemetry(const Telemetry &data, char *buffer,
 
   int length =
       snprintf(buffer, bufferSize,
-               "{\"deviceId\":%" PRIu64 ","
+               "{\"version\":%u,"
+               "deviceId\":%" PRIu64 ","
                "\"timestamp\":%" PRIu32 ","
                "\"uptime\":%" PRIu32 ","
                "\"sequence\":%u,"
@@ -32,10 +33,10 @@ bool serializeTelemetry(const Telemetry &data, char *buffer,
                "\"status\":%u"
                "},"
                "\"status\":%u}",
-               data.deviceId, data.timestamp, data.uptime, data.sequence,
-               data.dht.temperature, data.dht.humidity, data.dht.updated,
-               data.dht.status, data.ldr.raw, data.ldr.lux, data.ldr.updated,
-               data.ldr.status, data.status);
+               data.version, data.deviceId, data.timestamp, data.uptime,
+               data.sequence, data.dht.temperature, data.dht.humidity,
+               data.dht.updated, data.dht.status, data.ldr.raw, data.ldr.lux,
+               data.ldr.updated, data.ldr.status, data.status);
 
   if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';
