@@ -23,6 +23,17 @@ void initMonitor() {
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
                    const uint8_t &systemState) {
 
+#if defined(DEBUG_MODE)
+
+  Serial.println("================================");
+  Serial.println("| !!!!!!!! DEBUG MODE !!!!!!!! |");
+  Serial.println("|  Comment out ''DEBUG_MODE''  |");
+  Serial.println("|    in the configuration      |");
+  Serial.println("| to switch to Production mode |");
+  Serial.println("================================");
+
+#endif
+
 #if CURRENT_PRINT_MODE == PRINT_MODE_DEVICEID
 
   printTelemetryUptime(data);
@@ -72,13 +83,26 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   printLdrData(data);
   printLdrStatus(data.ldr.status);
 
-#elif CURRENT_PRINT_MODE == PRINT_MODE_ALL_STATUS
+#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS_DHT_STATUS_LDR_STATUS
 
   printTelemetryUptime(data);
 
   printTelemetryStatus(data.status);
   printLdrStatus(data.ldr.status);
   printDhtStatus(data.dht.status);
+
+#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_ALL_DHT_ALL_LDR_ALL
+
+  printTelemetryData(data);
+  printTelemetryStatus(data.status);
+  Serial.println("  .  .  .  .");
+
+  printDhtData(data);
+  printDhtStatus(data.dht.status);
+  Serial.println("  .  .  .  .");
+
+  printLdrData(data);
+  printLdrStatus(data.ldr.status);
 
 #elif CURRENT_PRINT_MODE == PRINT_MODE_BUTTON_STATE_LED_STATE
 

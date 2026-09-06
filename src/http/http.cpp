@@ -19,7 +19,7 @@
 
 // ---------------------------------
 
-static uint8_t sequenceCounter = 0;
+// static uint8_t sequenceCounter = 0;
 static void sendData(const Telemetry &telemetryData);
 
 // ---------------------------------
@@ -30,7 +30,7 @@ void handleSendData(Telemetry &telemetryData) {
     return;
   }
 
-  telemetryData.sequence = sequenceCounter++;
+  // telemetryData.sequence = sequenceCounter++;
   sendData(telemetryData);
 }
 

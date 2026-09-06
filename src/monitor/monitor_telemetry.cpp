@@ -5,6 +5,10 @@
 #include "monitor_telemetry.h"
 
 // ---------------------------------
+void printProtocolVersion(const Telemetry &data) {
+  Serial.print("[TELEMETRY] Version: ");
+  Serial.println(data.version);
+}
 
 void printDeviceId(const Telemetry &data) {
   Serial.print("[TELEMETRY] DeviceId (MAC): ");
@@ -48,6 +52,7 @@ void printTelemetrySequence(const Telemetry &data) {
 // ---------------------------------
 
 void printTelemetryData(const Telemetry &data) {
+  printProtocolVersion(data);
   printDeviceId(data);
   printTelemetryTimestamp(data);
   printTelemetryUptime(data);

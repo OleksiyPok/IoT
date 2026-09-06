@@ -11,6 +11,7 @@
 
 #define MQTT_RECONNECT_INTERVAL_MS 5000
 #define MQTT_CONNECTION_TIMEOUT_MS 5000
+#define MQTT_BUFFER_SIZE 512
 
 void initMqtt();
 bool isMqttConnected();

@@ -27,6 +27,7 @@ void initMqtt() {
 
   mqttClient.setKeepAlive(60);
   mqttClient.setSocketTimeout(30);
+  mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
 }
 
 // ---------------------------------
@@ -96,7 +97,7 @@ void publishData(const Telemetry &telemetryData) {
     return;
   }
 
-  char payload[256];
+  char payload[MQTT_BUFFER_SIZE];
 
   if (!serializeTelemetry(telemetryData, payload, sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize telemetry");
@@ -109,6 +110,7 @@ void publishData(const Telemetry &telemetryData) {
   bool ok = mqttClient.publish(TOPIC_SENSORS, payload);
 
   Serial.println(ok ? "[MQTT] OK" : "[MQTT] Publish error");
+  Serial.println("------------");
 }
 
 // ---------------------------------

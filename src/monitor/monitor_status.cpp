@@ -21,9 +21,10 @@ struct StatusItem {
 
 // ---------------------------------
 
-static void printStatusItems(const StatusItem *items, size_t count,
+template <size_t N>
+static void printStatusItems(const StatusItem (&items)[N],
                              const uint8_t &status) {
-  for (size_t i = 0; i < count; ++i) {
+  for (size_t i = 0; i < N; ++i) {
     Serial.print("  ");
     Serial.print(items[i].name);
     Serial.print(" ");
@@ -45,7 +46,7 @@ void printTelemetryStatus(const uint8_t &status) {
 
   Serial.println("[TELEMETRY] Status:");
 
-  printStatusItems(items, sizeof(items) / sizeof(items[0]), status);
+  printStatusItems(items, status);
 }
 
 // ---------------------------------
@@ -62,7 +63,7 @@ void printLdrStatus(const uint8_t &status) {
 
   Serial.println("[LDR] Status:");
 
-  printStatusItems(items, sizeof(items) / sizeof(items[0]), status);
+  printStatusItems(items, status);
 }
 
 // ---------------------------------
@@ -84,7 +85,7 @@ void printDhtStatus(const uint8_t &status) {
 
   Serial.println("[DHT] Status:");
 
-  printStatusItems(items, sizeof(items) / sizeof(items[0]), status);
+  printStatusItems(items, status);
 }
 
 // ---------------------------------
@@ -98,7 +99,7 @@ void printButtonsState(const uint8_t &state) {
 
   Serial.println("[BUTTONS] State:");
 
-  printStatusItems(items, sizeof(items) / sizeof(items[0]), state);
+  printStatusItems(items, state);
 }
 
 // ---------------------------------
@@ -117,5 +118,5 @@ void printLedState(const uint8_t &state) {
 
   Serial.println("[SYSTEM]    State:");
 
-  printStatusItems(items, sizeof(items) / sizeof(items[0]), state);
+  printStatusItems(items, state);
 }

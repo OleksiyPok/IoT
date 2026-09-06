@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
+#include "../config.h"
 #include "monitor_payload.h"
 #include "monitor_status.h"
 #include "monitor_telemetry.h"
@@ -15,17 +16,6 @@ static void printPayloadStatus(const JsonDocument &doc);
 // ---------------------------------
 
 void printMonitorPayload(const char *payload) {
-
-#if defined(DEBUG_MODE)
-
-  Serial.println("================================");
-  Serial.println("| !!!!!!!! DEBUG MODE !!!!!!!! |");
-  Serial.println("|  Comment out ''DEBUG_MODE''  |");
-  Serial.println("|    in the configuration      |");
-  Serial.println("| to switch to Production mode |");
-  Serial.println("================================");
-
-#endif
 
   if (payload == nullptr) {
     Serial.println("[MONITOR] Payload is null");

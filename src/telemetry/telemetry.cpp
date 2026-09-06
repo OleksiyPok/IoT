@@ -9,12 +9,13 @@
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
+#include "../mqtt/mqtt.h"
 #include "../wifi/wifi.h"
 #include "config.h"
 #include "telemetry.h"
 
 // ---------------------------------
-
+static uint8_t sequenceCounter = 0;
 // ---------------------------------
 
 void initTelemetry(Telemetry &telemetryData) {
@@ -31,6 +32,9 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   // Update "uptime"
   uint32_t now = millis();
   telemetryData.uptime = millis() / 1000;
+
+  // Update sequence
+  telemetryData.sequence = sequenceCounter++;
 
   // Update SILENT system status.
   if (systemState & LED_SILENT_MASK) {
@@ -73,5 +77,12 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
     telemetryData.status &= ~STATUS_WIFI_ERR;
   } else {
     telemetryData.status |= STATUS_WIFI_ERR;
+  }
+
+  // Update MQTT system status.
+  if (isMqttConnected()) {
+    telemetryData.status &= ~STATUS_MQTT_ERR;
+  } else {
+    telemetryData.status |= STATUS_MQTT_ERR;
   }
 }
