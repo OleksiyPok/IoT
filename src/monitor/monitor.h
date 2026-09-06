@@ -7,6 +7,7 @@
 
 // ---------------------------------
 
+// Serial Monitor Output Format
 #define PRINT_MODE_DEVICEID 1
 #define PRINT_MODE_TIMESTAMP 2
 #define PRINT_MODE_UPTIME 3
@@ -21,13 +22,9 @@
 #define PRINT_MODE_BUTTON_STATE_LED_STATE 12
 
 #if defined(DEBUG_MODE)
-
 #define CURRENT_PRINT_MODE PRINT_MODE_TELEMETRY_ALL_DHT_ALL_LDR_ALL
-
 #else
-
 #define CURRENT_PRINT_MODE PRINT_MODE_TELEMETRY_DATA_STATUS
-
 #endif
 // ---------------------------------
 
