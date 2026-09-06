@@ -13,9 +13,9 @@
 #include "ldr_sensor/ldr_sensor.h"
 #include "memory/memory.h"
 #include "monitor/monitor.h"
+#include "mqtt/mqtt.h"
 #include "telemetry/telemetry.h"
 #include "wifi/wifi.h"
-
 
 // ---------------------------------
 
@@ -32,6 +32,7 @@ uint32_t lastDataMonitorMs = 0;
 uint32_t lastMemoryCheckMs = 0;
 uint32_t lastUpdateTelemetryMs = 0;
 uint32_t lastSendDataMs = 0;
+uint32_t lastMqttPublish = 0;
 
 Telemetry telemetryData;
 
@@ -46,6 +47,8 @@ void setup() {
   initIndication();
   connectWifi();
   initClock();
+  initMqtt();
+  connectMQTT();
 }
 
 void loop() {
@@ -96,24 +99,29 @@ void loop() {
     updateTelemetry(telemetryData, systemState);
   }
 
-  // Data send
-  if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
-    lastSendDataMs = now;
-    handleSendData(telemetryData);
+  // Data MQTT connection contol
+  if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
+    lastMqttPublish = now;
+    handleMqtt(telemetryData);
   }
 
+#if !defined(DEBUG_MODE)
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-
-#if !defined(DEBUG_MODE)
     if (!(buttonsState & BUTTON_SILENT_MASK)) {
       handleMonitor(telemetryData, buttonsState, systemState);
     }
-#endif
   }
+#endif
 
 #if defined(DEBUG_MODE)
+  // Data send
+  if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
+    lastSendDataMs = now;
+    // handleSendData(telemetryData);
+  }
+
   // Memory check
   if (now - lastMemoryCheckMs >= MEMORY_CHECK_INTERVAL_MS) {
     lastMemoryCheckMs = now;

@@ -10,9 +10,9 @@
 static uint32_t wifiConnectStartedAt = 0;
 static uint32_t wifiLastReconnectAt = 0;
 static bool wifiConnecting = false;
-static wl_status_t wifiLastStatus = WL_IDLE_STATUS;
+static wl_status_t wlLastStatus = WL_IDLE_STATUS;
 
-void printWifiStatus(wl_status_t status);
+void printWifiStatus(wl_status_t wlStatus);
 
 // ---------------------------------
 
@@ -20,35 +20,35 @@ bool isWifiConnected() { return WiFi.isConnected(); }
 
 void handleWiFi() {
   const uint32_t now = millis();
-  const wl_status_t status = WiFi.status();
+  const wl_status_t wlStatus = WiFi.status();
 
-  if (status == WL_CONNECTED) {
+  if (wlStatus == WL_CONNECTED) {
     if (wifiConnecting) {
       Serial.println("[Wi-Fi] Connected");
       Serial.print("[Wi-Fi] IP: ");
       Serial.println(WiFi.localIP());
       wifiConnecting = false;
     }
-    wifiLastStatus = status;
+    wlLastStatus = wlStatus;
     return;
   }
 
   if (wifiConnecting) {
-    if (now - wifiConnectStartedAt >= WIFI_TIMEOUT_MS) {
+    if (now - wifiConnectStartedAt >= WIFI_CONNECTION_TIMEOUT_MS) {
       Serial.println("[Wi-Fi] Connection timeout");
       WiFi.disconnect();
       wifiConnecting = false;
       wifiLastReconnectAt = now;
-      wifiLastStatus = WiFi.status();
+      wlLastStatus = WiFi.status();
     }
     return;
   }
 
-  if (status != wifiLastStatus) {
+  if (wlStatus != wlLastStatus) {
     Serial.print("[Wi-Fi] Status: ");
-    Serial.print(status);
-    printWifiStatus(status);
-    wifiLastStatus = status;
+    Serial.print(wlStatus);
+    printWifiStatus(wlStatus);
+    wlLastStatus = wlStatus;
   }
 
   if (now - wifiLastReconnectAt < WIFI_RECONNECT_INTERVAL_MS) {
@@ -77,8 +77,8 @@ bool connectWifi() {
 
 bool disconnectWiFi() { return WiFi.disconnect(); };
 
-void printWifiStatus(wl_status_t status) {
-  switch (status) {
+void printWifiStatus(wl_status_t wlStatus) {
+  switch (wlStatus) {
   case WL_IDLE_STATUS:
     Serial.println(" (IDLE)");
     break;

@@ -12,15 +12,14 @@
 #define SENSOR_DHT_READ_INTERVAL_MS 5000
 #define SENSOR_LDR_READ_INTERVAL_MS 5000
 #define DATA_MONITOR_INTERVAL_MS 5000
-
-// Use the smaller interval value
+#define DATA_SEND_INTERVAL_MS 5000 // must be 30000
+#define MQTT_PUBLISH_INTERVAL_MS 10000
+#define MEMORY_CHECK_INTERVAL_MS 30000
+// Use the smaller interval value for TELEMETRY_UPDATE_INTERVAL_MS
 #define TELEMETRY_UPDATE_INTERVAL_MS                                           \
   ((SENSOR_DHT_READ_INTERVAL_MS < SENSOR_LDR_READ_INTERVAL_MS                  \
         ? SENSOR_DHT_READ_INTERVAL_MS                                          \
         : SENSOR_LDR_READ_INTERVAL_MS))
-
-#define DATA_SEND_INTERVAL_MS 5000
-#define MEMORY_CHECK_INTERVAL_MS 30000
 
 #define LDR_ADC_PIN 33
 // #define LDR_BIN_PIN 32

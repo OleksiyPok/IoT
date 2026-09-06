@@ -4,8 +4,9 @@
 
 #define WIFI_SSID "Wokwi-GUEST" // SSID
 #define WIFI_PASSWORD ""        // Password (empty for Wokwi-GUEST)
+
 #define WIFI_RECONNECT_INTERVAL_MS 2500
-#define WIFI_TIMEOUT_MS 10000 // timeout connection, ms
+#define WIFI_CONNECTION_TIMEOUT_MS 10000 // timeout connection, ms
 
 bool connectWifi();
 bool disconnectWiFi();
