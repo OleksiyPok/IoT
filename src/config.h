@@ -38,7 +38,6 @@
 // ESP32 pins configuration
 
 #define LDR_ADC_PIN 33
-// #define LDR_BIN_PIN 32
 #define DHT_PIN 13
 
 #define BUTTON_0_PIN 18
@@ -47,9 +46,9 @@
 
 #define LED_BUILTIN_PIN 2
 #define LED_LIGHT_MANUAL_PIN 21
-#define LED_LIGHT_AUTO_PIN 25
-#define LED_LIGHT_MIN_PIN 23
-#define LED_LIGHT_MAX_PIN 22
+#define LED_LIGHT_AUTO_PIN 32
+#define LED_LIGHT_MIN_PIN 26
+#define LED_LIGHT_MAX_PIN 25
 #define LED_TEMPERATURE_MIN_PIN 12
 #define LED_TEMPERATURE_MAX_PIN 14
 #define LED_HUMIDITY_MIN_PIN 27
