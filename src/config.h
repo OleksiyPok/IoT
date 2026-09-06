@@ -21,6 +21,22 @@
         ? SENSOR_DHT_READ_INTERVAL_MS                                          \
         : SENSOR_LDR_READ_INTERVAL_MS))
 
+// ---------------------------------
+
+#define DHT_TEMPERATURE_ALARM_MIN_CONFIG 20
+#define DHT_TEMPERATURE_ALARM_MAX_CONFIG 26
+
+#define DHT_HUMIDITY_ALARM_MIN_CONFIG 20
+#define DHT_HUMIDITY_ALARM_MAX_CONFIG 80
+
+#define LDR_LUX_ALARM_MIN_CONFIG 10
+#define LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG 600
+#define LDR_LUX_ALARM_MAX_CONFIG 10000
+
+// ---------------------------------
+
+// ESP32 pins configuration
+
 #define LDR_ADC_PIN 33
 // #define LDR_BIN_PIN 32
 #define DHT_PIN 13
