@@ -3,8 +3,6 @@
 #pragma once
 
 #include <Arduino.h>
-#include <PubSubClient.h>
 
-PubSubClient &getMqttClient();
-bool isMqttReconnectAllowed(uint32_t now);
-void printMqttStatus(int32_t mqttStatus);
+bool handleMqttConnection();
+bool mqttPublish(const char *topic, const char *payload);

@@ -48,7 +48,6 @@ void setup() {
   connectWifi();
   initClock();
   initMqtt();
-  connectMQTT();
 }
 
 void loop() {

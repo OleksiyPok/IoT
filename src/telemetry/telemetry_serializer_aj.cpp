@@ -6,7 +6,7 @@
 
 // ---------------------------------
 
-#define TELEMETRY_JSON_DOCUMENT_SIZE 256
+#define TELEMETRY_JSON_DOCUMENT_SIZE 512
 
 // ---------------------------------
 

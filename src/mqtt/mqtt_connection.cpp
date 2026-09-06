@@ -4,18 +4,20 @@
 #include <PubSubClient.h>
 #include <WiFi.h>
 
-#include "mqtt.h"
+#include "mqtt_config.h"
 #include "mqtt_connection.h"
 
 // ---------------------------------
 
 static WiFiClient wifiClient;
 static PubSubClient mqttClient(wifiClient);
-static uint32_t mqttLastReconnectAt = 0;
+static uint32_t mqttLastConnectAttemptAt = 0;
+static int32_t mqttLastStatus = MQTT_DISCONNECTED;
 
+static void handleMqttStatus();
+static bool connectMQTT();
+static void printMqttStatus(int32_t mqttStatus);
 // ---------------------------------
-
-PubSubClient &getMqttClient() { return mqttClient; }
 
 void initMqtt() {
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
@@ -26,23 +28,65 @@ void initMqtt() {
 
 bool isMqttConnected() { return mqttClient.connected(); }
 
-bool connectMQTT() {
+static bool connectMQTT() {
   const uint32_t now = millis();
-  mqttLastReconnectAt = now;
+  mqttLastConnectAttemptAt = now;
+
   Serial.print("[MQTT] Connecting to ");
   Serial.print(MQTT_BROKER);
   Serial.println("...");
-  if (mqttClient.connect(MQTT_CLIENT_ID)) {
+
+  return mqttClient.connect(MQTT_CLIENT_ID);
+}
+
+static void handleMqttStatus() {
+  const int32_t mqttStatus = mqttClient.state();
+
+  if (mqttStatus == MQTT_CONNECTED) {
+    if (mqttStatus != mqttLastStatus) {
+      Serial.println("[MQTT] Connected");
+      Serial.println();
+      mqttLastStatus = mqttStatus;
+    }
+    return;
+  }
+
+  if (mqttStatus != mqttLastStatus) {
+    Serial.print("[MQTT] Status: ");
+    Serial.print(mqttStatus);
+    printMqttStatus(mqttStatus);
+    mqttLastStatus = mqttStatus;
+  }
+}
+
+bool handleMqttConnection() {
+  const uint32_t now = millis();
+
+  handleMqttStatus();
+
+  if (mqttClient.connected()) {
+    mqttClient.loop();
     return true;
   }
+
+  if (now - mqttLastConnectAttemptAt < MQTT_RECONNECT_INTERVAL_MS) {
+    return false;
+  }
+
+  connectMQTT();
   return false;
 }
 
-bool isMqttReconnectAllowed(uint32_t now) {
-  return now - mqttLastReconnectAt >= MQTT_RECONNECT_INTERVAL_MS;
+bool mqttPublish(const char *topic, const char *payload) {
+  if (!mqttClient.connected()) {
+    Serial.println("[MQTT] Not connected - skip publish");
+    return false;
+  }
+
+  return mqttClient.publish(topic, payload);
 }
 
-void printMqttStatus(int32_t mqttStatus) {
+static void printMqttStatus(int32_t mqttStatus) {
   switch (mqttStatus) {
   case MQTT_CONNECTED:
     Serial.println(" (CONNECTED)");
