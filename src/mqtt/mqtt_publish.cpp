@@ -48,6 +48,12 @@ void publishSensorHumidity(const Telemetry &telemetryData) {
   snprintf(payload, sizeof(payload), "%.1f", telemetryData.dht.humidity);
 
   publishMqttMessage(TOPIC_SENSORS_HUMIDITY, payload);
+}
 
-  Serial.println("------------");
+void publishSensorLux(const Telemetry &telemetryData) {
+  char payload[16];
+
+  snprintf(payload, sizeof(payload), "%.1f", telemetryData.ldr.lux);
+
+  publishMqttMessage(TOPIC_SENSORS_LUX, payload);
 }

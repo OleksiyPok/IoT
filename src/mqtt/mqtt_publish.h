@@ -7,3 +7,4 @@
 void publishTelemetry(const Telemetry &telemetryData);
 void publishSensorTemperature(const Telemetry &telemetryData);
 void publishSensorHumidity(const Telemetry &telemetryData);
+void publishSensorLux(const Telemetry &telemetryData);

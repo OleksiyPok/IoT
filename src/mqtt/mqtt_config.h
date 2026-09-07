@@ -10,6 +10,7 @@
 #define TOPIC_TELEMETRY MQTT_TOP_TOPIC "/telemetry"
 #define TOPIC_SENSORS_TEMPERATURE MQTT_TOP_TOPIC "/sensors/temperature"
 #define TOPIC_SENSORS_HUMIDITY MQTT_TOP_TOPIC "/sensors/humidity"
+#define TOPIC_SENSORS_LUX MQTT_TOP_TOPIC "/sensors/lux"
 // #define TOPIC_ACTUATORS_LED MQTT_TOP_TOPIC "/actuators/led"
 // #define TOPIC_STATUS MQTT_TOP_TOPIC "/status"
 #define TOPIC_STATUS MQTT_TOP_TOPIC "/commands"

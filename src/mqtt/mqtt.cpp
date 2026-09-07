@@ -20,4 +20,7 @@ void handleMqtt(const Telemetry &telemetryData) {
   publishTelemetry(telemetryData);
   publishSensorTemperature(telemetryData);
   publishSensorHumidity(telemetryData);
+  publishSensorLux(telemetryData);
+
+  Serial.println("------------");
 }
