@@ -4,12 +4,12 @@
 #include <time.h>
 
 #include "../buttons/buttons.h"
-#include "../clock/clock.h"
 #include "../device_info/device_info.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../mqtt/mqtt.h"
+#include "../time/time.h"
 #include "../wifi/wifi.h"
 #include "config.h"
 #include "telemetry.h"

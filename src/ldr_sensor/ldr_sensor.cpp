@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "../indication/indication.h"
+#include "../time/time.h"
 #include "config.h"
 #include "ldr_sensor.h"
 
@@ -83,7 +84,7 @@ void handleLdrSensor(LDRData &data) {
     status &= ~STATUS_LDR_LIGHT_LOW;
   }
 
-  data.updated = millis();
+  data.updated = getCurrentTimestamp();
   data.raw = raw;
   data.lux = lux;
   data.status = status;

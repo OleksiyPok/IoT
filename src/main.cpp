@@ -5,7 +5,6 @@
 
 #include "actions/actions.h"
 #include "buttons/buttons.h"
-#include "clock/clock.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
 #include "http/http.h"
@@ -15,6 +14,7 @@
 #include "monitor/monitor.h"
 #include "mqtt/mqtt.h"
 #include "telemetry/telemetry.h"
+#include "time/time.h"
 #include "wifi/wifi.h"
 
 // ---------------------------------
@@ -46,7 +46,7 @@ void setup() {
   initButtons();
   initIndication();
   connectWifi();
-  initClock();
+  initTime();
   initMqtt();
 }
 

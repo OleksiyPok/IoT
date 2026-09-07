@@ -1,9 +1,9 @@
-// src/clock/clock.cpp
+// src/time/time.cpp
 
 #include <Arduino.h>
 #include <time.h>
 
-#include "clock.h"
+#include "time.h"
 
 // ---------------------------------
 
@@ -13,7 +13,7 @@ static const char *currentTimezone = DEFAULT_TIMEZONE;
 
 // ---------------------------------
 
-void initClock() {
+void initTime() {
   // Internal system time is UTC (Greenwich).
   configTime(0, 0, NTP_SERVER);
 
@@ -26,7 +26,7 @@ time_t getCurrentTimestamp() { return time(nullptr); }
 bool getCurrentUtcTime(struct tm &utcTime) {
   time_t now = time(nullptr);
 
-  // Clock has not been synchronized yet.
+  // Time has not been synchronized yet.
   if (now < 100000) {
     return false;
   }
@@ -39,7 +39,7 @@ bool getCurrentUtcTime(struct tm &utcTime) {
 bool getLocalTime(struct tm &localTime) {
   time_t now = time(nullptr);
 
-  // Clock has not been synchronized yet.
+  // Time has not been synchronized yet.
   if (now < 100000) {
     return false;
   }

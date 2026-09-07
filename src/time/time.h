@@ -1,11 +1,11 @@
-// src/clock/clock.h
+// src/time/time.h
 
 #pragma once
 
 #include <time.h>
 
-// Initialize system clock and synchronize with NTP.
-void initClock();
+// Initialize system time and synchronize with NTP.
+void initTime();
 
 // Get current UTC timestamp.
 time_t getCurrentTimestamp();

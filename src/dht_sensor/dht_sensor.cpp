@@ -3,6 +3,7 @@
 #include <DHT.h>
 
 #include "../indication/indication.h"
+#include "../time/time.h"
 #include "config.h"
 #include "dht_sensor.h"
 
@@ -63,7 +64,7 @@ void handleDhtSensor(DHTData &data) {
     return;
   }
 
-  data.updated = millis();
+  data.updated = getCurrentTimestamp();
 
   // Temperature validation
   if (temperature < DHT_TEMPERATURE_VALID_MIN ||
