@@ -22,5 +22,5 @@ void handleMqtt(const Telemetry &telemetryData) {
   publishSensorHumidity(telemetryData);
   publishSensorLux(telemetryData);
 
-  Serial.println("------------");
+  // Serial.println("------------");
 }

@@ -4,6 +4,6 @@
 
 #include "../telemetry/telemetry.h"
 
-bool isMqttConnected();
 void initMqtt();
+bool isMqttConnected();
 void handleMqtt(const Telemetry &telemetryData);

@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "../monitor/monitor.h"
 #include "../telemetry/telemetry.h"
 #include "../telemetry/telemetry_serializer.h"
 #include "mqtt_config.h"
@@ -13,7 +14,7 @@
 static bool publishMqttMessage(const char *topic, const char *payload) {
   Serial.println("[MQTT] Publishing to the topic:");
   Serial.println(topic);
-  Serial.println(payload);
+  printMonitorPayload(payload);
 
   const bool ok = mqttPublish(topic, payload);
 
@@ -36,7 +37,6 @@ void publishTelemetry(const Telemetry &telemetryData) {
 
 void publishSensorTemperature(const Telemetry &telemetryData) {
   char payload[16];
-
   snprintf(payload, sizeof(payload), "%.1f", telemetryData.dht.temperature);
 
   publishMqttMessage(TOPIC_SENSORS_TEMPERATURE, payload);
@@ -44,7 +44,6 @@ void publishSensorTemperature(const Telemetry &telemetryData) {
 
 void publishSensorHumidity(const Telemetry &telemetryData) {
   char payload[16];
-
   snprintf(payload, sizeof(payload), "%.1f", telemetryData.dht.humidity);
 
   publishMqttMessage(TOPIC_SENSORS_HUMIDITY, payload);
@@ -52,7 +51,6 @@ void publishSensorHumidity(const Telemetry &telemetryData) {
 
 void publishSensorLux(const Telemetry &telemetryData) {
   char payload[16];
-
   snprintf(payload, sizeof(payload), "%.1f", telemetryData.ldr.lux);
 
   publishMqttMessage(TOPIC_SENSORS_LUX, payload);

@@ -1,13 +1,16 @@
 // src/monitor/monitor.cpp
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include "../config.h"
 #include "../telemetry/telemetry.h"
+#include "../time/time.h"
 #include "monitor.h"
-#include "monitor_payload.h"
-#include "monitor_status.h"
-#include "monitor_telemetry.h"
+
+// ---------------------------------
+
+static void printJsonPretty(const JsonDocument &doc);
 
 // ---------------------------------
 
@@ -33,104 +36,32 @@ void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
   Serial.println("================================");
 
 #endif
-
-#if CURRENT_PRINT_MODE == PRINT_MODE_DEVICEID
-
-  printTelemetryUptime(data);
-  printDeviceId(data);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_TIMESTAMP
-
-  printTelemetryTimestamp(data);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_UPTIME
-
-  printTelemetryUptime(data);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_DATA
-
-  printTelemetryData(data);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS
-
-  printTelemetryUptime(data);
-  printTelemetryStatus(data.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_DATA_STATUS
-
-  printTelemetryData(data);
-  printTelemetryStatus(data.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS
-
-  printTelemetryUptime(data);
-  printLdrData(data);
-  printLdrStatus(data.ldr.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_DHT_DATA_STATUS
-
-  printTelemetryUptime(data);
-  printDhtData(data);
-  printDhtStatus(data.dht.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_LDR_DATA_STATUS_DHT_DATA_STATUS
-
-  printTelemetryUptime(data);
-
-  printDhtData(data);
-  printDhtStatus(data.dht.status);
-
-  printLdrData(data);
-  printLdrStatus(data.ldr.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_STATUS_DHT_STATUS_LDR_STATUS
-
-  printTelemetryUptime(data);
-
-  printTelemetryStatus(data.status);
-  printLdrStatus(data.ldr.status);
-  printDhtStatus(data.dht.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_TELEMETRY_ALL_DHT_ALL_LDR_ALL
-
-  printTelemetryData(data);
-  printTelemetryStatus(data.status);
-  Serial.println("  .  .  .  .");
-
-  printDhtData(data);
-  printDhtStatus(data.dht.status);
-  Serial.println("  .  .  .  .");
-
-  printLdrData(data);
-  printLdrStatus(data.ldr.status);
-
-#elif CURRENT_PRINT_MODE == PRINT_MODE_BUTTON_STATE_LED_STATE
-
-  printTelemetryUptime(data);
-  printButtonsState(buttonsState);
-  printLedState(systemState);
-
-#else
-
-  printTelemetryData(data);
-  printTelemetryStatus(data.status);
-
-  Serial.println();
-
-  printLdrData(data);
-  printLdrStatus(data.ldr.status);
-
-  Serial.println();
-
-  printDhtData(data);
-  printDhtStatus(data.dht.status);
-
-  printButtonsState(buttonsState);
-  printLedState(systemState);
-
-#endif
-
-  Serial.println("------------");
 }
 
-void handleMonitorPayload(const char *payload) { printMonitorPayload(payload); }
+void printMonitorPayload(const char *payload) {
+
+  if (payload == nullptr) {
+    Serial.println("Payload is null");
+    return;
+  }
+
+  StaticJsonDocument<512> doc;
+  DeserializationError error = deserializeJson(doc, payload);
+
+  if (error) {
+    Serial.print("JSON parse error: ");
+    Serial.println(error.c_str());
+    return;
+  }
+
+  Serial.println("[MQTT] JSON:");
+
+  printJsonPretty(doc);
+
+  // Serial.println("------------");
+}
+
+static void printJsonPretty(const JsonDocument &doc) {
+  serializeJsonPretty(doc, Serial);
+  Serial.println();
+}

@@ -60,10 +60,6 @@ void loop() {
     handleWiFi();
   }
 
-  // MQTT check connection
-  // if() {
-  // };
-
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
@@ -108,15 +104,13 @@ void loop() {
     handleMqtt(telemetryData);
   }
 
+#if defined(DEBUG_MODE)
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    if (!(buttonsState & BUTTON_SILENT_MASK)) {
-      handleMonitor(telemetryData, buttonsState, systemState);
-    }
+    handleMonitor(telemetryData, buttonsState, systemState);
   }
 
-#if defined(DEBUG_MODE)
   // Data send
   if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
     lastSendDataMs = now;

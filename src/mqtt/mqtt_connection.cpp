@@ -14,8 +14,8 @@ static PubSubClient mqttClient(wifiClient);
 static uint32_t mqttLastConnectAttemptAt = 0;
 static int32_t mqttLastStatus = MQTT_DISCONNECTED;
 
-static void handleMqttStatus();
 static bool connectMQTT();
+static void handleMqttStatus();
 static void printMqttStatus(int32_t mqttStatus);
 // ---------------------------------
 
@@ -39,6 +39,24 @@ static bool connectMQTT() {
   return mqttClient.connect(MQTT_CLIENT_ID);
 }
 
+bool handleMqttConnection() {
+  const uint32_t now = millis();
+
+  handleMqttStatus();
+
+  if (mqttClient.connected()) {
+    mqttClient.loop();
+    return true;
+  }
+
+  if (now - mqttLastConnectAttemptAt < MQTT_RECONNECT_INTERVAL_MS) {
+    return false;
+  }
+
+  connectMQTT();
+  return false;
+}
+
 static void handleMqttStatus() {
   const int32_t mqttStatus = mqttClient.state();
 
@@ -57,24 +75,6 @@ static void handleMqttStatus() {
     printMqttStatus(mqttStatus);
     mqttLastStatus = mqttStatus;
   }
-}
-
-bool handleMqttConnection() {
-  const uint32_t now = millis();
-
-  handleMqttStatus();
-
-  if (mqttClient.connected()) {
-    mqttClient.loop();
-    return true;
-  }
-
-  if (now - mqttLastConnectAttemptAt < MQTT_RECONNECT_INTERVAL_MS) {
-    return false;
-  }
-
-  connectMQTT();
-  return false;
 }
 
 bool mqttPublish(const char *topic, const char *payload) {
