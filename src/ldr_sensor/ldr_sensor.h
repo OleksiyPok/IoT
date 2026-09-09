@@ -14,6 +14,7 @@
 
 #define STATUS_LDR_LUX_ALARM_MIN (1U << 4)
 #define STATUS_LDR_LUX_ALARM_MAX (1U << 5)
+
 #define STATUS_LDR_LIGHT_LOW (1U << 6)
 
 #define STATUS_LDR_INIT_ERR                                                    \

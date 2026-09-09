@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 
-// @telemetry
 struct DHTData {
   float temperature; // °C
   float humidity;    // %
@@ -12,7 +11,6 @@ struct DHTData {
   uint8_t status;
 };
 
-// @telemetry
 struct LDRData {
   uint16_t raw; // ADC data (0–4095)
   float lux;    // data in the lux
@@ -20,7 +18,6 @@ struct LDRData {
   uint8_t status;
 };
 
-// @telemetry-root
 struct Telemetry {
   uint8_t version; // protocol version
   uint64_t deviceId;
