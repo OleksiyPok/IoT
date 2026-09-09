@@ -1,4 +1,4 @@
-// src/telemetry/telemetry_serializer.cpp
+// src/serialization/serializers/telemetry_serializer.cpp
 
 #include <Arduino.h>
 #include <inttypes.h>
@@ -6,8 +6,8 @@
 #include "telemetry_serializer.h"
 
 // ---------------------------------
-bool serializeTelemetry(const Telemetry &data, char *buffer,
-                        size_t bufferSize) {
+bool serializeTelemetrySnprintf(const Telemetry &data, char *buffer,
+                                size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
     return false;

@@ -1,8 +1,8 @@
-// src/telemetry/telemetry_deserializer.cpp
+// src/serialization/deserializers/telemetry_deserializer.cpp
 
 #include <ArduinoJson.h>
 
-#include "telemetry.h"
+#include "../../telemetry/telemetry.h"
 #include "telemetry_deserializer.h"
 
 // ---------------------------------

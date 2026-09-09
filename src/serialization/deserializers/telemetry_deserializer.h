@@ -1,10 +1,10 @@
-// src/telemetry/telemetry_deserializer.h
+// src/serialization/deserializers/telemetry_deserializer.h
 
 #pragma once
 
 #include <stddef.h>
 
-#include "telemetry.h"
+#include "../../telemetry/telemetry.h"
 
 // ---------------------------------
 

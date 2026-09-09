@@ -1,4 +1,4 @@
-// src/telemetry/telemetry_serializer_aj.cpp
+// src/serialization/serializers/telemetry_serializer_aj.cpp
 
 #include <ArduinoJson.h>
 

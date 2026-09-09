@@ -6,15 +6,13 @@
 
 #include "../config.h"
 #include "../monitor/monitor.h"
+#include "../serialization/serialization.h"
 #include "http.h"
 
-// Telemetry serializer
-// #define TELEMETRY_SERIALIZER_ARDUINO_JSON
-
 #if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
-#include "../telemetry/telemetry_serializer_aj.h"
+#include "../serialization/serializers/telemetry_serializer_aj.h"
 #else
-#include "../telemetry/telemetry_serializer.h"
+#include "../serialization/serializers/telemetry_serializer.h"
 #endif
 
 // ---------------------------------
@@ -30,7 +28,6 @@ void handleSendData(Telemetry &telemetryData) {
     return;
   }
 
-  // telemetryData.sequence = sequenceCounter++;
   sendData(telemetryData);
 }
 
@@ -41,11 +38,7 @@ static void sendData(const Telemetry &telemetryData) {
 
   char payload[256];
 
-#if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
-  if (!serializeTelemetryArduinoJson(telemetryData, payload, sizeof(payload))) {
-#else
   if (!serializeTelemetry(telemetryData, payload, sizeof(payload))) {
-#endif
 
     Serial.println("[HTTP] Failed to serialize telemetry");
     http.end();

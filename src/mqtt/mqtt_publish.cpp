@@ -3,8 +3,8 @@
 #include <Arduino.h>
 
 #include "../monitor/monitor.h"
+#include "../serialization/serialization.h"
 #include "../telemetry/telemetry.h"
-#include "../telemetry/telemetry_serializer.h"
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
 #include "mqtt_publish.h"
@@ -37,21 +37,31 @@ void publishTelemetry(const Telemetry &telemetryData) {
 
 void publishSensorTemperature(const Telemetry &telemetryData) {
   char payload[16];
-  snprintf(payload, sizeof(payload), "%.1f", telemetryData.dht.temperature);
+  if (!serializeTemperature(telemetryData.dht.temperature, payload,
+                            sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize temperature");
+    return;
+  }
 
   publishMqttMessage(TOPIC_SENSORS_TEMPERATURE, payload);
 }
 
 void publishSensorHumidity(const Telemetry &telemetryData) {
   char payload[16];
-  snprintf(payload, sizeof(payload), "%.1f", telemetryData.dht.humidity);
+  if (!serializeHumidity(telemetryData.dht.humidity, payload,
+                         sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize humidity");
+    return;
+  }
 
   publishMqttMessage(TOPIC_SENSORS_HUMIDITY, payload);
 }
 
 void publishSensorLux(const Telemetry &telemetryData) {
   char payload[16];
-  snprintf(payload, sizeof(payload), "%.1f", telemetryData.ldr.lux);
-
+  if (!serializeLux(telemetryData.ldr.lux, payload, sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize lux");
+    return;
+  }
   publishMqttMessage(TOPIC_SENSORS_LUX, payload);
 }
