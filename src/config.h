@@ -2,8 +2,8 @@
 
 #pragma once
 
-// !!!! Uncomment to see the debug message in the Serial Monitor !!!!
-// #define DEBUG_MODE
+// Uncomment to see the debug message in the Serial Monitor
+#define DEBUG_MODE
 
 // Telemetry serialization
 // Uncomment to use ArduinoJson telemetry serializer
@@ -15,15 +15,18 @@
 #define WIFI_CHECK_INTERVAL_MS 200
 #define SENSOR_DHT_READ_INTERVAL_MS 5000
 #define SENSOR_LDR_READ_INTERVAL_MS 5000
-#define DATA_MONITOR_INTERVAL_MS 5000
-#define DATA_SEND_INTERVAL_MS 5000 // must be 30000
+#define DATA_SEND_INTERVAL_MS 5000 // acoording task it must be 30000
 #define MQTT_PUBLISH_INTERVAL_MS 10000
 #define MEMORY_CHECK_INTERVAL_MS 30000
+
 // Use the smaller interval value for TELEMETRY_UPDATE_INTERVAL_MS
 #define TELEMETRY_UPDATE_INTERVAL_MS                                           \
   ((SENSOR_DHT_READ_INTERVAL_MS < SENSOR_LDR_READ_INTERVAL_MS                  \
         ? SENSOR_DHT_READ_INTERVAL_MS                                          \
         : SENSOR_LDR_READ_INTERVAL_MS))
+
+// Use the same monitor interval as data send
+#define DATA_MONITOR_INTERVAL_MS TELEMETRY_UPDATE_INTERVAL_MS
 
 // ---------------------------------
 
