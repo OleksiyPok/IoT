@@ -6,6 +6,7 @@
 #include "telemetry_serializer.h"
 
 // ---------------------------------
+
 bool serializeTelemetrySnprintf(const Telemetry &data, char *buffer,
                                 size_t bufferSize) {
 

@@ -7,8 +7,6 @@ HEADER_TEMPLATE = """// {name}.h
 
 #pragma once
 
-// #include ""
-
 """
 
 CPP_TEMPLATE = """// {name}.cpp

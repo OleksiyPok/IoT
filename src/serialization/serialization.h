@@ -5,9 +5,6 @@
 #include <stddef.h>
 
 #include "../telemetry/telemetry.h"
-#include "deserializers/telemetry_deserializer.h"
-#include "serializers/sensor_serializer.h"
-
 
 // ---------------------------------
 

@@ -4,5 +4,6 @@
 
 #include <Arduino.h>
 
+bool isMqttConnected();
 bool handleMqttConnection();
 bool mqttPublish(const char *topic, const char *payload);

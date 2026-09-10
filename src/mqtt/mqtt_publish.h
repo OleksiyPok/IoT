@@ -4,7 +4,7 @@
 
 #include "../telemetry/telemetry.h"
 
-void publishTelemetry(const Telemetry &telemetryData);
-void publishSensorTemperature(const Telemetry &telemetryData);
-void publishSensorHumidity(const Telemetry &telemetryData);
-void publishSensorLux(const Telemetry &telemetryData);
+// void publishTelemetry(const Telemetry &telemetryData);
+
+void publishSensors(const Telemetry &telemetryData);
+void publishStatus(const Telemetry &telemetryData);

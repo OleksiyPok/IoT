@@ -8,14 +8,16 @@
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
-#include "../mqtt/mqtt.h"
+#include "../mqtt/mqtt_connection.h"
 #include "../time/time.h"
 #include "../wifi/wifi.h"
 #include "config.h"
 #include "telemetry.h"
 
 // ---------------------------------
+
 static uint8_t sequenceCounter = 0;
+
 // ---------------------------------
 
 void initTelemetry(Telemetry &telemetryData) {
@@ -60,13 +62,17 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   }
 
   // Update STALE status.
-  if (now - telemetryData.dht.updated > (SENSOR_DHT_READ_INTERVAL_MS)) {
+  const uint32_t currentTimestamp = getCurrentTimestamp();
+
+  if (currentTimestamp - telemetryData.dht.updated >
+      (SENSOR_DHT_READ_INTERVAL_MS / 1000)) {
     telemetryData.dht.status |= STATUS_DHT_DATA_STALE;
   } else {
     telemetryData.dht.status &= ~STATUS_DHT_DATA_STALE;
   }
 
-  if (now - telemetryData.ldr.updated > (SENSOR_LDR_READ_INTERVAL_MS)) {
+  if (currentTimestamp - telemetryData.ldr.updated >
+      (SENSOR_LDR_READ_INTERVAL_MS / 1000)) {
     telemetryData.ldr.status |= STATUS_LDR_DATA_STALE;
   } else {
     telemetryData.ldr.status &= ~STATUS_LDR_DATA_STALE;
