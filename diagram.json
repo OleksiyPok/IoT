@@ -14,21 +14,21 @@
       "type": "wokwi-led",
       "id": "led1",
       "top": -118.8,
-      "left": 177,
+      "left": 273,
       "attrs": { "color": "white", "flip": "1" }
     },
     {
       "type": "wokwi-text",
       "id": "label-led1",
       "top": -163.2,
-      "left": 144,
+      "left": 259.2,
       "attrs": { "text": "''LIGHT''\n(MANUAL)" }
     },
     {
       "type": "wokwi-resistor",
       "id": "r1",
       "top": -52.8,
-      "left": 162.65,
+      "left": 258.65,
       "rotate": 90,
       "attrs": { "value": "220" }
     },
@@ -51,7 +51,7 @@
       "type": "wokwi-pushbutton-6mm",
       "id": "btn1",
       "top": 221.6,
-      "left": 180.2,
+      "left": 276.2,
       "rotate": 270,
       "attrs": { "color": "white" }
     },
@@ -59,14 +59,14 @@
       "type": "wokwi-text",
       "id": "label-btn1",
       "top": 249.6,
-      "left": 153.6,
+      "left": 259.2,
       "attrs": { "text": "Light\nOn / Off" }
     },
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn2",
       "top": 220.8,
-      "left": 223.8,
+      "left": 319.8,
       "rotate": 90,
       "attrs": { "color": "orange" }
     },
@@ -74,7 +74,7 @@
       "type": "wokwi-text",
       "id": "label-btn2",
       "top": 249.6,
-      "left": 230.4,
+      "left": 336,
       "attrs": { "text": "Silent mode\nOn / Off" }
     },
     {
@@ -212,21 +212,21 @@
       "type": "wokwi-led",
       "id": "led7",
       "top": -118.8,
-      "left": 225,
+      "left": 321,
       "attrs": { "color": "orange", "flip": "1" }
     },
     {
       "type": "wokwi-text",
       "id": "label-led7",
       "top": -163.2,
-      "left": 240,
+      "left": 355.2,
       "attrs": { "text": "''SILENT''" }
     },
     {
       "type": "wokwi-resistor",
       "id": "r7",
       "top": -52.8,
-      "left": 210.65,
+      "left": 306.65,
       "rotate": 90,
       "attrs": { "value": "220" }
     },
@@ -243,6 +243,21 @@
       "top": 278.4,
       "left": 38.4,
       "attrs": { "text": "Test: DHT" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn5",
+      "top": 221.6,
+      "left": 161,
+      "rotate": 270,
+      "attrs": { "color": "blue", "xray": "1" }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "label-btn5",
+      "top": 249.6,
+      "left": 134.4,
+      "attrs": { "text": "Comand\n\"manual_read\"" }
     }
   ],
   "connections": [
@@ -254,13 +269,13 @@
     ["ldr1:AO", "esp:D33", "green", ["h48", "v56.9"]],
     ["led1:C", "esp:GND.1", "black", ["v67.2", "h-0.4", "v153.6"]],
     ["led1:A", "r1:1", "orange", ["h9"]],
-    ["r1:2", "esp:D21", "orange", ["v77", "h-56.81"]],
+    ["r1:2", "esp:D23", "orange", ["v37.2", "h-191.51"]],
     ["esp:TX0", "$serialMonitor:RX", "", []],
     ["esp:RX0", "$serialMonitor:TX", "", []],
     ["esp:GND.1", "btn1:2.r", "black", ["h76.31", "h141"]],
     ["esp:GND.1", "btn2:1.l", "black", ["h76.31", "h115.2"]],
     ["btn1:1.r", "esp:D18", "green", ["v-87.2"]],
-    ["esp:D19", "btn2:2.l", "green", ["h114.71", "v96"]],
+    ["esp:D19", "btn2:2.l", "green", ["h210.71", "v153.6"]],
     ["led2:A", "r2:1", "orange", ["h0"]],
     ["esp:D32", "r2:2", "orange", ["h-19.2", "v-76.8", "h76.8"]],
     ["esp:GND.2", "led3:C", "black", ["h-28.8", "v-192", "h-230.8"]],
@@ -277,12 +292,14 @@
     ["esp:D12", "r5:1", "green", ["h-57.6", "v153.6"]],
     ["esp:D5", "btn3:1.r", "green", ["h28.31", "v124.8", "h-106.4"]],
     ["led7:A", "r7:1", "orange", ["v0"]],
-    ["r7:2", "esp:D4", "orange", ["v133.2", "h-67.2"]],
-    ["esp:GND.1", "led7:C", "black", ["h133.91", "v-220.8"]],
+    ["r7:2", "esp:D22", "orange", ["v46.8", "h-239.51"]],
+    ["esp:GND.1", "led7:C", "black", ["h229.91", "v-220.8"]],
     ["esp:D13", "btn4:1.l", "green", ["h-48", "v144"]],
     ["esp:GND.2", "btn4:2.l", "black", ["h-28.8", "v134"]],
     ["esp:GND.2", "btn3:2.l", "black", ["h-28.8", "v143.6"]],
-    ["esp:GND.2", "led2:C", "black", ["h-28.8", "v-192", "h76.4"]]
+    ["esp:GND.2", "led2:C", "black", ["h-28.8", "v-192", "h76.4"]],
+    ["esp:D4", "btn5:1.r", "orange", ["h0"]],
+    ["esp:GND.1", "btn5:2.r", "black", ["h0"]]
   ],
   "dependencies": {}
 }
