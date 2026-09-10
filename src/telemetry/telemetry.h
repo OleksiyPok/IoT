@@ -8,6 +8,7 @@ struct DHTData {
   float temperature; // °C
   float humidity;    // %
   uint32_t updated;
+  uint32_t uptime;
   uint8_t status;
 };
 
@@ -15,6 +16,7 @@ struct LDRData {
   uint16_t raw; // ADC data (0–4095)
   float lux;    // data in the lux
   uint32_t updated;
+  uint32_t uptime;
   uint8_t status;
 };
 
@@ -30,6 +32,7 @@ struct Telemetry {
 };
 
 #define TELEMETRY_PROTOCOL_VERSION 1
+#define SENSOR_STALE_AFTER_CYCLES 2
 
 #define STATUS_OK (0U)
 

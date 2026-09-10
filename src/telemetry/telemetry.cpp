@@ -18,6 +18,12 @@
 
 static uint8_t sequenceCounter = 0;
 
+static uint8_t dhtStaleCycles = 0;
+static uint8_t ldrStaleCycles = 0;
+
+static uint32_t previousDhtUptime = 0;
+static uint32_t previousLdrUptime = 0;
+
 // ---------------------------------
 
 void initTelemetry(Telemetry &telemetryData) {
@@ -32,7 +38,6 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   telemetryData.timestamp = getCurrentTimestamp();
 
   // Update "uptime"
-  uint32_t now = millis();
   telemetryData.uptime = millis() / 1000;
 
   // Update sequence
@@ -64,15 +69,29 @@ void updateTelemetry(Telemetry &telemetryData, uint8_t systemState) {
   // Update STALE status.
   const uint32_t currentTimestamp = getCurrentTimestamp();
 
-  if (currentTimestamp - telemetryData.dht.updated >
-      (SENSOR_DHT_READ_INTERVAL_MS / 1000)) {
+  // -- DHT
+  if (telemetryData.dht.uptime != previousDhtUptime) {
+    previousDhtUptime = telemetryData.dht.uptime;
+    dhtStaleCycles = 0;
+  } else if (dhtStaleCycles < SENSOR_STALE_AFTER_CYCLES) {
+    dhtStaleCycles++;
+  }
+
+  if (dhtStaleCycles >= SENSOR_STALE_AFTER_CYCLES) {
     telemetryData.dht.status |= STATUS_DHT_DATA_STALE;
   } else {
     telemetryData.dht.status &= ~STATUS_DHT_DATA_STALE;
   }
 
-  if (currentTimestamp - telemetryData.ldr.updated >
-      (SENSOR_LDR_READ_INTERVAL_MS / 1000)) {
+  // -- LDR
+  if (telemetryData.ldr.uptime != previousLdrUptime) {
+    previousLdrUptime = telemetryData.ldr.uptime;
+    ldrStaleCycles = 0;
+  } else if (ldrStaleCycles < SENSOR_STALE_AFTER_CYCLES) {
+    ldrStaleCycles++;
+  }
+
+  if (ldrStaleCycles >= SENSOR_STALE_AFTER_CYCLES) {
     telemetryData.ldr.status |= STATUS_LDR_DATA_STALE;
   } else {
     telemetryData.ldr.status &= ~STATUS_LDR_DATA_STALE;

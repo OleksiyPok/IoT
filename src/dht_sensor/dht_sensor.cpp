@@ -65,6 +65,7 @@ void handleDhtSensor(DHTData &data) {
   }
 
   data.updated = getCurrentTimestamp();
+  data.uptime = millis() / 1000;
 
   // Temperature validation
   if (temperature < DHT_TEMPERATURE_VALID_MIN ||

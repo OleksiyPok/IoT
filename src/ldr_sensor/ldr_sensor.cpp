@@ -84,6 +84,7 @@ void handleLdrSensor(LDRData &data) {
   }
 
   data.updated = getCurrentTimestamp();
+  data.uptime = millis() / 1000;
   data.raw = raw;
   data.lux = lux;
   data.status = status;
