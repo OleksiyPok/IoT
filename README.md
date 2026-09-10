@@ -2,21 +2,37 @@
 
 [🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
 
-
 <img src="./images/wokwi.png" alt="Project Circuit" width="700">
 
 ## Project Description
 
+The project is an ESP32 firmware organized into independent functional modules.
 
-The project is divided into modules, each with its own responsibility and individual call interval settings.
+The main modules are responsible for:
+- sensor data acquisition;
+- telemetry and status processing;
+- button handling;
+- LED indication;
+- WiFi and MQTT communication;
+- Serial Monitor output.
 
-The `actions` module is at the center of the project. It combines functions and transfers data between modules.
+The main measurement flow is:
 
-Data processing is handled by the `telemetry` module.
+```text
+DHT22 ──> Temperature ──┐
+        Humidity ───────┤
+                        ├──> Validation ──> Status
+LDR ──> ADC ──> Lux ────┘                    │
+                                             ├──> LED indication
+                                             ├──> MQTT
+                                             └──> Serial Monitor
+```
 
-### Data Structure
+Each sensor value is processed through validation limits and operating/alarm thresholds.
 
-The data structures used in the project are presented below.
+## Data Structure
+
+The internal telemetry contains device information, time data, sensor measurements, and status registers.
 
 ```cpp
 struct DHTData {
@@ -26,8 +42,8 @@ struct DHTData {
 };
 
 struct LDRData {
-    uint16_t raw; // ADC data (0–4095)
-    float lux;    // data in lux
+    uint16_t raw; // ADC data
+    float lux;    // lux
     uint8_t status;
 };
 
@@ -35,63 +51,141 @@ struct Telemetry {
     uint64_t deviceId;
     uint32_t timestamp;
     uint32_t uptime;
+    uint32_t sequence;
     DHTData dht;
     LDRData ldr;
     uint8_t status; // system status register
 };
 ```
-### Internal status register
 
-Two status flag registers, `buttonStatus` and `ledStatus`, are used to preserve the state of buttons and indicators and to make their state remotely readable and controllable (in a future).
+MQTT data is published as separate sensor-data and status messages.
 
-All possible pin constants, states, intervals, and bit masks are defined using `#define`.
+## Measurement Structure
 
-The call interval for each module is defined in `Config.h`.
+### Temperature
 
-Constants specific to a particular module are located either in the corresponding `*.h` file or in the `*.cpp` file, depending on the required scope.
+| Parameter | Value |
+|---|---:|
+| Valid minimum | −35 °C (`DHT_TEMPERATURE_VALID_MIN`) |
+| Alarm minimum | 20 °C (`DHT_TEMPERATURE_ALARM_MIN_CONFIG`) |
+| Alarm maximum | 26 °C (`DHT_TEMPERATURE_ALARM_MAX_CONFIG`) |
+| Valid maximum | +75 °C (`DHT_TEMPERATURE_VALID_MAX`) |
 
-### Sensor Value Validation
+```text
+< -35 °C        invalid
+-35 ... <20 °C  valid, low temperature
+20 ... 26 °C    normal range
+>26 ... 75 °C   valid, high temperature
+>75 °C          invalid
+```
 
-The following value thresholds are defined for the sensors:
+The alarm thresholds can be changed at compile time using:
+- `DHT_TEMPERATURE_ALARM_MIN_CONFIG`
+- `DHT_TEMPERATURE_ALARM_MAX_CONFIG`
 
-- `VALID_MIN`
-- `ALARM_MIN`
-- `ALARM_MAX`
-- `VALID_MAX`
+The validation limits are also compile-time constants:
+- `DHT_TEMPERATURE_VALID_MIN`
+- `DHT_TEMPERATURE_VALID_MAX`
 
-In addition, the system checks for `NaN` values.
+### Humidity
 
-If a sensor value is `NaN`, the `STATUS` field is set to `DEVICE_ERR`.
+| Parameter | Value |
+|---|---:|
+| Valid minimum | 10 % (`DHT_HUMIDITY_VALID_MIN`) |
+| Alarm minimum | 20 % (`DHT_HUMIDITY_ALARM_MIN_CONFIG`) |
+| Alarm maximum | 80 % (`DHT_HUMIDITY_ALARM_MAX_CONFIG`) |
+| Valid maximum | 90 % (`DHT_HUMIDITY_VALID_MAX`) |
 
-If a value goes outside the `VALID_MIN` or `VALID_MAX` range, the corresponding `VALID_MIN` or `VALID_MAX` status is set.
+```text
+<10 %          invalid
+10 ... <20 %   valid, low humidity
+20 ... 80 %    normal range
+>80 ... 90 %   valid, high humidity
+>90 %          invalid
+```
 
-If a value goes outside the `ALARM_MIN` or `ALARM_MAX` range, the corresponding `ALARM_MIN` or `ALARM_MAX` status is set.
+The alarm thresholds can be changed at compile time using:
+- `DHT_HUMIDITY_ALARM_MIN_CONFIG`
+- `DHT_HUMIDITY_ALARM_MAX_CONFIG`
 
-Some out-of-range conditions are additionally represented by LED indicators in the circuit.
+The validation limits are also compile-time constants:
+- `DHT_HUMIDITY_VALID_MIN`
+- `DHT_HUMIDITY_VALID_MAX`
 
-All these thresholds can be changed at compile time and adjusted when required.
+### Light
 
-### Light Sensor
+The LDR produces an ADC value which is converted to lux.
 
-The light sensor additionally uses the `LIGHT_LOW` threshold.
+#### ADC validation
 
-The project and circuit implement automatic LED activation when the measured light level falls below `LIGHT_LOW`.
+| Parameter | Value |
+|---|---:|
+| Valid minimum | 50 (`LDR_ADC_VALID_MIN`) |
+| Valid maximum | 4045 (`LDR_ADC_VALID_MAX`) |
 
-### WiFi Connection Recovery
+The current implementation treats the boundary values themselves as outside the working ADC range.
 
-For testing purposes, the project implements WiFi disconnection using a button. When the WiFi connection is disconnected, the project automatically starts the connection recovery process.
+#### Lux
 
-### Serial Monitor
+| Parameter | Value |
+|---|---:|
+| Valid minimum | 1 lux (`LDR_LUX_VALID_MIN`) |
+| Alarm minimum | 10 lux (`LDR_LUX_ALARM_MIN_CONFIG`) |
+| Low-light threshold | 600 lux (`LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`) |
+| Alarm maximum | 10,000 lux (`LDR_LUX_ALARM_MAX_CONFIG`) |
+| Valid maximum | 70,000 lux (`LDR_LUX_VALID_MAX`) |
 
-The project supports transmitting data to the `Serial Monitor`.
+```text
+<1 lux             invalid
+1 ... <10 lux      valid, minimum-light alarm
+10 ... <600 lux    valid, low-light condition
+600 ... 10,000 lux normal operating range
+>10,000 ... 70,000 valid, maximum-light alarm
+>70,000 lux        invalid
+```
 
-Data transmission is enabled using the corresponding button.
+The following light thresholds can be changed at compile time:
+- `LDR_LUX_ALARM_MIN_CONFIG`
+- `LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`
+- `LDR_LUX_ALARM_MAX_CONFIG`
 
-### Configuration
+The ADC and lux validation limits are also compile-time constants:
+- `LDR_ADC_VALID_MIN`
+- `LDR_ADC_VALID_MAX`
+- `LDR_LUX_VALID_MIN`
+- `LDR_LUX_VALID_MAX`
 
-The current values of thresholds, intervals, and other parameters are primarily intended to make the project convenient to test. They most likely do not correspond to real-world operating conditions and can be adjusted for actual deployment.
+The LDR conversion model uses additional compile-time constants such as `LDR_GAMMA`, `RL10`, `LDR_R_DIV_OHM`, and `LDR_VCC_V`.
 
-### Examples of data
+## Status Registers
 
-<img src="./images/data_01.png" alt="Data examples" width="700">
-<img src="./images/data_02.png" alt="Data examples" width="700">
+Sensor and system states are represented by bit flags.
+
+The DHT, LDR, and system status registers can indicate device errors, invalid data, stale data, alarm conditions, and system communication errors.
+
+This allows several independent conditions to be represented simultaneously in one status value.
+
+## Buttons and Indication
+
+Three buttons provide control of:
+- manual light mode;
+- silent mode;
+- WiFi disconnection/recovery testing.
+
+LEDs indicate light modes, light alarms, temperature alarms, humidity alarms, and silent mode.
+
+## Communication
+
+The device connects through WiFi and publishes telemetry through MQTT.
+
+The project also supports Serial Monitor output.
+
+WiFi disconnection starts the automatic connection recovery process.
+
+## Configuration
+
+Sensor thresholds, sensor validation limits, sensor conversion parameters, and operating intervals are compile-time configurable.
+
+Current values are primarily intended for testing and can be adjusted for actual deployment.
+
+[🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
