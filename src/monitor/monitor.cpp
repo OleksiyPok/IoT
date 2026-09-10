@@ -84,9 +84,22 @@ static void printJsonPretty(const JsonDocument &doc) {
 }
 
 static void printStatusBit(const char *name, uint8_t status, uint8_t mask) {
-  Serial.print("  ");
+  uint8_t bit = 0;
+  uint8_t temp = mask;
+  while (temp > 1) {
+    temp >>= 1;
+    bit++;
+  }
+  Serial.print(" (");
+  Serial.print(bit);
+  Serial.print(") ");
   Serial.print(name);
-  Serial.print(": ");
+  const uint8_t statusColumn = 30;
+  uint8_t currentColumn = 7 + strlen(name);
+  while (currentColumn < statusColumn) {
+    Serial.print(" ");
+    currentColumn++;
+  }
   Serial.println((status & mask) ? "ON" : "OFF");
 }
 

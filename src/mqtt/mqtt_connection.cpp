@@ -11,8 +11,11 @@
 
 static WiFiClient wifiClient;
 static PubSubClient mqttClient(wifiClient);
-static uint32_t mqttLastConnectAttemptAt = 0;
+
 static int32_t mqttLastStatus = MQTT_DISCONNECTED;
+static uint32_t mqttLastConnectAttemptAt = 0;
+static uint32_t mqttNextConnectionCycleAt = 0;
+static uint8_t mqttConnectionAttempts = 0;
 
 static bool connectMQTT();
 static void handleMqttStatus();
@@ -31,28 +34,55 @@ bool isMqttConnected() { return mqttClient.connected(); }
 static bool connectMQTT() {
   const uint32_t now = millis();
   mqttLastConnectAttemptAt = now;
+  mqttConnectionAttempts++;
 
   Serial.print("[MQTT] Connecting to ");
   Serial.print(MQTT_BROKER);
-  Serial.println("...");
+  Serial.print(" (attempt ");
+  Serial.print(mqttConnectionAttempts);
+  Serial.print("/");
+  Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
+  Serial.println(")...");
 
   return mqttClient.connect(MQTT_CLIENT_ID);
 }
 
 bool handleMqttConnection() {
+
   const uint32_t now = millis();
 
   handleMqttStatus();
 
   if (mqttClient.connected()) {
+    mqttConnectionAttempts = 0;
+    mqttNextConnectionCycleAt = 0;
     mqttClient.loop();
     return true;
   }
 
-  if (now - mqttLastConnectAttemptAt < MQTT_RECONNECT_INTERVAL_MS) {
+  // Wait before starting the next cycle
+  if (mqttNextConnectionCycleAt != 0) {
+    if (now - mqttNextConnectionCycleAt < MQTT_RECONNECT_CYCLE_DELAY_MS) {
+      return false;
+    }
+
+    mqttConnectionAttempts = 0;
+    mqttNextConnectionCycleAt = 0;
+  }
+
+  // Maximum attempts reached
+  if (mqttConnectionAttempts >= MQTT_MAX_CONNECTION_ATTEMPTS) {
+    mqttNextConnectionCycleAt = now;
+    Serial.print("[MQTT] ");
+    Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
+    Serial.println(" attempts failed - waiting 5 minutes");
     return false;
   }
 
+  // Wait between individual attempts
+  if (now - mqttLastConnectAttemptAt < MQTT_RECONNECT_INTERVAL_MS) {
+    return false;
+  }
   connectMQTT();
   return false;
 }

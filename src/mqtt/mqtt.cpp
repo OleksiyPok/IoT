@@ -18,7 +18,11 @@ void handleMqtt(const Telemetry &telemetryData) {
   }
 
   // publishTelemetry(telemetryData);
-  publishSensors(telemetryData);
+
+  if (!(telemetryData.status & STATUS_DEVICE_SILENT_MODE)) {
+    publishSensors(telemetryData);
+  }
+
   publishStatus(telemetryData);
 
   // Serial.println("------------");
