@@ -17,6 +17,7 @@ bool serializeSensors(const Telemetry &data, char *buffer, size_t bufferSize) {
                "{\"version\":%u,"
                "\"deviceId\":%" PRIu64 ","
                "\"timestamp\":%" PRIu32 ","
+               "\"uptime\":%" PRIu32 ","
                "\"sequence\":%u,"
                "\"dht_temperature\":%.1f,"
                "\"dht_humidity\":%.1f,"
@@ -25,9 +26,9 @@ bool serializeSensors(const Telemetry &data, char *buffer, size_t bufferSize) {
                "\"ldr_lux\":%.1f,"
                "\"ldr_updated\":%" PRIu32 "}",
 
-               data.version, data.deviceId, data.timestamp, data.sequence,
-               data.dht.temperature, data.dht.humidity, data.dht.updated,
-               data.ldr.raw, data.ldr.lux, data.ldr.updated);
+               data.version, data.deviceId, data.timestamp, data.uptime,
+               data.sequence, data.dht.temperature, data.dht.humidity,
+               data.dht.updated, data.ldr.raw, data.ldr.lux, data.ldr.updated);
 
   if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';
