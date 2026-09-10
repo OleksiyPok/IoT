@@ -1,8 +1,8 @@
 # IoT Project
 
-[🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
+[🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-<img src="./images/wokwi.png" alt="Project Circuit" width="700">
+<img src="../images/wokwi.png" alt="Схема проекта" width="700">
 
 ## Project Description
 
@@ -188,4 +188,4 @@ Sensor thresholds, sensor validation limits, sensor conversion parameters, and o
 
 Current values are primarily intended for testing and can be adjusted for actual deployment.
 
-[🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
+[🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
