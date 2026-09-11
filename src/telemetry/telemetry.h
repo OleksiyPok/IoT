@@ -47,4 +47,4 @@ struct Telemetry {
    STATUS_MQTT_ERR | STATUS_WIFI_ERR)
 
 void initTelemetry(Telemetry &telemetryData);
-void updateTelemetry(Telemetry &telemetryData, uint8_t systemState);
+void updateTelemetry(Telemetry &telemetryData, uint8_t ledState);

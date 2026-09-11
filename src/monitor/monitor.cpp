@@ -30,7 +30,7 @@ void initMonitor() {
 }
 
 void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
-                   const uint8_t &systemState) {
+                   const uint8_t &ledState) {
 
 #if defined(DEBUG_MODE)
 

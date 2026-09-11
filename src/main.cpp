@@ -20,7 +20,7 @@
 // ---------------------------------
 
 uint8_t buttonsState = 0x00;
-uint8_t systemState = 0x00;
+uint8_t ledState = 0x00;
 
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
@@ -83,19 +83,19 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, systemState);
+    handleActions(telemetryData, buttonsState, ledState);
   }
 
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
-    handleIndication(systemState);
+    handleIndication(ledState);
   }
 
   // Telemetry update
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
-    updateTelemetry(telemetryData, systemState);
+    updateTelemetry(telemetryData, ledState);
   }
 
   // MQTT
@@ -108,7 +108,7 @@ void loop() {
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetryData, buttonsState, systemState);
+    handleMonitor(telemetryData, buttonsState, ledState);
   }
 
   // Data send
