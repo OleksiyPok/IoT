@@ -49,8 +49,8 @@
 
 #define BUTTON_0_PIN 18
 #define BUTTON_1_PIN 19
-#define BUTTON_2_PIN 5
-#define BUTTON_3_PIN 4
+#define BUTTON_2_PIN 4
+#define BUTTON_3_PIN 5
 
 #define LED_BUILTIN_PIN 2
 #define LED_LIGHT_MANUAL_PIN 23
