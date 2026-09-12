@@ -70,11 +70,13 @@ void handleDhtSensor(DHTData &data) {
   // Temperature validation
   if (temperature < DHT_TEMPERATURE_VALID_MIN ||
       temperature > DHT_TEMPERATURE_VALID_MAX) {
+    status |= STATUS_DHT_DEVICE_ERR;
     status |= STATUS_DHT_DATA_VALID_ERR;
   }
 
   // Humidity validation
   if (humidity < DHT_HUMIDITY_VALID_MIN || humidity > DHT_HUMIDITY_VALID_MAX) {
+    status |= STATUS_DHT_DEVICE_ERR;
     status |= STATUS_DHT_DATA_VALID_ERR;
   }
 
