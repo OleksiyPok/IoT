@@ -17,6 +17,6 @@
 #define LED_SILENT_MASK (1U << 7)
 
 void initIndication();
-void handleIndication(uint8_t &ledState);
+void handleIndication(uint16_t &ledState);
 
 void blinkLed(int pin);

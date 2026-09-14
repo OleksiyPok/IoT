@@ -12,4 +12,4 @@
 #define BUTTON_WIFI_DISABLE_MASK (1U << 3)
 
 void initButtons();
-void handleButtons(uint8_t &buttonsState);
+void handleButtons(uint16_t &buttonsState);

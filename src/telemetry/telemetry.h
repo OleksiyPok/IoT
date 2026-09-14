@@ -9,7 +9,7 @@ struct DHTData {
   float humidity;    // %
   uint32_t updated;
   uint32_t uptime;
-  uint8_t status;
+  uint16_t status;
 };
 
 struct LDRData {
@@ -17,7 +17,7 @@ struct LDRData {
   float lux;    // data in the lux
   uint32_t updated;
   uint32_t uptime;
-  uint8_t status;
+  uint16_t status;
 };
 
 struct Telemetry {
@@ -28,7 +28,7 @@ struct Telemetry {
   uint8_t sequence;
   DHTData dht;
   LDRData ldr;
-  uint8_t status; // system status register
+  uint16_t status; // system status register
 };
 
 #define TELEMETRY_PROTOCOL_VERSION 1
@@ -47,4 +47,4 @@ struct Telemetry {
    STATUS_MQTT_ERR | STATUS_WIFI_ERR)
 
 void initTelemetry(Telemetry &telemetryData);
-void updateTelemetry(Telemetry &telemetryData, uint8_t ledState);
+void updateTelemetry(Telemetry &telemetryData, uint16_t ledState);

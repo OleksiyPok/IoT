@@ -47,7 +47,7 @@ void initLdrSensor(LDRData &data) {
 }
 
 void handleLdrSensor(LDRData &data) {
-  uint8_t status = STATUS_LDR_OK;
+  uint16_t status = STATUS_LDR_OK;
   uint16_t raw = analogRead(LDR_ADC_PIN);
 
   if (raw <= LDR_ADC_VALID_MIN || raw >= LDR_ADC_VALID_MAX) {

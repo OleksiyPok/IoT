@@ -9,23 +9,23 @@
 #include "../wifi/wifi.h"
 
 // ---------------------------------
-static uint8_t previousButtonsState = 0;
+static uint16_t previousButtonsState = 0x0000;
 
-static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState);
-static void updateDhtStatus(const DHTData &data, uint8_t &ledState);
-static void updateLdrStatus(const LDRData &data, uint8_t &ledState);
+static void updateLedState(const uint16_t &buttonsState, uint16_t &ledState);
+static void updateDhtStatus(const DHTData &data, uint16_t &ledState);
+static void updateLdrStatus(const LDRData &data, uint16_t &ledState);
 
 // ---------------------------------
 
-void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
-                   uint8_t &ledState) {
+void handleActions(const Telemetry &telemetryData, uint16_t &buttonsState,
+                   uint16_t &ledState) {
 
   updateLedState(buttonsState, ledState);
   updateLdrStatus(telemetryData.ldr, ledState);
   updateDhtStatus(telemetryData.dht, ledState);
 }
 
-static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState) {
+static void updateLedState(const uint16_t &buttonsState, uint16_t &ledState) {
 
   if (buttonsState & BUTTON_COMMAND_MASK) {
     ledState |= LED_LIGHT_COMMAND_MASK;
@@ -48,7 +48,7 @@ static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState) {
   previousButtonsState = buttonsState;
 };
 
-static void updateDhtStatus(const DHTData &data, uint8_t &ledState) {
+static void updateDhtStatus(const DHTData &data, uint16_t &ledState) {
   ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
                 LED_HUMIDITY_MIN_MASK);
 
@@ -69,7 +69,7 @@ static void updateDhtStatus(const DHTData &data, uint8_t &ledState) {
   // }
 }
 
-static void updateLdrStatus(const LDRData &data, uint8_t &ledState) {
+static void updateLdrStatus(const LDRData &data, uint16_t &ledState) {
   ledState &= ~(LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK);
 
   if (data.status & STATUS_LDR_LUX_ALARM_MIN) {

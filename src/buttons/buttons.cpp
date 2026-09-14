@@ -31,7 +31,7 @@ volatile bool button1Pressed = false; // Button 1 press flag
 volatile bool button2Pressed = false; // Button 2 press flag
 volatile bool button3Pressed = false; // Button 2 press flag
 
-uint8_t buttonsHandled = 0x00; // Buttons press handled flag
+uint16_t buttonsHandled = 0x0000; // Buttons press handled flag
 
 void IRAM_ATTR onButton0Press();
 void IRAM_ATTR onButton1Press();
@@ -52,7 +52,7 @@ void initButtons() {
   attachInterrupt(BUTTON_3_PIN, onButton3Press, FALLING);
 }
 
-void handleButtons(uint8_t &buttonsState) {
+void handleButtons(uint16_t &buttonsState) {
   uint32_t now = millis();
 
   if (button0Pressed) {

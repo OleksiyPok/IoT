@@ -13,10 +13,10 @@
 // ---------------------------------
 
 static void printJsonPretty(const JsonDocument &doc);
-static void printStatusBit(const char *name, uint8_t status, uint8_t mask);
-static void printDhtStatus(uint8_t status);
-static void printLdrStatus(uint8_t status);
-static void printSystemStatus(uint8_t status);
+static void printStatusBit(const char *name, uint16_t status, uint16_t mask);
+static void printDhtStatus(uint16_t status);
+static void printLdrStatus(uint16_t status);
+static void printSystemStatus(uint16_t status);
 
 // ---------------------------------
 
@@ -29,8 +29,8 @@ void initMonitor() {
   Serial.println();
 }
 
-void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
-                   const uint8_t &ledState) {
+void handleMonitor(const Telemetry &data, const uint16_t &buttonsState,
+                   const uint16_t &ledState) {
 
 #if defined(DEBUG_MODE)
 
@@ -83,9 +83,9 @@ static void printJsonPretty(const JsonDocument &doc) {
   Serial.println();
 }
 
-static void printStatusBit(const char *name, uint8_t status, uint8_t mask) {
+static void printStatusBit(const char *name, uint16_t status, uint16_t mask) {
   uint8_t bit = 0;
-  uint8_t temp = mask;
+  uint16_t temp = mask;
   while (temp > 1) {
     temp >>= 1;
     bit++;
@@ -103,7 +103,7 @@ static void printStatusBit(const char *name, uint8_t status, uint8_t mask) {
   Serial.println((status & mask) ? "ON" : "OFF");
 }
 
-static void printStatusByte(uint8_t status) {
+static void printStatusByte(uint16_t status) {
   Serial.print("  STATUS BYTE: 0b");
   for (int8_t bit = 7; bit >= 0; --bit) {
     Serial.print((status >> bit) & 1);
@@ -113,7 +113,7 @@ static void printStatusByte(uint8_t status) {
 
 // ---------------------------------
 
-static void printDhtStatus(uint8_t status) {
+static void printDhtStatus(uint16_t status) {
   Serial.println("[DHT STATUS]");
   printStatusByte(status);
 
@@ -132,7 +132,7 @@ static void printDhtStatus(uint8_t status) {
 
 // ---------------------------------
 
-static void printLdrStatus(uint8_t status) {
+static void printLdrStatus(uint16_t status) {
   Serial.println("[LDR STATUS]");
   printStatusByte(status);
 
@@ -147,7 +147,7 @@ static void printLdrStatus(uint8_t status) {
 
 // ---------------------------------
 
-static void printSystemStatus(uint8_t status) {
+static void printSystemStatus(uint16_t status) {
   Serial.println("[SYSTEM STATUS]");
   printStatusByte(status);
 

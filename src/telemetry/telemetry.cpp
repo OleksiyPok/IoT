@@ -33,7 +33,7 @@ void initTelemetry(Telemetry &telemetryData) {
   telemetryData.status |= STATUS_INIT_ERR;
 }
 
-void updateTelemetry(Telemetry &telemetryData, uint8_t ledState) {
+void updateTelemetry(Telemetry &telemetryData, uint16_t ledState) {
   // Update timestamp
   telemetryData.timestamp = getCurrentTimestamp();
 

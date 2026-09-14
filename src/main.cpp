@@ -19,8 +19,8 @@
 
 // ---------------------------------
 
-uint8_t buttonsState = 0x00;
-uint8_t ledState = 0x00;
+uint16_t buttonsState = 0x0000;
+uint16_t ledState = 0x0000;
 
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;

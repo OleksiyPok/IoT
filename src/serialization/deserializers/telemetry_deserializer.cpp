@@ -49,7 +49,7 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   data.timestamp = doc["timestamp"].as<uint32_t>();
   data.uptime = doc["uptime"].as<uint32_t>();
   data.sequence = doc["sequence"].as<uint8_t>();
-  data.status = doc["status"].as<uint8_t>();
+  data.status = doc["status"].as<uint16_t>();
 
   // DHT
   JsonObject dht = doc["dht"];
@@ -59,14 +59,14 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   }
 
   if (!dht["temperature"].is<float>() || !dht["humidity"].is<float>() ||
-      !dht["updated"].is<uint32_t>() || !dht["status"].is<uint8_t>()) {
+      !dht["updated"].is<uint32_t>() || !dht["status"].is<uint16_t>()) {
     return false;
   }
 
   data.dht.temperature = dht["temperature"].as<float>();
   data.dht.humidity = dht["humidity"].as<float>();
   data.dht.updated = dht["updated"].as<uint32_t>();
-  data.dht.status = dht["status"].as<uint8_t>();
+  data.dht.status = dht["status"].as<uint16_t>();
 
   // LDR
   JsonObject ldr = doc["ldr"];
@@ -76,14 +76,14 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   }
 
   if (!ldr["raw"].is<uint16_t>() || !ldr["lux"].is<float>() ||
-      !ldr["updated"].is<uint32_t>() || !ldr["status"].is<uint8_t>()) {
+      !ldr["updated"].is<uint32_t>() || !ldr["status"].is<uint16_t>()) {
     return false;
   }
 
   data.ldr.raw = ldr["raw"].as<uint16_t>();
   data.ldr.lux = ldr["lux"].as<float>();
   data.ldr.updated = ldr["updated"].as<uint32_t>();
-  data.ldr.status = ldr["status"].as<uint8_t>();
+  data.ldr.status = ldr["status"].as<uint16_t>();
 
   return true;
 }

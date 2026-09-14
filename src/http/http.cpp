@@ -17,7 +17,6 @@
 
 // ---------------------------------
 
-// static uint8_t sequenceCounter = 0;
 static void sendData(const Telemetry &telemetryData);
 
 // ---------------------------------

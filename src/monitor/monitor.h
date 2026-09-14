@@ -8,6 +8,6 @@
 // ---------------------------------
 
 void initMonitor();
-void handleMonitor(const Telemetry &data, const uint8_t &buttonsState,
-                   const uint8_t &ledState);
+void handleMonitor(const Telemetry &data, const uint16_t &buttonsState,
+                   const uint16_t &ledState);
 void printMonitorPayload(const char *payload);

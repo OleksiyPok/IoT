@@ -55,7 +55,7 @@ void handleDhtSensor(DHTData &data) {
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
 
-  uint8_t status = STATUS_DHT_OK;
+  uint16_t status = STATUS_DHT_OK;
 
   // Is NaN
   if (isnan(temperature) || isnan(humidity)) {
