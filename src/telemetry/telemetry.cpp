@@ -42,68 +42,26 @@ void updateTelemetry(Telemetry &telemetryData, const uint16_t &systemState) {
   // Update sequence
   telemetryData.sequence = sequenceCounter++;
 
-  // Update SILENT system status.
+  telemetryData.status &= ~(STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR |
+                            STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR);
+
   if (systemState & SYSTEM_SILENT_MASK) {
     telemetryData.status |= STATUS_DEVICE_SILENT_MODE;
-  } else {
-    telemetryData.status &= ~STATUS_DEVICE_SILENT_MODE;
   }
 
-  // Update DHT system status
-  if (telemetryData.dht.status &
-      (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR)) {
-    telemetryData.status |= STATUS_DHT_ERR;
-  } else {
-    telemetryData.status &= ~STATUS_DHT_ERR;
-  }
-
-  // Update LDR system status.
-  if (telemetryData.ldr.status &
-      (STATUS_LDR_DEVICE_ERR | STATUS_LDR_DATA_VALID_ERR)) {
+  if (systemState & SYSTEM_LDR_ERR_MASK) {
     telemetryData.status |= STATUS_LDR_ERR;
-  } else {
-    telemetryData.status &= ~STATUS_LDR_ERR;
   }
 
-  // Update DHT STALE status
-  if (telemetryData.dht.uptime != previousDhtUptime) {
-    previousDhtUptime = telemetryData.dht.uptime;
-    dhtStaleCycles = 0;
-  } else if (dhtStaleCycles < SENSOR_STALE_AFTER_CYCLES) {
-    dhtStaleCycles++;
+  if (systemState & SYSTEM_DHT_ERR_MASK) {
+    telemetryData.status |= STATUS_DHT_ERR;
   }
 
-  if (dhtStaleCycles >= SENSOR_STALE_AFTER_CYCLES) {
-    telemetryData.dht.status |= STATUS_DHT_DATA_STALE;
-  } else {
-    telemetryData.dht.status &= ~STATUS_DHT_DATA_STALE;
-  }
-
-  // Update LDR STALE status
-  if (telemetryData.ldr.uptime != previousLdrUptime) {
-    previousLdrUptime = telemetryData.ldr.uptime;
-    ldrStaleCycles = 0;
-  } else if (ldrStaleCycles < SENSOR_STALE_AFTER_CYCLES) {
-    ldrStaleCycles++;
-  }
-
-  if (ldrStaleCycles >= SENSOR_STALE_AFTER_CYCLES) {
-    telemetryData.ldr.status |= STATUS_LDR_DATA_STALE;
-  } else {
-    telemetryData.ldr.status &= ~STATUS_LDR_DATA_STALE;
-  }
-
-  // Update WiFi system status.
-  if (isWifiConnected()) {
-    telemetryData.status &= ~STATUS_WIFI_ERR;
-  } else {
-    telemetryData.status |= STATUS_WIFI_ERR;
-  }
-
-  // Update MQTT system status.
-  if (isMqttConnected()) {
-    telemetryData.status &= ~STATUS_MQTT_ERR;
-  } else {
+  if (systemState & SYSTEM_MQTT_ERR_MASK) {
     telemetryData.status |= STATUS_MQTT_ERR;
+  }
+
+  if (systemState & SYSTEM_WIFI_ERR_MASK) {
+    telemetryData.status |= STATUS_WIFI_ERR;
   }
 }
