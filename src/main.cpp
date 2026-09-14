@@ -13,6 +13,7 @@
 #include "memory/memory.h"
 #include "monitor/monitor.h"
 #include "mqtt/mqtt.h"
+#include "system/system_state.h"
 #include "telemetry/telemetry.h"
 #include "time/time.h"
 #include "wifi/wifi.h"
@@ -71,7 +72,7 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    if (!(buttonsState & BUTTON_SILENT_MASK)) {
+    if (!(buttonsState & SYSTEM_SILENT_MASK)) {
       handleDhtSensor(telemetryData.dht);
     }
   }
@@ -85,7 +86,7 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, ledState);
+    handleActions(telemetryData, buttonsState, systemState, ledState);
   }
 
   // Indication

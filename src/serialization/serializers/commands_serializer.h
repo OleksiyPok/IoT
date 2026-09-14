@@ -1,4 +1,4 @@
-// commands_serializer.h
+// src/serialization/serializers/commands_serializer.h
 
 #pragma once
 

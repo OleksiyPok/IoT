@@ -1,4 +1,4 @@
-// src/serialization/serializers/sensors_serializer.cpp
+// src/serialization/serializers/commands_serializer.cpp
 
 #include <Arduino.h>
 

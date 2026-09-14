@@ -33,7 +33,7 @@ void initTelemetry(Telemetry &telemetryData) {
   telemetryData.status |= STATUS_INIT_ERR;
 }
 
-void updateTelemetry(Telemetry &telemetryData, uint16_t ledState) {
+void updateTelemetry(Telemetry &telemetryData, uint16_t systemState) {
   // Update timestamp
   telemetryData.timestamp = getCurrentTimestamp();
 
@@ -44,7 +44,7 @@ void updateTelemetry(Telemetry &telemetryData, uint16_t ledState) {
   telemetryData.sequence = sequenceCounter++;
 
   // Update SILENT system status.
-  if (ledState & LED_SILENT_MASK) {
+  if (systemState & LED_SILENT_MASK) {
     telemetryData.status |= STATUS_DEVICE_SILENT_MODE;
   } else {
     telemetryData.status &= ~STATUS_DEVICE_SILENT_MODE;

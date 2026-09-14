@@ -1,3 +1,5 @@
+// src/system/system_state.h
+
 #pragma once
 
 #define SYSTEM_SILENT_MASK (1U << 1)

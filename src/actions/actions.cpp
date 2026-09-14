@@ -5,27 +5,41 @@
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
+#include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "../wifi/wifi.h"
 
 // ---------------------------------
 static uint16_t previousButtonsState = 0x0000;
 
-static void updateLedState(const uint16_t &buttonsState, uint16_t &ledState);
+static void updateLedState(const uint16_t &buttonsState, uint16_t &systemState,
+                           uint16_t &ledState);
+static void updateSystemState(const uint16_t &buttonsState,
+                              uint16_t &systemState);
 static void updateDhtStatus(const DHTData &data, uint16_t &ledState);
 static void updateLdrStatus(const LDRData &data, uint16_t &ledState);
 
 // ---------------------------------
 
 void handleActions(const Telemetry &telemetryData, uint16_t &buttonsState,
-                   uint16_t &ledState) {
+                   uint16_t &systemState, uint16_t &ledState) {
 
-  updateLedState(buttonsState, ledState);
+  updateSystemState(buttonsState, systemState);
+  updateLedState(buttonsState, systemState, ledState);
   updateLdrStatus(telemetryData.ldr, ledState);
   updateDhtStatus(telemetryData.dht, ledState);
 }
 
-static void updateLedState(const uint16_t &buttonsState, uint16_t &ledState) {
+static void updateSystemState(const uint16_t &buttonsState,
+                              uint16_t &systemState) {
+  if (buttonsState & BUTTON_SILENT_MASK)
+    systemState |= SYSTEM_SILENT_MASK;
+  else
+    systemState &= ~SYSTEM_SILENT_MASK;
+}
+
+static void updateLedState(const uint16_t &buttonsState, uint16_t &systemState,
+                           uint16_t &ledState) {
 
   if (buttonsState & BUTTON_COMMAND_MASK) {
     ledState |= LED_LIGHT_COMMAND_MASK;
@@ -33,11 +47,10 @@ static void updateLedState(const uint16_t &buttonsState, uint16_t &ledState) {
     ledState &= ~LED_LIGHT_COMMAND_MASK;
   }
 
-  if (buttonsState & BUTTON_SILENT_MASK) {
+  if (systemState & SYSTEM_SILENT_MASK)
     ledState |= LED_SILENT_MASK;
-  } else {
+  else
     ledState &= ~LED_SILENT_MASK;
-  }
 
   if ((buttonsState & BUTTON_WIFI_DISABLE_MASK) &&
       !(previousButtonsState & BUTTON_WIFI_DISABLE_MASK)) {
