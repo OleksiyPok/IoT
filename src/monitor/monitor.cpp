@@ -105,7 +105,11 @@ static void printStatusBit(const char *name, uint16_t status, uint16_t mask) {
 
 static void printStatusByte(uint16_t status) {
   Serial.print("  STATUS BYTE: 0b");
-  for (int8_t bit = 7; bit >= 0; --bit) {
+  for (int8_t bit = 15; bit >= 0; --bit) {
+    if (bit == 7) {
+      Serial.println();
+      Serial.print("               0b");
+    }
     Serial.print((status >> bit) & 1);
   }
   Serial.println();
