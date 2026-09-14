@@ -28,9 +28,9 @@ void handleActions(const Telemetry &telemetryData, uint8_t &buttonsState,
 static void updateLedState(const uint8_t &buttonsState, uint8_t &ledState) {
 
   if (buttonsState & BUTTON_COMMAND_MASK) {
-    ledState |= LED_LIGHT_MANUAL_MASK;
+    ledState |= LED_LIGHT_COMMAND_MASK;
   } else {
-    ledState &= ~LED_LIGHT_MANUAL_MASK;
+    ledState &= ~LED_LIGHT_COMMAND_MASK;
   }
 
   if (buttonsState & BUTTON_SILENT_MASK) {

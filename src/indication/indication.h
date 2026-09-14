@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 // "ledState" bits
-#define LED_LIGHT_MANUAL_MASK (1U << 0)
+#define LED_LIGHT_COMMAND_MASK (1U << 0)
 #define LED_LIGHT_AUTO_MASK (1U << 1)
 #define LED_LIGHT_MIN_MASK (1U << 2)
 #define LED_LIGHT_MAX_MASK (1U << 3)
