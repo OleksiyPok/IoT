@@ -6,6 +6,7 @@
 #include "../config.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../ldr_sensor/ldr_sensor.h"
+#include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "../time/time.h"
 #include "monitor.h"
@@ -14,10 +15,14 @@
 
 static void printJsonPretty(const JsonDocument &doc);
 static void printStatusBit(const char *name, uint16_t status, uint16_t mask);
-static void printDhtStatus(uint16_t status);
-static void printLdrStatus(uint16_t status);
-static void printSystemStatus(uint16_t status);
+// static void printDhtStatus(uint16_t status);
+// static void printLdrStatus(uint16_t status);
+// static void printSystemStatus(uint16_t status);
 
+static void printDhtTelemetryStatus(uint16_t status);
+static void printLdrTelemetryStatus(uint16_t status);
+static void printTelemetrySystemStatus(uint16_t status);
+static void printSystemState(uint16_t systemState);
 // ---------------------------------
 
 void initMonitor() {
@@ -29,8 +34,8 @@ void initMonitor() {
   Serial.println();
 }
 
-void handleMonitor(const Telemetry &data, const uint16_t &buttonsState,
-                   const uint16_t &ledState) {
+void handleMonitor(const Telemetry &data, const uint16_t &systemState,
+                   const uint16_t &buttonsState, const uint16_t &ledState) {
 
 #if defined(DEBUG_MODE)
 
@@ -41,13 +46,16 @@ void handleMonitor(const Telemetry &data, const uint16_t &buttonsState,
   // Serial.println("| to switch to Production mode |");
   Serial.println("================================");
 
-  printDhtStatus(data.dht.status);
+  printDhtTelemetryStatus(data.dht.status);
   Serial.println();
 
-  printLdrStatus(data.ldr.status);
+  printLdrTelemetryStatus(data.ldr.status);
   Serial.println();
 
-  printSystemStatus(data.status);
+  printTelemetrySystemStatus(data.status);
+  Serial.println();
+
+  printSystemState(systemState);
 
   Serial.println("================================");
   Serial.println();
@@ -84,18 +92,26 @@ static void printJsonPretty(const JsonDocument &doc) {
 }
 
 static void printStatusBit(const char *name, uint16_t status, uint16_t mask) {
+
   uint8_t bit = 0;
   uint16_t temp = mask;
+
   while (temp > 1) {
     temp >>= 1;
     bit++;
   }
+
   Serial.print(" (");
+  if (bit < 10) {
+    Serial.print(" ");
+  }
   Serial.print(bit);
   Serial.print(") ");
   Serial.print(name);
+
   const uint8_t statusColumn = 30;
-  uint8_t currentColumn = 7 + strlen(name);
+  uint8_t currentColumn = 6 + strlen(name);
+
   while (currentColumn < statusColumn) {
     Serial.print(" ");
     currentColumn++;
@@ -117,7 +133,21 @@ static void printStatusByte(uint16_t status) {
 
 // ---------------------------------
 
-static void printDhtStatus(uint16_t status) {
+static void printSystemState(uint16_t systemState) {
+  Serial.println("[SYSTEM STATE REGISTER]");
+  printStatusByte(systemState);
+
+  printStatusBit("LIGHT_COMMAND", systemState, SYSTEM_COMMAND_MASK);
+  printStatusBit("SILENT_MODE", systemState, SYSTEM_SILENT_MASK);
+  printStatusBit("LDR_ERR", systemState, SYSTEM_LDR_ERR_MASK);
+  printStatusBit("DHT_ERR", systemState, SYSTEM_DHT_ERR_MASK);
+  printStatusBit("MQTT_ERR", systemState, SYSTEM_MQTT_ERR_MASK);
+  printStatusBit("WIFI_ERR", systemState, SYSTEM_WIFI_ERR_MASK);
+}
+
+// ---------------------------------
+
+static void printDhtTelemetryStatus(uint16_t status) {
   Serial.println("[DHT STATUS]");
   printStatusByte(status);
 
@@ -136,7 +166,7 @@ static void printDhtStatus(uint16_t status) {
 
 // ---------------------------------
 
-static void printLdrStatus(uint16_t status) {
+static void printLdrTelemetryStatus(uint16_t status) {
   Serial.println("[LDR STATUS]");
   printStatusByte(status);
 
@@ -151,7 +181,7 @@ static void printLdrStatus(uint16_t status) {
 
 // ---------------------------------
 
-static void printSystemStatus(uint16_t status) {
+static void printTelemetrySystemStatus(uint16_t status) {
   Serial.println("[SYSTEM STATUS]");
   printStatusByte(status);
 
