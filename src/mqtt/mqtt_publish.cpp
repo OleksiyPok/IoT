@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "../monitor/monitor.h"
+#include "../serialization/serializers/commands_serializer.h"
 #include "../serialization/serializers/sensors_serializer.h"
 #include "../serialization/serializers/status_serializer.h"
 #include "../telemetry/telemetry.h"
@@ -12,21 +13,9 @@
 
 // ---------------------------------
 
-static const char MANUAL_READ_COMMAND[] = "manual_read";
-
 static bool publishMqttMessage(const char *topic, const char *payload);
 
 // ---------------------------------
-// void publishTelemetry(const Telemetry &telemetryData) {
-//   char payload[MQTT_BUFFER_SIZE];
-
-//   if (!serializeTelemetry(telemetryData, payload, sizeof(payload))) {
-//     Serial.println("[MQTT] Failed to serialize telemetry");
-//     return;
-//   }
-
-//   publishMqttMessage(TOPIC_TELEMETRY, payload);
-// }
 
 void publishSensors(const Telemetry &telemetry) {
   char payload[256];
@@ -46,8 +35,26 @@ void publishStatus(const Telemetry &telemetry) {
   publishMqttMessage(TOPIC_STATUS, payload);
 }
 
-void publishCommands() {
-  publishMqttMessage(TOPIC_COMMANDS, MANUAL_READ_COMMAND);
+bool publishCommands(CommandQueue &commandQueue) {
+  Command command;
+
+  if (!peekCommand(commandQueue, command)) {
+    return false;
+  }
+
+  char payload[128];
+
+  if (!serializeCommands(command, payload, sizeof(payload))) {
+    return false;
+  }
+
+  if (!publishMqttMessage(TOPIC_COMMANDS, payload)) {
+    return false;
+  }
+
+  removeCommand(commandQueue);
+
+  return true;
 }
 
 static bool publishMqttMessage(const char *topic, const char *payload) {

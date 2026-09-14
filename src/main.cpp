@@ -5,6 +5,7 @@
 
 #include "actions/actions.h"
 #include "buttons/buttons.h"
+#include "commands/commands.h"
 #include "config.h"
 #include "dht_sensor/dht_sensor.h"
 #include "http/http.h"
@@ -22,7 +23,6 @@
 
 uint16_t buttonsState = 0x0000;
 uint16_t systemState = 0x0000;
-uint16_t commandState = 0x0000;
 uint16_t ledState = 0x0000;
 
 uint32_t lastWiFiCheckConnectionMs = 0;
@@ -38,6 +38,7 @@ uint32_t lastSendDataMs = 0;
 uint32_t lastMqttPublish = 0;
 
 Telemetry telemetryData;
+CommandQueue commandQueue;
 
 // ---------------------------------
 
@@ -47,6 +48,7 @@ void setup() {
   initDhtSensor(telemetryData.dht);
   initLdrSensor(telemetryData.ldr);
   initButtons();
+  initCommandQueue(commandQueue);
   initIndication();
   connectWifi();
   initTime();
@@ -72,7 +74,7 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    if (!(buttonsState & SYSTEM_SILENT_MASK)) {
+    if (!(systemState & SYSTEM_SILENT_MASK)) {
       handleDhtSensor(telemetryData.dht);
     }
   }
@@ -86,7 +88,8 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, systemState, ledState);
+    handleActions(telemetryData, buttonsState, systemState, ledState,
+                  commandQueue);
   }
 
   // Indication
@@ -98,20 +101,20 @@ void loop() {
   // Telemetry update
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
-    updateTelemetry(telemetryData, ledState);
+    updateTelemetry(telemetryData, systemState);
   }
 
   // MQTT
   if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
     lastMqttPublish = now;
-    handleMqtt(telemetryData);
+    handleMqtt(telemetryData, commandQueue);
   }
 
 #if defined(DEBUG_MODE)
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetryData, buttonsState, ledState);
+    handleMonitor(telemetryData, systemState, buttonsState, ledState);
   }
 
   // Data send

@@ -8,7 +8,6 @@
 
 #define MQTT_TOP_TOPIC "iot-course/OleksiiPok"
 
-#define TOPIC_TELEMETRY MQTT_TOP_TOPIC "/telemetry"
 #define TOPIC_COMMANDS MQTT_TOP_TOPIC "/commands"
 #define TOPIC_SENSORS MQTT_TOP_TOPIC "/sensors"
 #define TOPIC_STATUS MQTT_TOP_TOPIC "/status"

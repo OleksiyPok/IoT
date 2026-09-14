@@ -1,11 +1,7 @@
-// src/serialization/serializers/commands_serializer.h
-
 #pragma once
 
 #include <stddef.h>
 
-#include "../../telemetry/telemetry.h"
+#include "../../commands/commands.h"
 
-// ---------------------------------
-
-bool serializeCommands(const Telemetry &data, char *buffer, size_t bufferSize);
+bool serializeCommands(const Command &command, char *buffer, size_t bufferSize);

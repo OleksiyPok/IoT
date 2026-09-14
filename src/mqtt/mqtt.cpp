@@ -8,7 +8,7 @@
 #include "mqtt_connection.h"
 #include "mqtt_publish.h"
 
-void handleMqtt(const Telemetry &telemetryData) {
+void handleMqtt(const Telemetry &telemetryData, CommandQueue &commandQueue) {
   if (!isWifiConnected()) {
     return;
   }
@@ -17,13 +17,12 @@ void handleMqtt(const Telemetry &telemetryData) {
     return;
   }
 
-  // publishTelemetry(telemetryData);
-
   if (!(telemetryData.status & STATUS_DEVICE_SILENT_MODE)) {
     publishSensors(telemetryData);
   }
 
   publishStatus(telemetryData);
+  publishCommands(commandQueue);
 
   // Serial.println("------------");
 }

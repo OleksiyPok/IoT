@@ -2,10 +2,9 @@
 
 #pragma once
 
+#include "../commands/commands.h"
 #include "../telemetry/telemetry.h"
-
-// void publishTelemetry(const Telemetry &telemetryData);
 
 void publishSensors(const Telemetry &telemetryData);
 void publishStatus(const Telemetry &telemetryData);
-void publishCommands();
+bool publishCommands(CommandQueue &commandQueue);
