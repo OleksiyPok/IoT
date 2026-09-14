@@ -44,6 +44,15 @@ void publishStatus(const Telemetry &telemetry) {
   publishMqttMessage(TOPIC_STATUS, payload);
 }
 
+void publishCommands(const Telemetry &telemetry) {
+  char payload[256];
+  if (!serializeStatus(telemetry, payload, sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize commands");
+    return;
+  }
+  publishMqttMessage(TOPIC_COMMANDS, payload);
+}
+
 static bool publishMqttMessage(const char *topic, const char *payload) {
   Serial.println("[MQTT] Publishing to the topic:");
   Serial.println(topic);
