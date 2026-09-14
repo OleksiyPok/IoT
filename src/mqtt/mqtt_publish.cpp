@@ -12,6 +12,8 @@
 
 // ---------------------------------
 
+static const char MANUAL_READ_COMMAND[] = "manual_read";
+
 static bool publishMqttMessage(const char *topic, const char *payload);
 
 // ---------------------------------
@@ -44,13 +46,8 @@ void publishStatus(const Telemetry &telemetry) {
   publishMqttMessage(TOPIC_STATUS, payload);
 }
 
-void publishCommands(const Telemetry &telemetry) {
-  char payload[256];
-  if (!serializeStatus(telemetry, payload, sizeof(payload))) {
-    Serial.println("[MQTT] Failed to serialize commands");
-    return;
-  }
-  publishMqttMessage(TOPIC_COMMANDS, payload);
+void publishCommands() {
+  publishMqttMessage(TOPIC_COMMANDS, MANUAL_READ_COMMAND);
 }
 
 static bool publishMqttMessage(const char *topic, const char *payload) {

@@ -20,6 +20,8 @@
 // ---------------------------------
 
 uint16_t buttonsState = 0x0000;
+uint16_t systemState = 0x0000;
+uint16_t commandState = 0x0000;
 uint16_t ledState = 0x0000;
 
 uint32_t lastWiFiCheckConnectionMs = 0;

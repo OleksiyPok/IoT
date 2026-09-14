@@ -8,4 +8,4 @@
 
 void publishSensors(const Telemetry &telemetryData);
 void publishStatus(const Telemetry &telemetryData);
-void publishCommands(const Telemetry &telemetryData);
+void publishCommands();
