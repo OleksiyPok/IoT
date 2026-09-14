@@ -46,7 +46,8 @@ static void updateSystemState(const Telemetry &telemetryData,
 
   systemState &= ~SYSTEM_STATE_MANAGED_MASK;
 
-  if (buttonsState & BUTTON_COMMAND_MASK) {
+  if ((buttonsState & BUTTON_COMMAND_MASK) &&
+      !(previousButtonsState & BUTTON_COMMAND_MASK)) {
     systemState |= SYSTEM_COMMAND_MASK;
   }
 

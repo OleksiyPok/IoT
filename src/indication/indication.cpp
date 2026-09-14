@@ -6,8 +6,6 @@
 #include "indication.h"
 
 // ---------------------------------
-#define LED_BLINK_TIME_MS 50
-
 static const uint16_t LED_PINS[] = {
     LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
     LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN,
@@ -36,10 +34,4 @@ void handleIndication(const uint16_t &ledState) {
   for (uint16_t i = 0; i < sizeof(LED_PINS) / sizeof(LED_PINS[0]); ++i) {
     digitalWrite(LED_PINS[i], (ledState & LED_MASKS[i]) != 0);
   }
-}
-
-void blinkLed(int pin) {
-  digitalWrite(pin, HIGH);
-  delay(LED_BLINK_TIME_MS);
-  digitalWrite(pin, LOW);
 }
