@@ -14,6 +14,7 @@
 #include "memory/memory.h"
 #include "monitor/monitor.h"
 #include "mqtt/mqtt.h"
+#include "mqtt/mqtt_connection.h"
 #include "system/system_state.h"
 #include "telemetry/telemetry.h"
 #include "time/time.h"
@@ -104,7 +105,10 @@ void loop() {
     updateTelemetry(telemetryData, systemState);
   }
 
-  // MQTT
+  // MQTT connection
+  handleMqttConnection();
+
+  // MQTT publish
   if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
     lastMqttPublish = now;
     handleMqtt(telemetryData, commandQueue);

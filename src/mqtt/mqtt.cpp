@@ -9,11 +9,7 @@
 #include "mqtt_publish.h"
 
 void handleMqtt(const Telemetry &telemetryData, CommandQueue &commandQueue) {
-  if (!isWifiConnected()) {
-    return;
-  }
-
-  if (!handleMqttConnection()) {
+  if (!isMqttConnected()) {
     return;
   }
 

@@ -51,6 +51,16 @@ bool handleMqttConnection() {
 
   const uint32_t now = millis();
 
+  if (!WiFi.isConnected()) {
+    if (mqttClient.connected()) {
+      mqttClient.disconnect();
+    }
+
+    mqttConnectionAttempts = 0;
+    mqttNextConnectionCycleAt = 0;
+    return false;
+  }
+
   handleMqttStatus();
 
   if (mqttClient.connected()) {
