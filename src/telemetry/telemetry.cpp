@@ -3,12 +3,11 @@
 #include <Arduino.h>
 #include <time.h>
 
-#include "../buttons/buttons.h"
 #include "../device_info/device_info.h"
 #include "../dht_sensor/dht_sensor.h"
-#include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../mqtt/mqtt_connection.h"
+#include "../system/system_state.h"
 #include "../time/time.h"
 #include "../wifi/wifi.h"
 #include "config.h"
@@ -33,7 +32,7 @@ void initTelemetry(Telemetry &telemetryData) {
   telemetryData.status |= STATUS_INIT_ERR;
 }
 
-void updateTelemetry(Telemetry &telemetryData, uint16_t systemState) {
+void updateTelemetry(Telemetry &telemetryData, const uint16_t &systemState) {
   // Update timestamp
   telemetryData.timestamp = getCurrentTimestamp();
 
@@ -44,7 +43,7 @@ void updateTelemetry(Telemetry &telemetryData, uint16_t systemState) {
   telemetryData.sequence = sequenceCounter++;
 
   // Update SILENT system status.
-  if (systemState & LED_SILENT_MASK) {
+  if (systemState & SYSTEM_SILENT_MASK) {
     telemetryData.status |= STATUS_DEVICE_SILENT_MODE;
   } else {
     telemetryData.status &= ~STATUS_DEVICE_SILENT_MODE;
@@ -66,10 +65,7 @@ void updateTelemetry(Telemetry &telemetryData, uint16_t systemState) {
     telemetryData.status &= ~STATUS_LDR_ERR;
   }
 
-  // Update STALE status.
-  const uint32_t currentTimestamp = getCurrentTimestamp();
-
-  // -- DHT
+  // Update DHT STALE status
   if (telemetryData.dht.uptime != previousDhtUptime) {
     previousDhtUptime = telemetryData.dht.uptime;
     dhtStaleCycles = 0;
@@ -83,7 +79,7 @@ void updateTelemetry(Telemetry &telemetryData, uint16_t systemState) {
     telemetryData.dht.status &= ~STATUS_DHT_DATA_STALE;
   }
 
-  // -- LDR
+  // Update LDR STALE status
   if (telemetryData.ldr.uptime != previousLdrUptime) {
     previousLdrUptime = telemetryData.ldr.uptime;
     ldrStaleCycles = 0;
