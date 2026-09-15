@@ -58,6 +58,7 @@ bool publishCommands(CommandQueue &commandQueue) {
 }
 
 static bool publishMqttMessage(const char *topic, const char *payload) {
+#if defined(DEBUG_MODE)
   Serial.println("[MQTT] Publishing to the topic:");
   Serial.println(topic);
   printMonitorPayload(payload);
@@ -66,6 +67,6 @@ static bool publishMqttMessage(const char *topic, const char *payload) {
 
   // Serial.println(ok ? "[MQTT] ok" : "[MQTT] Publish error");
   Serial.println();
-
+#endif
   return ok;
 }
