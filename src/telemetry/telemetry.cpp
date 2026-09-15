@@ -33,6 +33,7 @@ void initTelemetry(Telemetry &telemetryData) {
 }
 
 void updateTelemetry(Telemetry &telemetryData, const uint16_t &systemState) {
+
   // Update timestamp
   telemetryData.timestamp = getCurrentTimestamp();
 
