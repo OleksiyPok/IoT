@@ -243,6 +243,13 @@
       "top": 278.4,
       "left": 38.4,
       "attrs": { "text": "Test: DHT" }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "text1",
+      "top": -230.4,
+      "left": 19.2,
+      "attrs": { "text": "\"Device - A\"" }
     }
   ],
   "connections": [
