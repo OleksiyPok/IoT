@@ -3,10 +3,8 @@
 #include <Arduino.h>
 
 #include "memory.h"
-// ---------------------------------
 
 // ---------------------------------
-
 void checkMemory() {
   Serial.println();
   Serial.println("------ Free heap ------");

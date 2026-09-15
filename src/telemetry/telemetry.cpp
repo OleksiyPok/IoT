@@ -14,7 +14,6 @@
 #include "telemetry.h"
 
 // ---------------------------------
-
 static uint8_t sequenceCounter = 0;
 
 static uint8_t dhtStaleCycles = 0;
@@ -24,7 +23,6 @@ static uint32_t previousDhtUptime = 0;
 static uint32_t previousLdrUptime = 0;
 
 // ---------------------------------
-
 void initTelemetry(Telemetry &telemetryData) {
   telemetryData.uptime = millis() / 1000;
   telemetryData.version = TELEMETRY_PROTOCOL_VERSION;

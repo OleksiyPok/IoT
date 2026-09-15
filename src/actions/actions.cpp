@@ -27,7 +27,6 @@ static void handleCommand(const uint16_t &buttonsState,
                           CommandQueue &commandQueue);
 
 // ---------------------------------
-
 void handleActions(const Telemetry &telemetryData, const uint16_t &buttonsState,
                    uint16_t &systemState, uint16_t &ledState,
                    CommandQueue &commandQueue) {

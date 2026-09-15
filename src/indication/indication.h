@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 
+// ---------------------------------
 // "ledState" bits
 
 #define LED_LIGHT_MIN_MASK (1U << 0)

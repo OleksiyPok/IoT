@@ -8,7 +8,6 @@
 #include "config.h"
 
 // ---------------------------------
-
 #define BUTTON_0_MASK BUTTON_COMMAND_MASK
 #define BUTTON_1_MASK BUTTON_SILENT_MASK
 #define BUTTON_2_MASK BUTTON_2
@@ -18,8 +17,6 @@
 #define BUTTON_1_FIXED true
 #define BUTTON_2_FIXED false
 #define BUTTON_3_FIXED false
-
-// ---------------------------------
 
 uint32_t lastDebounce0 = 0;
 uint32_t lastDebounce1 = 0;
@@ -39,7 +36,6 @@ void IRAM_ATTR onButton2Press();
 void IRAM_ATTR onButton3Press();
 
 // ---------------------------------
-
 void initButtons() {
   pinMode(BUTTON_0_PIN, INPUT_PULLUP);
   pinMode(BUTTON_1_PIN, INPUT_PULLUP);

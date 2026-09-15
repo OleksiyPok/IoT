@@ -6,7 +6,6 @@
 #include "commands_serializer.h"
 
 // ---------------------------------
-
 bool serializeCommands(const Command &command, char *buffer,
                        size_t bufferSize) {
 

@@ -6,11 +6,9 @@
 #include "telemetry_deserializer.h"
 
 // ---------------------------------
-
 #define TELEMETRY_JSON_DOCUMENT_SIZE 256
 
 // ---------------------------------
-
 bool deserializeTelemetry(const char *buffer, size_t bufferSize,
                           Telemetry &data) {
 

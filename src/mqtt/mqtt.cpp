@@ -8,6 +8,7 @@
 #include "mqtt_connection.h"
 #include "mqtt_publish.h"
 
+// ---------------------------------
 void handleMqtt(const Telemetry &telemetryData, CommandQueue &commandQueue) {
   if (!isMqttConnected()) {
     return;
@@ -20,5 +21,4 @@ void handleMqtt(const Telemetry &telemetryData, CommandQueue &commandQueue) {
   publishStatus(telemetryData);
   publishCommands(commandQueue);
 
-  // Serial.println("------------");
 }

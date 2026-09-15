@@ -8,7 +8,6 @@
 #include "dht_sensor.h"
 
 // ---------------------------------
-
 #define DHT_TYPE DHT22
 
 #define DHT_TEMPERATURE_VALID_MIN -35 // device error
@@ -44,7 +43,6 @@
 DHT dht(DHT_PIN, DHT_TYPE);
 
 // ---------------------------------
-
 void initDhtSensor(DHTData &data) {
   pinMode(DHT_PIN, INPUT);
   dht.begin();

@@ -5,7 +5,6 @@
 #include "sensors_serializer.h"
 
 // ---------------------------------
-
 bool serializeSensors(const Telemetry &data, char *buffer, size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {

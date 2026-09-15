@@ -2,6 +2,7 @@
 
 #include "commands.h"
 
+// ---------------------------------
 void initCommandQueue(CommandQueue &queue) {
   queue.count = 0;
   queue.nextSequence = 0;

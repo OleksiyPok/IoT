@@ -2,6 +2,7 @@
 
 #pragma once
 
+// ---------------------------------
 #define WIFI_SSID "Wokwi-GUEST" // SSID
 #define WIFI_PASSWORD ""        // Password (empty for Wokwi-GUEST)
 

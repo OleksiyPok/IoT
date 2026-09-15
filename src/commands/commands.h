@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 
+// ---------------------------------
 static const char MANUAL_READ_COMMAND[] = "manual_read";
 
 #define COMMAND_QUEUE_SIZE 4
