@@ -6,6 +6,7 @@
 
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
+#include "mqtt_subscribe.h"
 
 // ---------------------------------
 static WiFiClient wifiClient;
@@ -19,6 +20,8 @@ static uint8_t mqttConnectionAttempts = 0;
 static bool connectMQTT();
 static void handleMqttStatus();
 static void printMqttStatus(int32_t mqttStatus);
+static void mqttMessageCallback(char *topic, uint8_t *payload,
+                                unsigned int length);
 
 // ---------------------------------
 void initMqtt() {
@@ -26,6 +29,8 @@ void initMqtt() {
   mqttClient.setKeepAlive(60);
   mqttClient.setSocketTimeout(30);
   mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
+  mqttClient.setCallback(mqttMessageCallback);
+  initMqttSubscribe();
 }
 
 bool isMqttConnected() { return mqttClient.connected(); }
@@ -43,7 +48,13 @@ static bool connectMQTT() {
   Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
   Serial.println(")...");
 
-  return mqttClient.connect(MQTT_CLIENT_ID);
+  const bool connected = mqttClient.connect(MQTT_CLIENT_ID);
+
+  if (connected) {
+    subscribeMqttTopics();
+  }
+
+  return connected;
 }
 
 bool handleMqttConnection() {
@@ -65,6 +76,7 @@ bool handleMqttConnection() {
   if (mqttClient.connected()) {
     mqttConnectionAttempts = 0;
     mqttNextConnectionCycleAt = 0;
+    subscribeMqttTopics();
     mqttClient.loop();
     return true;
   }
@@ -123,6 +135,19 @@ bool mqttPublish(const char *topic, const char *payload) {
   }
 
   return mqttClient.publish(topic, payload);
+}
+
+bool mqttSubscribe(const char *topic) {
+  if (!mqttClient.connected() || topic == nullptr) {
+    return false;
+  }
+
+  return mqttClient.subscribe(topic);
+}
+
+static void mqttMessageCallback(char *topic, uint8_t *payload,
+                                unsigned int length) {
+  handleMqttMessage(topic, payload, length);
 }
 
 static void printMqttStatus(int32_t mqttStatus) {

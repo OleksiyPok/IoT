@@ -3,12 +3,11 @@
 #pragma once
 
 #include "../config.h"
-#include "../telemetry/telemetry.h"
 
 // ---------------------------------
 void initMonitor();
-void handleMonitor(const Telemetry &data, const uint16_t &systemState,
-                   const uint16_t &buttonsState, const uint16_t &ledState);
+void handleMonitor(const uint16_t &systemState, const uint16_t &buttonsState,
+                   const uint16_t &ledState);
 
 #if defined(DEBUG_MODE)
 void printMonitorPayload(const char *payload);

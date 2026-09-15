@@ -4,8 +4,6 @@
 
 #include <Arduino.h>
 
-#include "../telemetry/telemetry.h"
-
 // ---------------------------------
 bool getDeviceId(uint64_t &deviceId);
 void printDeviceInfo();

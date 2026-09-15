@@ -5,14 +5,12 @@
 // ---------------------------------
 #define MQTT_BROKER "broker.hivemq.com"
 #define MQTT_PORT 1883
-#define MQTT_CLIENT_ID "esp32-demo-a"
+#define MQTT_CLIENT_ID "esp32-demo-b"
 
 #define MQTT_TOP_TOPIC "iot-course/OleksiiPok"
 
 #define TOPIC_COMMANDS MQTT_TOP_TOPIC "/commands"
 #define TOPIC_SENSORS MQTT_TOP_TOPIC "/sensors"
-#define TOPIC_STATUS MQTT_TOP_TOPIC "/status"
-// #define TOPIC_ACTUATORS_LED MQTT_TOP_TOPIC "/actuators/led"
 
 #define MQTT_RECONNECT_INTERVAL_MS 5000
 #define MQTT_MAX_CONNECTION_ATTEMPTS 5

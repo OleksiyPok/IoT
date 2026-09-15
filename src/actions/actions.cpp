@@ -3,42 +3,43 @@
 #include "actions.h"
 #include "../buttons/buttons.h"
 #include "../commands/commands.h"
-#include "../dht_sensor/dht_sensor.h"
+#include "../config.h"
 #include "../indication/indication.h"
-#include "../ldr_sensor/ldr_sensor.h"
 #include "../mqtt/mqtt_connection.h"
+#include "../mqtt/mqtt_subscribe.h"
 #include "../system/system_state.h"
-#include "../telemetry/telemetry.h"
 #include "../wifi/wifi.h"
 
 // ---------------------------------
 static uint16_t previousButtonsState = 0x0000;
 
-static void updateSystemState(const Telemetry &telemetryData,
-                              const uint16_t &buttonsState,
-                              uint16_t &systemState);
-static void updateDhtStatus(const DHTData &data, uint16_t &ledState);
-static void updateLdrStatus(const LDRData &data, uint16_t &ledState);
-static void updateLedState(const Telemetry &telemetryData,
-                           const uint16_t &systemState, uint16_t &ledState);
-
 static void handleWifiTest(const uint16_t &buttonsState);
 static void handleCommand(const uint16_t &buttonsState);
+static void updateMqttSensorStatus(const MqttSensorData &data,
+                                   uint16_t &ledState);
+static void updateLedState(const uint16_t &systemState, uint16_t &ledState);
+static void updateSystemState(const uint16_t &buttonsState,
+                              uint16_t &systemState);
+
+static void handleMqttCommand();
+
+static bool mqttTemperatureMaxActive = false;
+static bool mqttLightAutoActive = false;
 
 // ---------------------------------
-void handleActions(const Telemetry &telemetryData, const uint16_t &buttonsState,
-                   uint16_t &systemState, uint16_t &ledState) {
+void handleActions(const uint16_t &buttonsState, uint16_t &systemState,
+                   uint16_t &ledState) {
 
-  updateSystemState(telemetryData, buttonsState, systemState);
-  updateLedState(telemetryData, systemState, ledState);
+  updateSystemState(buttonsState, systemState);
+  updateLedState(systemState, ledState);
   handleCommand(buttonsState);
+  handleMqttCommand();
   handleWifiTest(buttonsState);
 
   previousButtonsState = buttonsState;
 }
 
-static void updateSystemState(const Telemetry &telemetryData,
-                              const uint16_t &buttonsState,
+static void updateSystemState(const uint16_t &buttonsState,
                               uint16_t &systemState) {
 
   systemState &= ~SYSTEM_STATE_MANAGED_MASK;
@@ -50,16 +51,6 @@ static void updateSystemState(const Telemetry &telemetryData,
 
   if (buttonsState & BUTTON_SILENT_MASK) {
     systemState |= SYSTEM_SILENT_MASK;
-  }
-
-  if (telemetryData.ldr.status &
-      (STATUS_LDR_DEVICE_ERR | STATUS_LDR_DATA_VALID_ERR)) {
-    systemState |= SYSTEM_LDR_ERR_MASK;
-  }
-
-  if (telemetryData.dht.status &
-      (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR)) {
-    systemState |= SYSTEM_DHT_ERR_MASK;
   }
 
   if (!isWifiConnected()) {
@@ -79,8 +70,7 @@ static void handleWifiTest(const uint16_t &buttonsState) {
   }
 }
 
-static void updateLedState(const Telemetry &telemetryData,
-                           const uint16_t &systemState, uint16_t &ledState) {
+static void updateLedState(const uint16_t &systemState, uint16_t &ledState) {
 
   ledState = 0;
 
@@ -92,45 +82,7 @@ static void updateLedState(const Telemetry &telemetryData,
     ledState |= LED_SILENT_MASK;
   }
 
-  updateLdrStatus(telemetryData.ldr, ledState);
-  updateDhtStatus(telemetryData.dht, ledState);
-}
-
-static void updateDhtStatus(const DHTData &data, uint16_t &ledState) {
-  ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
-                LED_HUMIDITY_MIN_MASK);
-
-  if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
-    ledState |= LED_TEMPERATURE_MIN_MASK;
-  }
-
-  if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MAX) {
-    ledState |= LED_TEMPERATURE_MAX_MASK;
-  }
-
-  if (data.status & STATUS_DHT_HUMIDITY_ALARM_MIN) {
-    ledState |= LED_HUMIDITY_MIN_MASK;
-  }
-
-  if (data.status & STATUS_DHT_HUMIDITY_ALARM_MAX) {
-    ledState |= LED_HUMIDITY_MAX_MASK;
-  }
-}
-
-static void updateLdrStatus(const LDRData &data, uint16_t &ledState) {
-  ledState &= ~(LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK);
-
-  if (data.status & STATUS_LDR_LUX_ALARM_MIN) {
-    ledState |= LED_LIGHT_MIN_MASK;
-  }
-
-  if (data.status & STATUS_LDR_LUX_ALARM_MAX) {
-    ledState |= LED_LIGHT_MAX_MASK;
-  }
-
-  if (data.status & STATUS_LDR_LIGHT_LOW) {
-    ledState |= LED_LIGHT_AUTO_MASK;
-  }
+  updateMqttSensorStatus(getMqttSensorData(), ledState);
 }
 
 static void handleCommand(const uint16_t &buttonsState) {
@@ -138,5 +90,63 @@ static void handleCommand(const uint16_t &buttonsState) {
   if ((buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
     setCommand(MANUAL_READ_COMMAND);
+  }
+}
+
+static void handleMqttCommand() {
+  const char *command = getReceivedCommand();
+
+  if (command == nullptr) {
+    return;
+  }
+
+  if (strcmp(command, MANUAL_READ_COMMAND) == 0) {
+    Serial.println(MANUAL_READ_COMMAND);
+    blinkLed(LED_COMMAND_PIN);
+  }
+
+  clearReceivedCommand();
+}
+
+static void updateMqttSensorStatus(const MqttSensorData &data,
+                                   uint16_t &ledState) {
+  // Temperature hysteresis:
+  // > 26 C -> ON
+  // < 20 C -> OFF
+  // 20..26 C -> keep previous state.
+  if (data.hasTemperature) {
+    if (data.temperature > DHT_TEMPERATURE_ALARM_MAX_CONFIG) {
+      mqttTemperatureMaxActive = true;
+    } else if (data.temperature < DHT_TEMPERATURE_ALARM_MIN_CONFIG) {
+      mqttTemperatureMaxActive = false;
+    }
+  }
+
+  // Light:
+  // < 600 lux -> ON
+  // > 600 lux -> OFF
+  // 600 lux -> keep previous state.
+  if (data.hasLdrLux) {
+    if (data.ldrLux < LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG) {
+      mqttLightAutoActive = true;
+    } else if (data.ldrLux > LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG) {
+      mqttLightAutoActive = false;
+    }
+  }
+
+  if (data.hasTemperature) {
+    ledState &= ~LED_TEMPERATURE_MAX_MASK;
+
+    if (mqttTemperatureMaxActive) {
+      ledState |= LED_TEMPERATURE_MAX_MASK;
+    }
+  }
+
+  if (data.hasLdrLux) {
+    ledState &= ~LED_LIGHT_AUTO_MASK;
+
+    if (mqttLightAutoActive) {
+      ledState |= LED_LIGHT_AUTO_MASK;
+    }
   }
 }
