@@ -7,7 +7,7 @@
 
 // ---------------------------------
 static const uint16_t LED_PINS[] = {
-    LED_LIGHT_MANUAL_PIN, LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
+    LED_COMMAND_PIN,      LED_LIGHT_AUTO_PIN,      LED_LIGHT_MIN_PIN,
     LED_LIGHT_MAX_PIN,    LED_TEMPERATURE_MIN_PIN, LED_TEMPERATURE_MAX_PIN,
     LED_HUMIDITY_MIN_PIN, LED_SILENT_PIN};
 
@@ -20,7 +20,7 @@ static const uint16_t LED_MASKS[] = {
 void initIndication() {
   pinMode(LED_BUILTIN_PIN, OUTPUT);
 
-  pinMode(LED_LIGHT_MANUAL_PIN, OUTPUT);
+  pinMode(LED_COMMAND_PIN, OUTPUT);
   pinMode(LED_LIGHT_AUTO_PIN, OUTPUT);
   pinMode(LED_LIGHT_MIN_PIN, OUTPUT);
   pinMode(LED_LIGHT_MAX_PIN, OUTPUT);
