@@ -2,190 +2,87 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-<img src="../images/wokwi.png" alt="Схема проекта" width="700">
+<img src="../images/wokwi-B.png" alt="Project Circuit" width="700">
 
 ## Project Description
 
 The project is an ESP32 firmware organized into independent functional modules.
 
-The main modules are responsible for:
-- sensor data acquisition;
-- telemetry and status processing;
-- button handling;
-- LED indication;
-- WiFi and MQTT communication;
-- Serial Monitor output.
+From the user's perspective, the device:
 
-The main measurement flow is:
+- connects to WiFi and automatically attempts to restore the connection after a disconnect;
+- connects to an MQTT broker and automatically manages the MQTT connection;
+- subscribes to command and sensor-data topics;
+- receives commands through MQTT and executes supported device actions;
+- receives temperature and light data through MQTT and uses them for device indication;
+- provides manual light control through a button;
+- provides a silent mode;
+- provides a WiFi disconnect/recovery test function;
+- controls LEDs according to commands, operating conditions, and alarm states;
+- synchronizes system time using NTP and provides UTC/local time access;
+- provides device identification information;
+- optionally outputs diagnostic information to the Serial Monitor in `DEBUG_MODE`.
 
-```text
-DHT22 ──> Temperature ──┐
-        Humidity ───────┤
-                        ├──> Validation ──> Status
-LDR ──> ADC ──> Lux ────┘                    │
-                                             ├──> LED indication
-                                             ├──> MQTT
-                                             └──> Serial Monitor
-```
+Temperature and light alarm indication is controlled by compile-time configuration:
 
-Each sensor value is processed through validation limits and operating/alarm thresholds.
-
-## Data Structure
-
-The internal telemetry contains device information, time data, sensor measurements, and status registers.
-
-```cpp
-struct DHTData {
-    float temperature; // °C
-    float humidity;    // %
-    uint8_t status;
-};
-
-struct LDRData {
-    uint16_t raw; // ADC data
-    float lux;    // lux
-    uint8_t status;
-};
-
-struct Telemetry {
-    uint64_t deviceId;
-    uint32_t timestamp;
-    uint32_t uptime;
-    uint32_t sequence;
-    DHTData dht;
-    LDRData ldr;
-    uint8_t status; // system status register
-};
-```
-
-MQTT data is published as separate sensor-data and status messages.
-
-## Measurement Structure
-
-### Temperature
-
-| Parameter | Value |
-|---|---:|
-| Valid minimum | −35 °C (`DHT_TEMPERATURE_VALID_MIN`) |
-| Alarm minimum | 20 °C (`DHT_TEMPERATURE_ALARM_MIN_CONFIG`) |
-| Alarm maximum | 26 °C (`DHT_TEMPERATURE_ALARM_MAX_CONFIG`) |
-| Valid maximum | +75 °C (`DHT_TEMPERATURE_VALID_MAX`) |
-
-```text
-< -35 °C        invalid
--35 ... <20 °C  valid, low temperature
-20 ... 26 °C    normal range
->26 ... 75 °C   valid, high temperature
->75 °C          invalid
-```
-
-The alarm thresholds can be changed at compile time using:
 - `DHT_TEMPERATURE_ALARM_MIN_CONFIG`
 - `DHT_TEMPERATURE_ALARM_MAX_CONFIG`
-
-The validation limits are also compile-time constants:
-- `DHT_TEMPERATURE_VALID_MIN`
-- `DHT_TEMPERATURE_VALID_MAX`
-
-### Humidity
-
-| Parameter | Value |
-|---|---:|
-| Valid minimum | 10 % (`DHT_HUMIDITY_VALID_MIN`) |
-| Alarm minimum | 20 % (`DHT_HUMIDITY_ALARM_MIN_CONFIG`) |
-| Alarm maximum | 80 % (`DHT_HUMIDITY_ALARM_MAX_CONFIG`) |
-| Valid maximum | 90 % (`DHT_HUMIDITY_VALID_MAX`) |
-
-```text
-<10 %          invalid
-10 ... <20 %   valid, low humidity
-20 ... 80 %    normal range
->80 ... 90 %   valid, high humidity
->90 %          invalid
-```
-
-The alarm thresholds can be changed at compile time using:
-- `DHT_HUMIDITY_ALARM_MIN_CONFIG`
-- `DHT_HUMIDITY_ALARM_MAX_CONFIG`
-
-The validation limits are also compile-time constants:
-- `DHT_HUMIDITY_VALID_MIN`
-- `DHT_HUMIDITY_VALID_MAX`
-
-### Light
-
-The LDR produces an ADC value which is converted to lux.
-
-#### ADC validation
-
-| Parameter | Value |
-|---|---:|
-| Valid minimum | 50 (`LDR_ADC_VALID_MIN`) |
-| Valid maximum | 4045 (`LDR_ADC_VALID_MAX`) |
-
-The current implementation treats the boundary values themselves as outside the working ADC range.
-
-#### Lux
-
-| Parameter | Value |
-|---|---:|
-| Valid minimum | 1 lux (`LDR_LUX_VALID_MIN`) |
-| Alarm minimum | 10 lux (`LDR_LUX_ALARM_MIN_CONFIG`) |
-| Low-light threshold | 600 lux (`LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`) |
-| Alarm maximum | 10,000 lux (`LDR_LUX_ALARM_MAX_CONFIG`) |
-| Valid maximum | 70,000 lux (`LDR_LUX_VALID_MAX`) |
-
-```text
-<1 lux             invalid
-1 ... <10 lux      valid, minimum-light alarm
-10 ... <600 lux    valid, low-light condition
-600 ... 10,000 lux normal operating range
->10,000 ... 70,000 valid, maximum-light alarm
->70,000 lux        invalid
-```
-
-The following light thresholds can be changed at compile time:
-- `LDR_LUX_ALARM_MIN_CONFIG`
 - `LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`
-- `LDR_LUX_ALARM_MAX_CONFIG`
 
-The ADC and lux validation limits are also compile-time constants:
-- `LDR_ADC_VALID_MIN`
-- `LDR_ADC_VALID_MAX`
-- `LDR_LUX_VALID_MIN`
-- `LDR_LUX_VALID_MAX`
+The device state is represented by bit registers, allowing several independent conditions to be active simultaneously.
 
-The LDR conversion model uses additional compile-time constants such as `LDR_GAMMA`, `RL10`, `LDR_R_DIV_OHM`, and `LDR_VCC_V`.
+## Main Operation Flow
 
-## Status Registers
+```text
+Buttons ───────────────┐
+                       ├──> Actions ──> System State ──> LED Indication
+MQTT Commands ─────────┤
+                       │
+MQTT Sensor Data ──────┘
 
-Sensor and system states are represented by bit flags.
+WiFi ──> MQTT Connection
+NTP  ──> System Time
 
-The DHT, LDR, and system status registers can indicate device errors, invalid data, stale data, alarm conditions, and system communication errors.
-
-This allows several independent conditions to be represented simultaneously in one status value.
-
-## Buttons and Indication
-
-Three buttons provide control of:
-- manual light mode;
-- silent mode;
-- WiFi disconnection/recovery testing.
-
-LEDs indicate light modes, light alarms, temperature alarms, humidity alarms, and silent mode.
+DEBUG_MODE ──> Serial Monitor
+```
 
 ## Communication
 
-The device connects through WiFi and publishes telemetry through MQTT.
+MQTT is used for two-way device communication:
 
-The project also supports Serial Monitor output.
+- commands are received from the MQTT command topic;
+- sensor data is received from the MQTT sensor topic;
+- received data is deserialized and stored for further processing;
+- MQTT connection and topic subscriptions are restored automatically after reconnection.
 
-WiFi disconnection starts the automatic connection recovery process.
+## Buttons and Indication
+
+Four buttons are supported:
+
+- manual command control;
+- silent mode;
+- additional button input;
+- WiFi disconnect/recovery testing.
+
+The LEDs indicate command activity, light conditions, temperature conditions, humidity conditions, and silent mode.
+
+Button inputs use interrupts and software debounce handling.
+
+## Time and Device Information
+
+The firmware initializes system time through NTP and supports:
+
+- current UTC timestamp;
+- UTC time structure;
+- local time using the configured timezone;
+- runtime timezone changes.
+
+The firmware can also obtain the ESP32 WiFi STA device identifier and display the device information.
 
 ## Configuration
 
-Sensor thresholds, sensor validation limits, sensor conversion parameters, and operating intervals are compile-time configurable.
+Operating intervals, WiFi parameters, MQTT parameters, GPIO assignments, LED/button mappings, and alarm thresholds are configured at compile time.
 
-Current values are primarily intended for testing and can be adjusted for actual deployment.
+The firmware is designed as a modular system, with separate modules for buttons, actions, commands, indication, WiFi, MQTT, serialization, time, device information, system state, memory, and monitoring.
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
