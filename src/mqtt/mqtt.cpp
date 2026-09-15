@@ -9,7 +9,7 @@
 #include "mqtt_publish.h"
 
 // ---------------------------------
-void handleMqtt(const Telemetry &telemetryData, CommandQueue &commandQueue) {
+void handleMqtt(const Telemetry &telemetryData) {
   if (!isMqttConnected()) {
     return;
   }
@@ -19,6 +19,5 @@ void handleMqtt(const Telemetry &telemetryData, CommandQueue &commandQueue) {
   }
 
   publishStatus(telemetryData);
-  publishCommands(commandQueue);
-
+  publishCommands();
 }

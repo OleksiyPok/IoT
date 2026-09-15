@@ -33,10 +33,10 @@ void publishStatus(const Telemetry &telemetry) {
   publishMqttMessage(TOPIC_STATUS, payload);
 }
 
-bool publishCommands(CommandQueue &commandQueue) {
-  Command command;
+bool publishCommands() {
+  const char *command = getCommand();
 
-  if (!peekCommand(commandQueue, command)) {
+  if (command == nullptr) {
     return false;
   }
 
@@ -50,7 +50,7 @@ bool publishCommands(CommandQueue &commandQueue) {
     return false;
   }
 
-  removeCommand(commandQueue);
+  clearCommand();
 
   return true;
 }

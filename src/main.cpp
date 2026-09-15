@@ -38,7 +38,6 @@ uint32_t lastSendDataMs = 0;
 uint32_t lastMqttPublish = 0;
 
 Telemetry telemetryData;
-CommandQueue commandQueue;
 
 // ---------------------------------
 void setup() {
@@ -47,7 +46,6 @@ void setup() {
   initDhtSensor(telemetryData.dht);
   initLdrSensor(telemetryData.ldr);
   initButtons();
-  initCommandQueue(commandQueue);
   initIndication();
   connectWifi();
   initTime();
@@ -87,8 +85,7 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, systemState, ledState,
-                  commandQueue);
+    handleActions(telemetryData, buttonsState, systemState, ledState);
   }
 
   // Indication
@@ -109,7 +106,7 @@ void loop() {
   // MQTT publish
   if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
     lastMqttPublish = now;
-    handleMqtt(telemetryData, commandQueue);
+    handleMqtt(telemetryData);
   }
 
 #if defined(DEBUG_MODE)
