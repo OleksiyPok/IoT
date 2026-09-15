@@ -6,6 +6,7 @@
 
 #include "../telemetry/telemetry.h"
 
+// ---------------------------------
 #define STATUS_LDR_OK (0U)
 
 #define STATUS_LDR_DEVICE_ERR (1U << 0)

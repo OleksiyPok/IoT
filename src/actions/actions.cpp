@@ -23,18 +23,15 @@ static void updateLedState(const Telemetry &telemetryData,
                            const uint16_t &systemState, uint16_t &ledState);
 
 static void handleWifiTest(const uint16_t &buttonsState);
-static void handleCommand(const uint16_t &buttonsState,
-                          CommandQueue &commandQueue);
+static void handleCommand(const uint16_t &buttonsState);
 
 // ---------------------------------
-
 void handleActions(const Telemetry &telemetryData, const uint16_t &buttonsState,
-                   uint16_t &systemState, uint16_t &ledState,
-                   CommandQueue &commandQueue) {
+                   uint16_t &systemState, uint16_t &ledState) {
 
   updateSystemState(telemetryData, buttonsState, systemState);
   updateLedState(telemetryData, systemState, ledState);
-  handleCommand(buttonsState, commandQueue);
+  handleCommand(buttonsState);
   handleWifiTest(buttonsState);
 
   previousButtonsState = buttonsState;
@@ -136,11 +133,10 @@ static void updateLdrStatus(const LDRData &data, uint16_t &ledState) {
   }
 }
 
-static void handleCommand(const uint16_t &buttonsState,
-                          CommandQueue &commandQueue) {
+static void handleCommand(const uint16_t &buttonsState) {
 
   if ((buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
-    enqueueCommand(commandQueue, MANUAL_READ_COMMAND);
+    setCommand(MANUAL_READ_COMMAND);
   }
 }

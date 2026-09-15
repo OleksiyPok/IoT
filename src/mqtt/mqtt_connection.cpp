@@ -8,7 +8,6 @@
 #include "mqtt_connection.h"
 
 // ---------------------------------
-
 static WiFiClient wifiClient;
 static PubSubClient mqttClient(wifiClient);
 
@@ -20,8 +19,8 @@ static uint8_t mqttConnectionAttempts = 0;
 static bool connectMQTT();
 static void handleMqttStatus();
 static void printMqttStatus(int32_t mqttStatus);
-// ---------------------------------
 
+// ---------------------------------
 void initMqtt() {
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
   mqttClient.setKeepAlive(60);

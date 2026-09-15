@@ -7,5 +7,4 @@
 #include "../../telemetry/telemetry.h"
 
 // ---------------------------------
-
 bool serializeSensors(const Telemetry &data, char *buffer, size_t bufferSize);

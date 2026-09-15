@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 
+// ---------------------------------
 #define BUTTON_DEBOUNCE_TIME_MS 100
 
 #define BUTTON_COMMAND_MASK (1U << 0)

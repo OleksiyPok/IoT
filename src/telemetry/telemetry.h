@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 
+// ---------------------------------
 struct DHTData {
   float temperature; // °C
   float humidity;    // %

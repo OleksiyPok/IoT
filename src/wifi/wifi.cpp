@@ -6,7 +6,6 @@
 #include "wifi.h"
 
 // ---------------------------------
-
 static uint32_t wifiConnectStartedAt = 0;
 static uint32_t wifiLastReconnectAt = 0;
 static bool wifiConnecting = false;
@@ -15,7 +14,6 @@ static wl_status_t wlLastStatus = WL_IDLE_STATUS;
 void printWifiStatus(wl_status_t wlStatus);
 
 // ---------------------------------
-
 bool isWifiConnected() { return WiFi.isConnected(); }
 
 void handleWiFi() {

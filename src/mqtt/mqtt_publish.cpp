@@ -12,11 +12,9 @@
 #include "mqtt_publish.h"
 
 // ---------------------------------
-
 static bool publishMqttMessage(const char *topic, const char *payload);
 
 // ---------------------------------
-
 void publishSensors(const Telemetry &telemetry) {
   char payload[256];
   if (!serializeSensors(telemetry, payload, sizeof(payload))) {
@@ -35,10 +33,10 @@ void publishStatus(const Telemetry &telemetry) {
   publishMqttMessage(TOPIC_STATUS, payload);
 }
 
-bool publishCommands(CommandQueue &commandQueue) {
-  Command command;
+bool publishCommands() {
+  const char *command = getCommand();
 
-  if (!peekCommand(commandQueue, command)) {
+  if (command == nullptr) {
     return false;
   }
 
@@ -52,7 +50,7 @@ bool publishCommands(CommandQueue &commandQueue) {
     return false;
   }
 
-  removeCommand(commandQueue);
+  clearCommand();
 
   return true;
 }
@@ -65,7 +63,6 @@ static bool publishMqttMessage(const char *topic, const char *payload) {
 
   const bool ok = mqttPublish(topic, payload);
 
-  // Serial.println(ok ? "[MQTT] ok" : "[MQTT] Publish error");
   Serial.println();
 #endif
   return ok;

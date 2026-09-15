@@ -6,13 +6,11 @@
 #include "time.h"
 
 // ---------------------------------
-
 static const char *NTP_SERVER = "pool.ntp.org";
 static const char *DEFAULT_TIMEZONE = "Europe/Amsterdam";
 static const char *currentTimezone = DEFAULT_TIMEZONE;
 
 // ---------------------------------
-
 void initTime() {
   // Internal system time is UTC (Greenwich).
   configTime(0, 0, NTP_SERVER);

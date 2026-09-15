@@ -5,9 +5,7 @@
 #include "device_info.h"
 #include "esp_mac.h"
 
-// --------------------------------------------------
-// Get WiFi STA MAC
-// --------------------------------------------------
+// ---------------------------------
 
 bool getDeviceId(uint64_t &deviceId) {
   uint8_t mac[6];
@@ -24,10 +22,6 @@ bool getDeviceId(uint64_t &deviceId) {
 
   return true;
 }
-
-// --------------------------------------------------
-// Print device information
-// --------------------------------------------------
 
 void printDeviceInfo() {
   uint8_t mac[6];

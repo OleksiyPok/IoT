@@ -4,6 +4,7 @@
 
 #include <time.h>
 
+// ---------------------------------
 // Initialize system time and synchronize with NTP.
 void initTime();
 

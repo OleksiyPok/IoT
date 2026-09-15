@@ -16,11 +16,9 @@
 #endif
 
 // ---------------------------------
-
 static void sendData(const Telemetry &telemetryData);
 
 // ---------------------------------
-
 void handleSendData(Telemetry &telemetryData) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("[HTTP] Wi-Fi does not connect");

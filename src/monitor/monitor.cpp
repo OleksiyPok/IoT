@@ -12,19 +12,15 @@
 #include "monitor.h"
 
 // ---------------------------------
-
 static void printJsonPretty(const JsonDocument &doc);
 static void printStatusBit(const char *name, uint16_t status, uint16_t mask);
-// static void printDhtStatus(uint16_t status);
-// static void printLdrStatus(uint16_t status);
-// static void printSystemStatus(uint16_t status);
 
 static void printDhtTelemetryStatus(uint16_t status);
 static void printLdrTelemetryStatus(uint16_t status);
 static void printTelemetrySystemStatus(uint16_t status);
 static void printSystemState(uint16_t systemState);
-// ---------------------------------
 
+// ---------------------------------
 void initMonitor() {
   Serial.begin(115200);
   delay(200);
@@ -83,8 +79,6 @@ void printMonitorPayload(const char *payload) {
   Serial.println("[MQTT] JSON:");
 
   printJsonPretty(doc);
-
-  // Serial.println("------------");
 }
 #endif
 
@@ -133,8 +127,6 @@ static void printStatusByte(uint16_t status) {
   Serial.println();
 }
 
-// ---------------------------------
-
 static void printSystemState(uint16_t systemState) {
   Serial.println("[SYSTEM STATE REGISTER]");
   printStatusByte(systemState);
@@ -146,8 +138,6 @@ static void printSystemState(uint16_t systemState) {
   printStatusBit("MQTT_ERR", systemState, SYSTEM_MQTT_ERR_MASK);
   printStatusBit("WIFI_ERR", systemState, SYSTEM_WIFI_ERR_MASK);
 }
-
-// ---------------------------------
 
 static void printDhtTelemetryStatus(uint16_t status) {
   Serial.println("[DHT STATUS]");
@@ -166,8 +156,6 @@ static void printDhtTelemetryStatus(uint16_t status) {
   printStatusBit("HUMIDITY_ALARM_MAX", status, STATUS_DHT_HUMIDITY_ALARM_MAX);
 }
 
-// ---------------------------------
-
 static void printLdrTelemetryStatus(uint16_t status) {
   Serial.println("[LDR STATUS]");
   printStatusByte(status);
@@ -180,8 +168,6 @@ static void printLdrTelemetryStatus(uint16_t status) {
   printStatusBit("LUX_ALARM_MAX", status, STATUS_LDR_LUX_ALARM_MAX);
   printStatusBit("LIGHT_LOW", status, STATUS_LDR_LIGHT_LOW);
 }
-
-// ---------------------------------
 
 static void printTelemetrySystemStatus(uint16_t status) {
   Serial.println("[SYSTEM STATUS]");

@@ -6,17 +6,14 @@
 #include "commands_serializer.h"
 
 // ---------------------------------
+bool serializeCommands(const char *command, char *buffer, size_t bufferSize) {
 
-bool serializeCommands(const Command &command, char *buffer,
-                       size_t bufferSize) {
-
-  if (buffer == nullptr || bufferSize == 0) {
+  if (command == nullptr || buffer == nullptr || bufferSize == 0) {
     return false;
   }
 
-  const int length = snprintf(buffer, bufferSize,
-                              "{\"sequence\":%" PRIu32 ",\"command\":\"%s\"}",
-                              command.sequence, command.name);
+  const int length =
+      snprintf(buffer, bufferSize, "{\"command\":\"%s\"}", command);
 
   if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';

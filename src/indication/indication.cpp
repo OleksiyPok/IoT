@@ -15,8 +15,8 @@ static const uint16_t LED_MASKS[] = {
     LED_COMMAND_MASK,      LED_LIGHT_AUTO_MASK,      LED_LIGHT_MIN_MASK,
     LED_LIGHT_MAX_MASK,    LED_TEMPERATURE_MIN_MASK, LED_TEMPERATURE_MAX_MASK,
     LED_HUMIDITY_MIN_MASK, LED_SILENT_MASK};
-// ---------------------------------
 
+// ---------------------------------
 void initIndication() {
   pinMode(LED_BUILTIN_PIN, OUTPUT);
 

@@ -21,7 +21,6 @@
 #include "wifi/wifi.h"
 
 // ---------------------------------
-
 uint16_t buttonsState = 0x0000;
 uint16_t systemState = 0x0000;
 uint16_t ledState = 0x0000;
@@ -39,17 +38,14 @@ uint32_t lastSendDataMs = 0;
 uint32_t lastMqttPublish = 0;
 
 Telemetry telemetryData;
-CommandQueue commandQueue;
 
 // ---------------------------------
-
 void setup() {
   initMonitor();
   initTelemetry(telemetryData);
   initDhtSensor(telemetryData.dht);
   initLdrSensor(telemetryData.ldr);
   initButtons();
-  initCommandQueue(commandQueue);
   initIndication();
   connectWifi();
   initTime();
@@ -89,8 +85,7 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, systemState, ledState,
-                  commandQueue);
+    handleActions(telemetryData, buttonsState, systemState, ledState);
   }
 
   // Indication
@@ -111,7 +106,7 @@ void loop() {
   // MQTT publish
   if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
     lastMqttPublish = now;
-    handleMqtt(telemetryData, commandQueue);
+    handleMqtt(telemetryData);
   }
 
 #if defined(DEBUG_MODE)

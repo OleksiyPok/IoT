@@ -8,7 +8,6 @@
 #include "ldr_sensor.h"
 
 // ---------------------------------
-
 #define LDR_ADC_VALID_MIN 50    // device error
 #define LDR_LUX_VALID_MIN 1     // device error
 #define LDR_LUX_VALID_MAX 70000 // depends on current conditions
@@ -40,7 +39,6 @@
 float adcToLux(const uint16_t &adcValue);
 
 // ---------------------------------
-
 void initLdrSensor(LDRData &data) {
   pinMode(LDR_ADC_PIN, INPUT);
   data.status |= STATUS_LDR_INIT_ERR;
