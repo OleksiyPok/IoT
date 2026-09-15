@@ -59,7 +59,6 @@ void handleMonitor(const Telemetry &data, const uint16_t &systemState,
 #endif
 }
 
-#if defined(DEBUG_MODE)
 void printMonitorPayload(const char *payload) {
 
   if (payload == nullptr) {
@@ -80,7 +79,6 @@ void printMonitorPayload(const char *payload) {
 
   printJsonPretty(doc);
 }
-#endif
 
 static void printJsonPretty(const JsonDocument &doc) {
   serializeJsonPretty(doc, Serial);
