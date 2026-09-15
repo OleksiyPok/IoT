@@ -16,9 +16,11 @@ bool getDeviceId(uint64_t &deviceId) {
     return false;
   }
 
-  deviceId = ((uint64_t)mac[0] << 40) | ((uint64_t)mac[1] << 32) |
-             ((uint64_t)mac[2] << 24) | ((uint64_t)mac[3] << 16) |
-             ((uint64_t)mac[4] << 8) | ((uint64_t)mac[5]);
+  // deviceId = ((uint64_t)mac[0] << 40) | ((uint64_t)mac[1] << 32) |
+  //            ((uint64_t)mac[2] << 24) | ((uint64_t)mac[3] << 16) |
+  //            ((uint64_t)mac[4] << 8) | ((uint64_t)mac[5]);
+
+  deviceId = 111111111111;
 
   return true;
 }
