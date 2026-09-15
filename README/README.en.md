@@ -6,253 +6,162 @@
 
 ## Project Description
 
-The project is an ESP32 firmware organized into independent functional modules.
-
-The main modules are responsible for:
-
-- sensor data acquisition and validation;
-- telemetry and status processing;
-- button handling and command queuing;
-- LED indication;
-- WiFi and MQTT communication;
-- JSON serialization and deserialization;
-- Serial Monitor output.
-
-The main measurement flow is:
-
-```text
-DHT22 ──> Temperature ──┐
-          Humidity ─────┤
-                        ├──> Validation ──> Sensor Status ──┐
-LDR ──> ADC ──> Lux ────┘                                   │
-                                                            ├──> System State
-                                                            ├──> LED indication
-                                                            ├──> MQTT
-                                                            └──> Serial Monitor
-```
-
-Each sensor value is processed through validation limits and operating/alarm thresholds. Sensor data also contains its own update timestamp and uptime.
-
-## Data Structure
+The project is an ESP32 firmware for monitoring environmental conditions and controlling device operation.
 
-The internal telemetry contains the protocol version, device information, time data, sensor measurements, sensor status registers, and system status.
-
-```cpp
-struct DHTData {
-  float temperature; // °C
-  float humidity;    // %
-  uint32_t updated;
-  uint32_t uptime;
-  uint16_t status;
-};
+The device:
 
-struct LDRData {
-  uint16_t raw; // ADC data (0–4095)
-  float lux;    // lux
-  uint32_t updated;
-  uint32_t uptime;
-  uint16_t status;
-};
-
-struct Telemetry {
-  uint8_t version; // protocol version
-  uint64_t deviceId;
-  uint32_t timestamp;
-  uint32_t uptime;
-  uint8_t sequence;
-  DHTData dht;
-  LDRData ldr;
-  uint16_t status; // system status register
-};
-```
-
-The telemetry protocol version is currently `1`.
-
-The sequence number is an 8-bit counter and wraps automatically after `255`.
-
-## Measurement Structure
-
-### Temperature
-
-| Parameter | Value |
-|---|---:|
-| Valid minimum | −35 °C (`DHT_TEMPERATURE_VALID_MIN`) |
-| Alarm minimum | 20 °C (`DHT_TEMPERATURE_ALARM_MIN_CONFIG`) |
-| Alarm maximum | 26 °C (`DHT_TEMPERATURE_ALARM_MAX_CONFIG`) |
-| Valid maximum | +75 °C (`DHT_TEMPERATURE_VALID_MAX`) |
-
-```text
-< -35 °C        invalid
--35 ... <20 °C  valid, low temperature
-20 ... 26 °C    normal range
->26 ... 75 °C   valid, high temperature
->75 °C          invalid
-```
+* reads temperature and humidity from a DHT22 sensor;
+* reads ambient light from an LDR sensor and converts it to lux;
+* checks sensor data for invalid values and alarm conditions;
+* maintains separate sensor and system status registers;
+* controls LEDs according to the current system and sensor states;
+* provides button-based control of device modes;
+* connects to WiFi and automatically attempts to restore the connection if it is lost;
+* connects to an MQTT broker and publishes sensor data, status information, and commands;
+* can send telemetry to an HTTP server;
+* provides detailed information through the Serial Monitor in debug mode.
 
-The alarm thresholds can be changed at compile time using:
+## Sensor Monitoring
 
-- `DHT_TEMPERATURE_ALARM_MIN_CONFIG`
-- `DHT_TEMPERATURE_ALARM_MAX_CONFIG`
+The DHT22 sensor provides:
 
-The validation limits are compile-time constants:
+* temperature;
+* humidity;
+* sensor status.
 
-- `DHT_TEMPERATURE_VALID_MIN`
-- `DHT_TEMPERATURE_VALID_MAX`
+Temperature and humidity are checked against configurable validation limits and alarm thresholds.
 
-A failed DHT22 read is reported as a device error. Values outside the validation range are reported as invalid data as well.
+The configurable alarm thresholds are:
 
-### Humidity
+* `DHT_TEMPERATURE_ALARM_MIN_CONFIG`
+* `DHT_TEMPERATURE_ALARM_MAX_CONFIG`
+* `DHT_HUMIDITY_ALARM_MIN_CONFIG`
+* `DHT_HUMIDITY_ALARM_MAX_CONFIG`
 
-| Parameter | Value |
-|---|---:|
-| Valid minimum | 10 % (`DHT_HUMIDITY_VALID_MIN`) |
-| Alarm minimum | 20 % (`DHT_HUMIDITY_ALARM_MIN_CONFIG`) |
-| Alarm maximum | 80 % (`DHT_HUMIDITY_ALARM_MAX_CONFIG`) |
-| Valid maximum | 90 % (`DHT_HUMIDITY_VALID_MAX`) |
+The LDR sensor provides:
 
-```text
-<10 %          invalid
-10 ... <20 %   valid, low humidity
-20 ... 80 %    normal range
->80 ... 90 %   valid, high humidity
->90 %          invalid
-```
+* raw ADC value;
+* calculated illumination in lux;
+* sensor status.
 
-The alarm thresholds can be changed at compile time using:
+The light level is checked against configurable limits and thresholds:
 
-- `DHT_HUMIDITY_ALARM_MIN_CONFIG`
-- `DHT_HUMIDITY_ALARM_MAX_CONFIG`
+* `LDR_LUX_ALARM_MIN_CONFIG`
+* `LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`
+* `LDR_LUX_ALARM_MAX_CONFIG`
 
-The validation limits are compile-time constants:
+The LDR conversion can also be adjusted using parameters such as `LDR_GAMMA`, `RL10`, `LDR_R_DIV_OHM`, and `LDR_VCC_V`.
 
-- `DHT_HUMIDITY_VALID_MIN`
-- `DHT_HUMIDITY_VALID_MAX`
+## Status and Indication
 
-### Light
+Sensor and system conditions are represented by bit flags.
 
-The LDR produces an ADC value which is converted to lux using the configured LDR model.
+The device can detect and report conditions such as:
 
-#### ADC validation
+* sensor errors;
+* invalid sensor data;
+* low or high sensor values;
+* silent mode;
+* WiFi connection errors;
+* MQTT connection errors.
 
-| Parameter | Value |
-|---|---:|
-| Valid minimum | 50 (`LDR_ADC_VALID_MIN`) |
-| Valid maximum | 4045 (`LDR_ADC_VALID_MAX`) |
+LEDs indicate the current operating and alarm states, including light, temperature, humidity, silent mode, and command activity.
 
-The current implementation treats the boundary values themselves as outside the working ADC range. This allows ADC values close to the supply rails to be reported as device errors.
+## Buttons
 
-#### Lux
+The device provides four physical buttons.
 
-| Parameter | Value |
-|---|---:|
-| Valid minimum | 1 lux (`LDR_LUX_VALID_MIN`) |
-| Alarm minimum | 10 lux (`LDR_LUX_ALARM_MIN_CONFIG`) |
-| Low-light threshold | 600 lux (`LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`) |
-| Alarm maximum | 10,000 lux (`LDR_LUX_ALARM_MAX_CONFIG`) |
-| Valid maximum | 70,000 lux (`LDR_LUX_VALID_MAX`) |
+They are used for:
 
-```text
-<1 lux               invalid
-1 ... <10 lux        valid, minimum-light alarm
-10 ... <600 lux      valid, low-light condition
-600 ... 10,000 lux   normal operating range
->10,000 ... 70,000   valid, maximum-light alarm
->70,000 lux          invalid
-```
+* manual command activation;
+* silent mode;
+* an additional button-controlled function;
+* testing WiFi disconnection and automatic recovery.
 
-The following light thresholds can be changed at compile time:
+Button states are processed separately from the device actions. Button handling also includes interrupt-based detection and debouncing.
 
-- `LDR_LUX_ALARM_MIN_CONFIG`
-- `LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`
-- `LDR_LUX_ALARM_MAX_CONFIG`
+## MQTT Communication
 
-The ADC and lux validation limits are also compile-time constants:
+The device connects to an MQTT broker and exchanges data through MQTT topics.
 
-- `LDR_ADC_VALID_MIN`
-- `LDR_ADC_VALID_MAX`
-- `LDR_LUX_VALID_MIN`
-- `LDR_LUX_VALID_MAX`
+It can publish:
 
-The LDR conversion model uses additional compile-time constants:
+* sensor data;
+* system status;
+* pending device commands.
 
-- `LDR_GAMMA`
-- `RL10`
-- `LDR_R_DIV_OHM`
-- `LDR_VCC_V`
+The MQTT connection is maintained independently from the sensor processing. If the connection is lost, the device automatically attempts to reconnect.
 
-## Status Registers
+The MQTT broker, topics, client identifier, buffer size, and reconnection parameters can be configured in `src/mqtt/mqtt_config.h`.
 
-Sensor and system states are represented by bit flags stored in 16-bit status registers.
+## HTTP Communication
 
-The DHT and LDR status registers can represent device errors, invalid data, stale-data flags, and sensor alarm conditions.
+The project also contains an HTTP client for sending complete telemetry data as JSON to a server.
 
-The system status register can represent command activity, silent mode, sensor errors, and WiFi/MQTT communication errors.
+The server endpoint can be configured using:
 
-This bit-field approach allows several independent conditions to be represented simultaneously in one status value.
+* `SERVER_URL`
 
-The telemetry status contains the following system-level conditions:
+## Telemetry
 
-- `STATUS_DEVICE_SILENT_MODE`
-- `STATUS_LDR_ERR`
-- `STATUS_DHT_ERR`
-- `STATUS_MQTT_ERR`
-- `STATUS_WIFI_ERR`
+The internal telemetry structure contains:
 
-## Buttons and Indication
+* protocol version;
+* device identifier;
+* timestamp;
+* uptime;
+* message sequence number;
+* DHT22 data;
+* LDR data;
+* system status.
 
-Four button inputs are defined. The current controls provide:
+Telemetry can be serialized to JSON and is used for MQTT and HTTP communication.
 
-- manual command generation;
-- silent mode;
-- WiFi disconnection/recovery testing.
+The MQTT interface separates sensor data and system status into different messages.
 
-Button events are stored in a 16-bit button-state register. A manual button press creates a `manual_read` command and places it into a command queue with a sequence number. The queue can contain up to four pending commands.
+## Time
 
-LEDs indicate:
+The device synchronizes its internal time using NTP.
 
-- manual/command activity;
-- automatic light operation and light alarms;
-- temperature alarms;
-- humidity alarms;
-- silent mode.
+It supports:
 
-## Communication
+* UTC time;
+* local time;
+* configurable timezone.
 
-The device connects through WiFi and publishes data through MQTT.
+The default timezone and NTP server are defined in `src/time/time.cpp`.
 
-The MQTT interface uses the following topics:
+## Serial Monitor
 
-- `iot-course/OleksiiPok/sensors`
-- `iot-course/OleksiiPok/status`
-- `iot-course/OleksiiPok/commands`
+In debug mode, the Serial Monitor provides detailed information about:
 
-Sensor data and status are published as separate JSON messages. Command messages contain a command name and sequence number.
+* DHT sensor status;
+* LDR sensor status;
+* system status;
+* system state register;
+* MQTT JSON payloads;
+* WiFi and MQTT connection events.
 
-In silent mode, sensor-data publication is suppressed while the status message continues to be published. This makes the silent state visible without transmitting the sensor-data message.
+Debug mode can be enabled with:
 
-MQTT connection recovery is performed automatically. A connection cycle allows up to five attempts with a five-second interval; after that, the next cycle is delayed by five minutes.
-
-The project also contains HTTP POST support for complete telemetry serialization. The HTTP sending path is available as a module but is not part of the active main loop in the current firmware configuration.
-
-## Serialization
-
-The project provides separate serializers for:
-
-- complete telemetry;
-- sensor data;
-- status data;
-- commands.
-
-The primary telemetry serializer uses `snprintf`. An alternative ArduinoJson serializer can be selected at compile time with:
-
-`TELEMETRY_SERIALIZER_ARDUINO_JSON`
-
-A telemetry deserializer is also provided for validating and reconstructing a `Telemetry` structure from JSON. It checks the protocol version and required field types before accepting the data.
+* `DEBUG_MODE`
 
 ## Configuration
 
-Sensor thresholds, sensor validation limits, sensor conversion parameters, communication intervals, and hardware pins are compile-time configurable.
+The main operating intervals and sensor parameters are configured at compile time in `src/config.h`.
 
-The main configuration is located in `src/config.h`. MQTT settings are located in `src/mqtt/mqtt_config.h`.
+This includes:
 
-Current values are primarily intended for testing and can be adjusted for actual deployment.
+* button polling interval;
+* action processing interval;
+* LED indication interval;
+* WiFi checking interval;
+* sensor reading intervals;
+* telemetry and MQTT publishing intervals;
+* memory checking interval;
+* sensor alarm thresholds;
+* ESP32 pin assignments.
+
+The project is designed so that these parameters can be changed without modifying the main application logic.
+
+[🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
