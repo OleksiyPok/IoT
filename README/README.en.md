@@ -2,7 +2,7 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-<img src="../images/wokwi.png" alt="Project Circuit" width="700">
+<img src="../images/wokwi-A.png" alt="Project Circuit" width="700">
 
 ## Project Description
 
