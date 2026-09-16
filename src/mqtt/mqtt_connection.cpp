@@ -48,6 +48,8 @@ static bool connectMQTT() {
   Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
   Serial.println(")...");
 
+  initMqttSubscribe();
+
   const bool connected = mqttClient.connect(MQTT_CLIENT_ID);
 
   if (connected) {
@@ -142,7 +144,7 @@ bool mqttSubscribe(const char *topic) {
     return false;
   }
 
-  return mqttClient.subscribe(topic);
+  return mqttClient.subscribe(topic, 1);
 }
 
 static void mqttMessageCallback(char *topic, uint8_t *payload,
