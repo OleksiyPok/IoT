@@ -5,6 +5,21 @@
 #include <Arduino.h>
 
 // ---------------------------------
+
+enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
+
+// Built-in LED indication
+
+#define INDICATION_MQTT_PUBLISH_BLINK_COUNT 1
+#define INDICATION_MQTT_PUBLISH_BLINK_ON_MS 100
+#define INDICATION_MQTT_PUBLISH_BLINK_OFF_MS 400
+
+#define INDICATION_WIFI_CONNECTING_BLINK_COUNT 5
+#define INDICATION_WIFI_CONNECTING_BLINK_ON_MS 100
+#define INDICATION_WIFI_CONNECTING_BLINK_OFF_MS 200
+
+// ---------------------------------
+
 // "ledState" bits
 
 #define LED_LIGHT_MIN_MASK (1U << 0)
@@ -21,3 +36,4 @@
 
 void initIndication();
 void handleIndication(const uint16_t &ledState);
+void requestIndication(IndicationType type);

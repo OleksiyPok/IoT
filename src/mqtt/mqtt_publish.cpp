@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "../indication/indication.h"
 #include "../monitor/monitor.h"
 #include "../serialization/serializers/commands_serializer.h"
 #include "../serialization/serializers/sensors_serializer.h"
@@ -63,6 +64,10 @@ static bool publishMqttMessage(const char *topic, const char *payload) {
 #endif
 
   const bool ok = mqttPublish(topic, payload);
+
+  if (ok) {
+    requestIndication(IndicationType::MQTT_PUBLISH);
+  }
 
   return ok;
 }

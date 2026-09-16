@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
+#include "../indication/indication.h"
 #include "wifi.h"
 
 // ---------------------------------
@@ -25,6 +26,7 @@ void handleWiFi() {
       Serial.println("[Wi-Fi] Connected");
       Serial.print("[Wi-Fi] IP: ");
       Serial.println(WiFi.localIP());
+
       wifiConnecting = false;
     }
     wlLastStatus = wlStatus;
@@ -66,6 +68,8 @@ bool connectWifi() {
   wifiLastReconnectAt = now;
   wifiConnectStartedAt = now;
   wifiConnecting = true;
+
+  requestIndication(IndicationType::WIFI_CONNECTING);
 
   Serial.println("[Wi-Fi] Connecting...");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);

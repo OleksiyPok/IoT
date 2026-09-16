@@ -5,6 +5,7 @@
 #include <WiFi.h>
 
 #include "../config.h"
+#include "../indication/indication.h"
 #include "../monitor/monitor.h"
 #include "../serialization/serialization.h"
 #include "http.h"
