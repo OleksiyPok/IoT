@@ -21,5 +21,3 @@
 
 void initIndication();
 void handleIndication(const uint16_t &ledState);
-
-void blinkLed(int pin);
