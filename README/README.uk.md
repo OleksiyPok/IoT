@@ -2,7 +2,7 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-<img src="./images/wokwi-B.png" alt="Схема проєкту" width="400">
+<img src="../images/wokwi-B.png" alt="Схема проєкту" width="400">
 
 ## Опис проєкту
 
