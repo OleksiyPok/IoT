@@ -28,6 +28,10 @@ void initTelemetry(Telemetry &telemetryData) {
   telemetryData.version = TELEMETRY_PROTOCOL_VERSION;
   getDeviceId(telemetryData.deviceId);
   telemetryData.status |= STATUS_INIT_ERR;
+
+  telemetryData.buttonsState = 0x0000;
+  telemetryData.systemState = 0x0000;
+  telemetryData.ledState = 0x0000;
 }
 
 void updateTelemetry(Telemetry &telemetryData, const uint16_t &systemState) {

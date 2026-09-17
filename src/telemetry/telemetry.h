@@ -30,6 +30,10 @@ struct Telemetry {
   DHTData dht;
   LDRData ldr;
   uint16_t status; // system status register
+
+  uint16_t buttonsState;
+  uint16_t systemState;
+  uint16_t ledState;
 };
 
 #define TELEMETRY_PROTOCOL_VERSION 1
