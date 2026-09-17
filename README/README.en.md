@@ -2,7 +2,7 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-<img src="../images/wokwi-B.png" alt="Project Circuit" width="400">
+<img src="./images/wokwi-B.png" alt="Project Circuit" width="400">
 
 ## Project Description
 
@@ -38,12 +38,50 @@ Temperature and light indication use configurable thresholds:
 
 ## MQTT
 
-The firmware works with two MQTT topics:
+Device B communicates with Device A through the MQTT broker. The devices do not communicate directly with each other.
 
-- `TOPIC_COMMANDS` — incoming commands;
-- `TOPIC_SENSORS` — incoming temperature and light data.
+**MQTT broker:** `broker.hivemq.com:1883`
+
+**MQTT client ID:** `OleksiiPok-esp32-b`
+
+Device B subscribes to the following MQTT Topic Names:
+
+| Topic Name | Direction | Payload | Subscription QoS |
+|---|---|---|---|
+| `iot-course/OleksiiPok/sensors` | Broker → Device B | JSON sensor data | 1 |
+| `iot-course/OleksiiPok/commands` | Broker → Device B | JSON command | 1 |
+
+Device A publishes sensor data every 10 seconds. Commands are published when a command is pending.
+
+Device A also publishes the following Topic Name, which Device B does not currently subscribe to:
+
+`iot-course/OleksiiPok/status` — JSON system status, published every 10 seconds.
+
+Device A publishes with QoS 0. Device B subscribes with QoS 1.
+
+The current MQTT exchange is:
+
+```text
+Device A
+   │
+   │ PUBLISH sensors / status / commands
+   ▼
+MQTT Broker
+   │
+   ├───────────────► Device B
+   │                  SUBSCRIBE sensors
+   │
+   └───────────────► Device B
+                      SUBSCRIBE commands
+```
+
+### MQTT Topics on the Broker
+
+<img src="../images/mqtt_boker.png" alt="mqtt_boker_messages" width="700">
 
 Command messages are deserialized using `deserializeCommand()`. Sensor messages are deserialized using `deserializeSensors()`.
+
+The MQTT broker, Topic Names, client identifier, buffer size, and reconnection parameters can be configured in `src/mqtt/mqtt_config.h`.
 
 ## Buttons and LEDs
 

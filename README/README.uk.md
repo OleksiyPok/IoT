@@ -2,7 +2,7 @@
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-<img src="../images/wokwi-B.png" alt="Схема проєкту" width="400">
+<img src="./images/wokwi-B.png" alt="Схема проєкту" width="400">
 
 ## Опис проєкту
 
@@ -22,10 +22,10 @@
 ## Основний процес роботи
 
 ```text
-Кнопки ──> Actions ──> System State ──> LED Indication
-                        ^
-MQTT-команди ───────────┤
-MQTT-дані сенсорів ─────┘
+Buttons ──> Actions ──> System State ──> LED Indication
+                         ^
+MQTT Commands ───────────┤
+MQTT Sensor Data ────────┘
 
 WiFi ──> MQTT
 ```
@@ -38,12 +38,50 @@ WiFi ──> MQTT
 
 ## MQTT
 
-Прошивка працює з двома MQTT-топіками:
+Пристрій B обмінюється даними з пристроєм A через MQTT-брокер. Пристрої не обмінюються повідомленнями безпосередньо один з одним.
 
-- `TOPIC_COMMANDS` — вхідні команди;
-- `TOPIC_SENSORS` — вхідні дані температури та освітленості.
+**MQTT-брокер:** `broker.hivemq.com:1883`
+
+**Ідентифікатор MQTT-клієнта:** `OleksiiPok-esp32-b`
+
+Пристрій B підписується на такі MQTT Topic Names:
+
+| Topic Name | Напрямок | Payload | QoS підписки |
+|---|---|---|---|
+| `iot-course/OleksiiPok/sensors` | Брокер → Пристрій B | JSON-дані сенсорів | 1 |
+| `iot-course/OleksiiPok/commands` | Брокер → Пристрій B | JSON-команда | 1 |
+
+Пристрій A публікує дані сенсорів кожні 10 секунд. Команди публікуються за наявності команди для відправлення.
+
+Пристрій A також публікує такий Topic Name, на який пристрій B зараз не підписаний:
+
+`iot-course/OleksiiPok/status` — JSON-статус системи, публікується кожні 10 секунд.
+
+Пристрій A публікує повідомлення з QoS 0. Пристрій B підписується з QoS 1.
+
+Поточний обмін MQTT-повідомленнями:
+
+```text
+Device A
+   │
+   │ PUBLISH sensors / status / commands
+   ▼
+MQTT Broker
+   │
+   ├───────────────► Device B
+   │                  SUBSCRIBE sensors
+   │
+   └───────────────► Device B
+                      SUBSCRIBE commands
+```
+
+### MQTT-топіки на брокері
+
+<img src="../images/mqtt_boker.png" alt="mqtt_boker_messages" width="700">
 
 Повідомлення команд десеріалізуються за допомогою `deserializeCommand()`. Дані сенсорів десеріалізуються за допомогою `deserializeSensors()`.
+
+MQTT-брокер, Topic Names, ідентифікатор клієнта, розмір буфера та параметри повторного підключення можна налаштувати у `src/mqtt/mqtt_config.h`.
 
 ## Кнопки та світлодіоди
 
