@@ -17,7 +17,6 @@ void handleMqtt(const Telemetry &telemetryData) {
   if (!(telemetryData.status & STATUS_DEVICE_SILENT_MODE)) {
     publishSensors(telemetryData);
   }
-
   publishStatus(telemetryData);
   publishCommands();
 }

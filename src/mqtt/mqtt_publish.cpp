@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "../indication/indication.h"
 #include "../monitor/monitor.h"
 #include "../serialization/serializers/commands_serializer.h"
 #include "../serialization/serializers/sensors_serializer.h"
@@ -16,7 +17,7 @@ static bool publishMqttMessage(const char *topic, const char *payload);
 
 // ---------------------------------
 void publishSensors(const Telemetry &telemetry) {
-  char payload[256];
+  char payload[512];
   if (!serializeSensors(telemetry, payload, sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize sensors");
     return;
@@ -25,7 +26,7 @@ void publishSensors(const Telemetry &telemetry) {
 }
 
 void publishStatus(const Telemetry &telemetry) {
-  char payload[256];
+  char payload[512];
   if (!serializeStatus(telemetry, payload, sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize status");
     return;
@@ -60,10 +61,13 @@ static bool publishMqttMessage(const char *topic, const char *payload) {
   Serial.println("[MQTT] Publishing to the topic:");
   Serial.println(topic);
   printMonitorPayload(payload);
+#endif
 
   const bool ok = mqttPublish(topic, payload);
 
-  Serial.println();
-#endif
+  if (ok) {
+    requestIndication(IndicationType::MQTT_PUBLISH);
+  }
+
   return ok;
 }

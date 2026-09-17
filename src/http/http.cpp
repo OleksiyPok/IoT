@@ -5,6 +5,7 @@
 #include <WiFi.h>
 
 #include "../config.h"
+#include "../indication/indication.h"
 #include "../monitor/monitor.h"
 #include "../serialization/serialization.h"
 #include "http.h"
@@ -43,7 +44,10 @@ static void sendData(const Telemetry &telemetryData) {
   }
 
   Serial.print("[HTTP] Sending: ");
+
+#if defined(DEBUG_MODE)
   printMonitorPayload(payload);
+#endif
 
   int httpCode =
       http.POST(reinterpret_cast<uint8_t *>(payload), strlen(payload));

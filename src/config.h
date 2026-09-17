@@ -5,7 +5,7 @@
 // ---------------------------------
 
 // Uncomment to see the debug message in the Serial Monitor
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 // Telemetry serialization
 // Uncomment to use ArduinoJson telemetry serializer
@@ -14,7 +14,7 @@
 #define BUTTONS_READ_INTERVAL_MS 100
 #define ACTIONS_MS 100
 #define INDICATION_CHANGE_INTERVAL_MS 100
-#define WIFI_CHECK_INTERVAL_MS 200
+#define WIFI_CHECK_INTERVAL_MS 500
 #define SENSOR_DHT_READ_INTERVAL_MS 5000
 #define SENSOR_LDR_READ_INTERVAL_MS 5000
 #define DATA_SEND_INTERVAL_MS 5000
@@ -55,7 +55,7 @@
 #define BUTTON_3_PIN 5
 
 #define LED_BUILTIN_PIN 2
-#define LED_LIGHT_MANUAL_PIN 23
+#define LED_COMMAND_PIN 23
 #define LED_LIGHT_AUTO_PIN 32
 #define LED_LIGHT_MIN_PIN 26
 #define LED_LIGHT_MAX_PIN 25
