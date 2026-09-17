@@ -18,5 +18,4 @@ void handleMqtt(const Telemetry &telemetryData) {
     publishSensors(telemetryData);
   }
   publishStatus(telemetryData);
-  publishCommands();
 }

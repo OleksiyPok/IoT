@@ -82,17 +82,48 @@ Button states are processed separately from the device actions. Button handling 
 
 ## MQTT Communication
 
-The device connects to an MQTT broker and exchanges data through MQTT topics.
+Device A communicates with Device B through the MQTT broker. The devices do not communicate directly with each other.
 
-It can publish:
+**MQTT broker:** `broker.hivemq.com:1883`
 
-* sensor data;
-* system status;
-* pending device commands.
+**MQTT client ID:** `OleksiiPok-esp32-a`
 
-The MQTT connection is maintained independently from the sensor processing. If the connection is lost, the device automatically attempts to reconnect.
+Device A uses the following MQTT Topic Names:
 
-The MQTT broker, topics, client identifier, buffer size, and reconnection parameters can be configured in `src/mqtt/mqtt_config.h`.
+| Topic Name | Direction | Payload | Publishing interval |
+|---|---|---|---|
+| `iot-course/OleksiiPok/sensors` | Device A → Broker | JSON sensor data | 10 s |
+| `iot-course/OleksiiPok/status` | Device A → Broker | JSON system status | 10 s |
+| `iot-course/OleksiiPok/commands` | Device A → Broker | JSON command | On event |
+
+Sensor data and system status are published every 10 seconds. Commands are published when a command is pending, for example after a button action.
+
+Device A publishes with QoS 0. Device B subscribes to the `sensors` and `commands` Topic Names with QoS 1.
+
+The current MQTT exchange is:
+
+```text
+Device A
+   │
+   │ PUBLISH sensors / status / commands
+   ▼
+MQTT Broker
+   │
+   │
+   └───────────────┐
+                   │
+                   ▼
+               Device B
+          SUBSCRIBE sensors
+          SUBSCRIBE commands
+```
+
+### MQTT Topics on the Broker
+
+<img src="./images/mqtt_boker.png" alt="mqtt_boker_messages" width="700">
+
+
+The MQTT broker, Topic Names, client identifier, buffer size, and reconnection parameters can be configured in `src/mqtt/mqtt_config.h`.
 
 ## HTTP Communication
 
