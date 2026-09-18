@@ -7,6 +7,7 @@
 #include "wifi.h"
 
 // ---------------------------------
+static bool wifiInitialized = false;
 static uint32_t wifiConnectStartedAt = 0;
 static uint32_t wifiLastReconnectAt = 0;
 static bool wifiConnecting = false;
@@ -72,7 +73,13 @@ bool connectWifi() {
   requestIndication(IndicationType::WIFI_CONNECTING);
 
   Serial.println("[Wi-Fi] Connecting...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
+
+  if (!wifiInitialized) {
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
+    wifiInitialized = true;
+  } else {
+    WiFi.reconnect();
+  }
 
   return true;
 }

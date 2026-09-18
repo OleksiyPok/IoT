@@ -45,7 +45,9 @@ static bool connectMQTT() {
   Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
   Serial.println(")...");
 
-  return mqttClient.connect(MQTT_CLIENT_ID);
+  const bool connected = mqttClient.connect(MQTT_CLIENT_ID);
+
+  return connected;
 }
 
 bool handleMqttConnection() {
