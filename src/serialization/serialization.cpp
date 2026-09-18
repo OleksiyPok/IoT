@@ -15,25 +15,27 @@
 #include "serializers/status_serializer.h"
 
 // ---------------------------------
-bool serializeTelemetry(const Telemetry &data, char *buffer,
+bool serializeTelemetry(const Telemetry &telemetry, char *buffer,
                         size_t bufferSize) {
 
 #if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
 
-  return serializeTelemetryArduinoJson(data, buffer, bufferSize);
+  return serializeTelemetryArduinoJson(telemetry, buffer, bufferSize);
 
 #else
 
-  return serializeTelemetrySnprintf(data, buffer, bufferSize);
+  return serializeTelemetrySnprintf(telemetry, buffer, bufferSize);
 
 #endif
 }
 
-bool serializeSensors(const Telemetry &data, char *buffer, size_t bufferSize) {
-  return serializeSensorsSnprintf(data, buffer, bufferSize);
+bool serializeSensors(const Telemetry &telemetry, char *buffer,
+                      size_t bufferSize) {
+  return serializeSensorsSnprintf(telemetry, buffer, bufferSize);
 };
-bool serializeStatus(const Telemetry &data, char *buffer, size_t bufferSize) {
-  return serializeStatusSnprintf(data, buffer, bufferSize);
+bool serializeStatus(const Telemetry &telemetry, char *buffer,
+                     size_t bufferSize) {
+  return serializeStatusSnprintf(telemetry, buffer, bufferSize);
 };
 bool serializeCommands(const char *commands, char *buffer, size_t bufferSize) {
   return serializeCommandsSnprintf(commands, buffer, bufferSize);

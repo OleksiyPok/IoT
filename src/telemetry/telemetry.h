@@ -36,7 +36,7 @@ struct Telemetry {
   uint16_t ledState;
 };
 
-#define TELEMETRY_PROTOCOL_VERSION 1
+#define TELEMETRY_PROTOCOL_VERSION 3
 #define SENSOR_STALE_AFTER_CYCLES 2
 
 #define STATUS_OK (0U)

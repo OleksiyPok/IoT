@@ -6,7 +6,7 @@
 #include "telemetry_serializer.h"
 
 // ---------------------------------
-bool serializeTelemetrySnprintf(const Telemetry &data, char *buffer,
+bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
                                 size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
@@ -33,10 +33,11 @@ bool serializeTelemetrySnprintf(const Telemetry &data, char *buffer,
                "\"status\":%u"
                "},"
                "\"status\":%u}",
-               data.version, data.deviceId, data.timestamp, data.uptime,
-               data.sequence, data.dht.temperature, data.dht.humidity,
-               data.dht.updated, data.dht.status, data.ldr.raw, data.ldr.lux,
-               data.ldr.updated, data.ldr.status, data.status);
+               telemetry.version, telemetry.deviceId, telemetry.timestamp,
+               telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
+               telemetry.dht.humidity, telemetry.dht.updated,
+               telemetry.dht.status, telemetry.ldr.raw, telemetry.ldr.lux,
+               telemetry.ldr.updated, telemetry.ldr.status, telemetry.status);
 
   if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';

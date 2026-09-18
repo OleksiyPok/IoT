@@ -3,7 +3,7 @@
 #include "status_serializer.h"
 
 // ---------------------------------
-bool serializeStatusSnprintf(const Telemetry &data, char *buffer,
+bool serializeStatusSnprintf(const Telemetry &telemetry, char *buffer,
                              size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
@@ -20,8 +20,9 @@ bool serializeStatusSnprintf(const Telemetry &data, char *buffer,
                "\"dht_status\":%u,"
                "\"ldr_status\":%u,"
                "\"system_status\":%u}",
-               data.version, data.deviceId, data.timestamp, data.uptime,
-               data.sequence, data.dht.status, data.ldr.status, data.status);
+               telemetry.version, telemetry.deviceId, telemetry.timestamp,
+               telemetry.uptime, telemetry.sequence, telemetry.dht.status,
+               telemetry.ldr.status, telemetry.status);
 
   // Serial.printf("[SERIALIZER] Status size: %d bytes, buffer: %u bytes\r\n",
   //               length, bufferSize);

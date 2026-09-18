@@ -5,7 +5,7 @@
 #include "sensors_serializer.h"
 
 // ---------------------------------
-bool serializeSensorsSnprintf(const Telemetry &data, char *buffer,
+bool serializeSensorsSnprintf(const Telemetry &telemetry, char *buffer,
                               size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
@@ -26,9 +26,10 @@ bool serializeSensorsSnprintf(const Telemetry &data, char *buffer,
                "\"ldr_lux\":%.1f,"
                "\"ldr_updated\":%" PRIu32 "}",
 
-               data.version, data.deviceId, data.timestamp, data.uptime,
-               data.sequence, data.dht.temperature, data.dht.humidity,
-               data.dht.updated, data.ldr.raw, data.ldr.lux, data.ldr.updated);
+               telemetry.version, telemetry.deviceId, telemetry.timestamp,
+               telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
+               telemetry.dht.humidity, telemetry.dht.updated, telemetry.ldr.raw,
+               telemetry.ldr.lux, telemetry.ldr.updated);
 
   // Serial.printf("[SERIALIZER] Sensors size: %d bytes, buffer: %u bytes\r\n",
   //               length, bufferSize);
