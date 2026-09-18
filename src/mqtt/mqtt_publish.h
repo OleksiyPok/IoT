@@ -6,7 +6,7 @@
 #include "../telemetry/telemetry.h"
 
 // ---------------------------------
-void publishSensors(const Telemetry &telemetryData);
-void publishStatus(const Telemetry &telemetryData);
+bool publishSensors(const Telemetry &telemetryData);
+bool publishStatus(const Telemetry &telemetryData);
 
 bool publishCommands();
