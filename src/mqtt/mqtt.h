@@ -7,5 +7,5 @@
 
 // ---------------------------------
 void initMqtt();
-void handleMqttSensors(const Telemetry &telemetryData);
+void handleMqttSensors(const Telemetry &telemetry);
 void handleMqttCommands();

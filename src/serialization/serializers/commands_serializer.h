@@ -6,4 +6,5 @@
 #include <stddef.h>
 
 // ---------------------------------
-bool serializeCommands(const char *command, char *buffer, size_t bufferSize);
+bool serializeCommandsSnprintf(const char *commands, char *buffer,
+                               size_t bufferSize);

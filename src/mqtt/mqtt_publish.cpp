@@ -4,9 +4,7 @@
 
 #include "../indication/indication.h"
 #include "../monitor/monitor.h"
-#include "../serialization/serializers/commands_serializer.h"
-#include "../serialization/serializers/sensors_serializer.h"
-#include "../serialization/serializers/status_serializer.h"
+#include "../serialization/serialization.h"
 #include "../telemetry/telemetry.h"
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
@@ -15,6 +13,7 @@
 // ---------------------------------
 static bool publishMqttMessage(const char *topic, const char *payload);
 
+#define TELEMETRY_PAYLOAD_BUFFER_SIZE 512
 #define SENSORS_PAYLOAD_BUFFER_SIZE 256
 #define STATUS_PAYLOAD_BUFFER_SIZE 256
 #define COMMANDS_PAYLOAD_BUFFER_SIZE 128
@@ -41,6 +40,20 @@ bool publishStatus(const Telemetry &telemetry) {
   }
 
   if (!publishMqttMessage(TOPIC_STATUS, payload)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool publishTelemetry(const Telemetry &telemetry) {
+  char payload[TELEMETRY_PAYLOAD_BUFFER_SIZE];
+  if (!serializeTelemetry(telemetry, payload, sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize sensors");
+    return true;
+  }
+
+  if (!publishMqttMessage(TOPIC_TELEMETRY, payload)) {
     return false;
   }
 

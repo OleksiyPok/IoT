@@ -3,7 +3,8 @@
 #include "status_serializer.h"
 
 // ---------------------------------
-bool serializeStatus(const Telemetry &data, char *buffer, size_t bufferSize) {
+bool serializeStatusSnprintf(const Telemetry &data, char *buffer,
+                             size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
     return false;

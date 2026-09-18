@@ -8,5 +8,5 @@
 // ---------------------------------
 bool publishSensors(const Telemetry &telemetryData);
 bool publishStatus(const Telemetry &telemetryData);
-
+bool publishTelemetry(const Telemetry &telemetryData);
 bool publishCommands();

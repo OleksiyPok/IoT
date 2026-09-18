@@ -6,14 +6,15 @@
 #include "commands_serializer.h"
 
 // ---------------------------------
-bool serializeCommands(const char *command, char *buffer, size_t bufferSize) {
+bool serializeCommandsSnprintf(const char *commands, char *buffer,
+                               size_t bufferSize) {
 
-  if (command == nullptr || buffer == nullptr || bufferSize == 0) {
+  if (commands == nullptr || buffer == nullptr || bufferSize == 0) {
     return false;
   }
 
   const int length =
-      snprintf(buffer, bufferSize, "{\"command\":\"%s\"}", command);
+      snprintf(buffer, bufferSize, "{\"command\":\"%s\"}", commands);
 
   // Serial.printf("[SERIALIZER] Commands size: %d bytes, buffer: %u bytes\r\n",
   //               length, bufferSize);
