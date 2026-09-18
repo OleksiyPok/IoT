@@ -23,48 +23,48 @@ static uint32_t previousDhtUptime = 0;
 static uint32_t previousLdrUptime = 0;
 
 // ---------------------------------
-void initTelemetry(Telemetry &telemetryData) {
-  telemetryData.uptime = millis() / 1000;
-  telemetryData.version = TELEMETRY_PROTOCOL_VERSION;
-  getDeviceId(telemetryData.deviceId);
-  telemetryData.status |= STATUS_INIT_ERR;
+void initTelemetry(Telemetry &telemetry) {
+  telemetry.uptime = millis() / 1000;
+  telemetry.version = TELEMETRY_PROTOCOL_VERSION;
+  getDeviceId(telemetry.deviceId);
+  telemetry.status |= STATUS_INIT_ERR;
 
-  telemetryData.buttonsState = 0x0000;
-  telemetryData.systemState = 0x0000;
-  telemetryData.ledState = 0x0000;
+  telemetry.buttonsState = 0x0000;
+  telemetry.systemState = 0x0000;
+  telemetry.ledState = 0x0000;
 }
 
-void updateTelemetry(Telemetry &telemetryData, const uint16_t &systemState) {
+void updateTelemetry(Telemetry &telemetry, const uint16_t &systemState) {
 
   // Update timestamp
-  telemetryData.timestamp = getCurrentTimestamp();
+  telemetry.timestamp = getCurrentTimestamp();
 
   // Update "uptime"
-  telemetryData.uptime = millis() / 1000;
+  telemetry.uptime = millis() / 1000;
 
   // Update sequence
-  telemetryData.sequence = sequenceCounter++;
+  telemetry.sequence = sequenceCounter++;
 
-  telemetryData.status &= ~(STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR |
-                            STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR);
+  telemetry.status &= ~(STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR |
+                        STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR);
 
   if (systemState & SYSTEM_SILENT_MASK) {
-    telemetryData.status |= STATUS_DEVICE_SILENT_MODE;
+    telemetry.status |= STATUS_DEVICE_SILENT_MODE;
   }
 
   if (systemState & SYSTEM_LDR_ERR_MASK) {
-    telemetryData.status |= STATUS_LDR_ERR;
+    telemetry.status |= STATUS_LDR_ERR;
   }
 
   if (systemState & SYSTEM_DHT_ERR_MASK) {
-    telemetryData.status |= STATUS_DHT_ERR;
+    telemetry.status |= STATUS_DHT_ERR;
   }
 
   if (systemState & SYSTEM_MQTT_ERR_MASK) {
-    telemetryData.status |= STATUS_MQTT_ERR;
+    telemetry.status |= STATUS_MQTT_ERR;
   }
 
   if (systemState & SYSTEM_WIFI_ERR_MASK) {
-    telemetryData.status |= STATUS_WIFI_ERR;
+    telemetry.status |= STATUS_WIFI_ERR;
   }
 }

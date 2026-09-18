@@ -8,7 +8,7 @@
 #define TELEMETRY_JSON_DOCUMENT_SIZE 512
 
 // ---------------------------------
-bool serializeTelemetryArduinoJson(const Telemetry &telemetryData, char *buffer,
+bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
                                    size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
@@ -17,25 +17,25 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetryData, char *buffer,
 
   DynamicJsonDocument doc(TELEMETRY_JSON_DOCUMENT_SIZE);
 
-  doc["version"] = telemetryData.version;
-  doc["deviceId"] = telemetryData.deviceId;
-  doc["timestamp"] = telemetryData.timestamp;
-  doc["uptime"] = telemetryData.uptime;
-  doc["sequence"] = telemetryData.sequence;
+  doc["version"] = telemetry.version;
+  doc["deviceId"] = telemetry.deviceId;
+  doc["timestamp"] = telemetry.timestamp;
+  doc["uptime"] = telemetry.uptime;
+  doc["sequence"] = telemetry.sequence;
 
   JsonObject dht = doc.createNestedObject("dht");
-  dht["temperature"] = telemetryData.dht.temperature;
-  dht["humidity"] = telemetryData.dht.humidity;
-  dht["updated"] = telemetryData.dht.updated;
-  dht["status"] = telemetryData.dht.status;
+  dht["temperature"] = telemetry.dht.temperature;
+  dht["humidity"] = telemetry.dht.humidity;
+  dht["updated"] = telemetry.dht.updated;
+  dht["status"] = telemetry.dht.status;
 
   JsonObject ldr = doc.createNestedObject("ldr");
-  ldr["raw"] = telemetryData.ldr.raw;
-  ldr["lux"] = telemetryData.ldr.lux;
-  ldr["updated"] = telemetryData.ldr.updated;
-  ldr["status"] = telemetryData.ldr.status;
+  ldr["raw"] = telemetry.ldr.raw;
+  ldr["lux"] = telemetry.ldr.lux;
+  ldr["updated"] = telemetry.ldr.updated;
+  ldr["status"] = telemetry.ldr.status;
 
-  doc["status"] = telemetryData.status;
+  doc["status"] = telemetry.status;
 
   if (doc.overflowed()) {
     buffer[0] = '\0';

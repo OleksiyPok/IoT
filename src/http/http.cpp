@@ -17,26 +17,26 @@
 #endif
 
 // ---------------------------------
-static void sendData(const Telemetry &telemetryData);
+static void sendData(const Telemetry &telemetry);
 
 // ---------------------------------
-void handleSendData(Telemetry &telemetryData) {
+void handleSendData(Telemetry &telemetry) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("[HTTP] Wi-Fi does not connect");
     return;
   }
 
-  sendData(telemetryData);
+  sendData(telemetry);
 }
 
-static void sendData(const Telemetry &telemetryData) {
+static void sendData(const Telemetry &telemetry) {
   HTTPClient http;
   http.begin(SERVER_URL);
   http.addHeader("Content-Type", "application/json");
 
   char payload[256];
 
-  if (!serializeTelemetry(telemetryData, payload, sizeof(payload))) {
+  if (!serializeTelemetry(telemetry, payload, sizeof(payload))) {
 
     Serial.println("[HTTP] Failed to serialize telemetry");
     http.end();

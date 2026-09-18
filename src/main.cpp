@@ -37,14 +37,14 @@ uint32_t lastUpdateTelemetryMs = 0;
 uint32_t lastSendDataMs = 0;
 uint32_t lastMqttPublish = 0;
 
-Telemetry telemetryData;
+Telemetry telemetry;
 
 // ---------------------------------
 void setup() {
   initMonitor();
-  initTelemetry(telemetryData);
-  initDhtSensor(telemetryData.dht);
-  initLdrSensor(telemetryData.ldr);
+  initTelemetry(telemetry);
+  initDhtSensor(telemetry.dht);
+  initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
   connectWifi();
@@ -72,20 +72,20 @@ void loop() {
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
     if (!(systemState & SYSTEM_SILENT_MASK)) {
-      handleDhtSensor(telemetryData.dht);
+      handleDhtSensor(telemetry.dht);
     }
   }
 
   // LDR sensor reading
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
     lastLdrSensorReadMs = now;
-    handleLdrSensor(telemetryData.ldr);
+    handleLdrSensor(telemetry.ldr);
   }
 
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetryData, buttonsState, systemState, ledState);
+    handleActions(telemetry, buttonsState, systemState, ledState);
   }
 
   // Indication
@@ -97,7 +97,7 @@ void loop() {
   // Telemetry update
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
-    updateTelemetry(telemetryData, systemState);
+    updateTelemetry(telemetry, systemState);
   }
 
   // MQTT connection
@@ -107,20 +107,20 @@ void loop() {
   handleMqttCommands();
   if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
     lastMqttPublish = now;
-    handleMqttSensors(telemetryData);
+    handleMqttSensors(telemetry);
   }
 
 #if defined(DEBUG_MODE)
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetryData, systemState, buttonsState, ledState);
+    handleMonitor(telemetry, systemState, buttonsState, ledState);
   }
 
   // Data send
   if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
     lastSendDataMs = now;
-    // handleSendData(telemetryData);
+    // handleSendData(telemetry);
   }
 
   // Memory check

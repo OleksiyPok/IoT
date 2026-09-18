@@ -14,30 +14,30 @@
 // ---------------------------------
 static uint16_t previousButtonsState = 0x0000;
 
-static void updateSystemState(const Telemetry &telemetryData,
+static void updateSystemState(const Telemetry &telemetry,
                               const uint16_t &buttonsState,
                               uint16_t &systemState);
 static void updateDhtStatus(const DHTData &data, uint16_t &ledState);
 static void updateLdrStatus(const LDRData &data, uint16_t &ledState);
-static void updateLedState(const Telemetry &telemetryData,
+static void updateLedState(const Telemetry &telemetry,
                            const uint16_t &systemState, uint16_t &ledState);
 
 static void handleWifiTest(const uint16_t &buttonsState);
 static void handleCommand(const uint16_t &buttonsState);
 
 // ---------------------------------
-void handleActions(const Telemetry &telemetryData, const uint16_t &buttonsState,
+void handleActions(const Telemetry &telemetry, const uint16_t &buttonsState,
                    uint16_t &systemState, uint16_t &ledState) {
 
-  updateSystemState(telemetryData, buttonsState, systemState);
-  updateLedState(telemetryData, systemState, ledState);
+  updateSystemState(telemetry, buttonsState, systemState);
+  updateLedState(telemetry, systemState, ledState);
   handleCommand(buttonsState);
   handleWifiTest(buttonsState);
 
   previousButtonsState = buttonsState;
 }
 
-static void updateSystemState(const Telemetry &telemetryData,
+static void updateSystemState(const Telemetry &telemetry,
                               const uint16_t &buttonsState,
                               uint16_t &systemState) {
 
@@ -52,12 +52,12 @@ static void updateSystemState(const Telemetry &telemetryData,
     systemState |= SYSTEM_SILENT_MASK;
   }
 
-  if (telemetryData.ldr.status &
+  if (telemetry.ldr.status &
       (STATUS_LDR_DEVICE_ERR | STATUS_LDR_DATA_VALID_ERR)) {
     systemState |= SYSTEM_LDR_ERR_MASK;
   }
 
-  if (telemetryData.dht.status &
+  if (telemetry.dht.status &
       (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR)) {
     systemState |= SYSTEM_DHT_ERR_MASK;
   }
@@ -79,7 +79,7 @@ static void handleWifiTest(const uint16_t &buttonsState) {
   }
 }
 
-static void updateLedState(const Telemetry &telemetryData,
+static void updateLedState(const Telemetry &telemetry,
                            const uint16_t &systemState, uint16_t &ledState) {
 
   ledState = 0;
@@ -92,8 +92,8 @@ static void updateLedState(const Telemetry &telemetryData,
     ledState |= LED_SILENT_MASK;
   }
 
-  updateLdrStatus(telemetryData.ldr, ledState);
-  updateDhtStatus(telemetryData.dht, ledState);
+  updateLdrStatus(telemetry.ldr, ledState);
+  updateDhtStatus(telemetry.dht, ledState);
 }
 
 static void updateDhtStatus(const DHTData &data, uint16_t &ledState) {

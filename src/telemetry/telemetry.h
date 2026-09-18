@@ -51,5 +51,5 @@ struct Telemetry {
   (STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR | STATUS_DHT_ERR |               \
    STATUS_MQTT_ERR | STATUS_WIFI_ERR)
 
-void initTelemetry(Telemetry &telemetryData);
-void updateTelemetry(Telemetry &telemetryData, const uint16_t &systemState);
+void initTelemetry(Telemetry &telemetry);
+void updateTelemetry(Telemetry &telemetry, const uint16_t &systemState);
