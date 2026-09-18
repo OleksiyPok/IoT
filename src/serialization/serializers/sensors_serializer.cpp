@@ -29,8 +29,22 @@ bool serializeSensors(const Telemetry &data, char *buffer, size_t bufferSize) {
                data.sequence, data.dht.temperature, data.dht.humidity,
                data.dht.updated, data.ldr.raw, data.ldr.lux, data.ldr.updated);
 
-  if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
+  // Serial.printf("[SERIALIZER] Sensors size: %d bytes, buffer: %u bytes\r\n",
+  //               length, bufferSize);
+
+  if (length < 0) {
     buffer[0] = '\0';
+    Serial.println("[SERIALIZER] ERROR: snprintf formatting failed");
+    return false;
+  }
+
+  if (static_cast<size_t>(length) >= bufferSize) {
+    buffer[0] = '\0';
+
+    Serial.printf(
+        "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
+        length, bufferSize);
+
     return false;
   }
 

@@ -22,8 +22,22 @@ bool serializeStatus(const Telemetry &data, char *buffer, size_t bufferSize) {
                data.version, data.deviceId, data.timestamp, data.uptime,
                data.sequence, data.dht.status, data.ldr.status, data.status);
 
-  if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
+  // Serial.printf("[SERIALIZER] Status size: %d bytes, buffer: %u bytes\r\n",
+  //               length, bufferSize);
+
+  if (length < 0) {
     buffer[0] = '\0';
+    Serial.println("[SERIALIZER] ERROR: snprintf formatting failed");
+    return false;
+  }
+
+  if (static_cast<size_t>(length) >= bufferSize) {
+    buffer[0] = '\0';
+
+    Serial.printf(
+        "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
+        length, bufferSize);
+
     return false;
   }
 

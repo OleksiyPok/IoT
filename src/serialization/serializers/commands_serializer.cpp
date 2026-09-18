@@ -15,8 +15,22 @@ bool serializeCommands(const char *command, char *buffer, size_t bufferSize) {
   const int length =
       snprintf(buffer, bufferSize, "{\"command\":\"%s\"}", command);
 
-  if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
+  // Serial.printf("[SERIALIZER] Commands size: %d bytes, buffer: %u bytes\r\n",
+  //               length, bufferSize);
+
+  if (length < 0) {
     buffer[0] = '\0';
+    Serial.println("[SERIALIZER] ERROR: snprintf formatting failed");
+    return false;
+  }
+
+  if (static_cast<size_t>(length) >= bufferSize) {
+    buffer[0] = '\0';
+
+    Serial.printf(
+        "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
+        length, bufferSize);
+
     return false;
   }
 

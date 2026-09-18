@@ -36,7 +36,9 @@ static bool connectMQTT() {
   mqttConnectionAttempts++;
 
   Serial.print("[MQTT] Connecting to ");
+  Serial.print("\"");
   Serial.print(MQTT_BROKER);
+  Serial.print("\"");
   Serial.print(" (attempt ");
   Serial.print(mqttConnectionAttempts);
   Serial.print("/");

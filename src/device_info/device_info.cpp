@@ -22,6 +22,8 @@ bool getDeviceId(uint64_t &deviceId) {
 
   // deviceId = 111111111111;
 
+  printDeviceInfo();
+
   return true;
 }
 
@@ -29,10 +31,10 @@ void printDeviceInfo() {
   uint8_t mac[6];
 
   if (esp_read_mac(mac, ESP_MAC_WIFI_STA) != ESP_OK) {
-    Serial.println("WiFi STA MAC: ERROR");
+    Serial.println("[DEVICE] WiFi STA MAC: ERROR");
     return;
   }
 
-  Serial.printf("WiFi STA MAC: %02X:%02X:%02X:%02X:%02X:%02X\r\n", mac[0],
-                mac[1], mac[2], mac[3], mac[4], mac[5]);
+  Serial.printf("[DEVICE] WiFi STA MAC: %02X:%02X:%02X:%02X:%02X:%02X\r\n",
+                mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }

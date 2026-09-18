@@ -9,13 +9,22 @@
 #include "mqtt_publish.h"
 
 // ---------------------------------
-void handleMqtt(const Telemetry &telemetryData) {
+void handleMqttSensors(const Telemetry &telemetryData) {
   if (!isMqttConnected()) {
     return;
   }
 
   if (!(telemetryData.status & STATUS_DEVICE_SILENT_MODE)) {
-    publishSensors(telemetryData);
+    // publishSensors(telemetryData);
+    // publishTelemetry();
   }
   publishStatus(telemetryData);
+}
+
+void handleMqttCommands() {
+  if (!isMqttConnected()) {
+    return;
+  }
+
+  publishCommands();
 }
