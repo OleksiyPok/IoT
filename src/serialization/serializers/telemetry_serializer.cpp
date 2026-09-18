@@ -20,27 +20,40 @@ bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
                "\"timestamp\":%" PRIu32 ","
                "\"uptime\":%" PRIu32 ","
                "\"sequence\":%u,"
+               "\"type\":\"telemetry\","
                "\"dht\":{"
                "\"temperature\":%.1f,"
                "\"humidity\":%.1f,"
                "\"updated\":%" PRIu32 ","
-               "\"status\":%u"
+               "\"dht_status\":%u"
                "},"
                "\"ldr\":{"
                "\"raw\":%u,"
                "\"lux\":%.1f,"
                "\"updated\":%" PRIu32 ","
-               "\"status\":%u"
+               "\"ldr_status\":%u"
                "},"
-               "\"status\":%u}",
+               "\"sys_status\":%u}",
                telemetry.version, telemetry.deviceId, telemetry.timestamp,
                telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
                telemetry.dht.humidity, telemetry.dht.updated,
                telemetry.dht.status, telemetry.ldr.raw, telemetry.ldr.lux,
                telemetry.ldr.updated, telemetry.ldr.status, telemetry.status);
 
-  if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
+  // Serial.printf("[SERIALIZER] Sensors size: %d bytes, buffer: %u bytes\r\n",
+  //               length, bufferSize);
+
+  if (length < 0) {
     buffer[0] = '\0';
+    Serial.println("[SERIALIZER] ERROR: snprintf formatting failed");
+    return false;
+  }
+
+  if (static_cast<size_t>(length) >= bufferSize) {
+    buffer[0] = '\0';
+    Serial.printf(
+        "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
+        length, bufferSize);
     return false;
   }
 

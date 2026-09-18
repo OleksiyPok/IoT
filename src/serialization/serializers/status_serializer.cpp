@@ -17,9 +17,10 @@ bool serializeStatusSnprintf(const Telemetry &telemetry, char *buffer,
                "\"timestamp\":%" PRIu32 ","
                "\"uptime\":%" PRIu32 ","
                "\"sequence\":%u,"
+               "\"type\":\"statuses\","
                "\"dht_status\":%u,"
                "\"ldr_status\":%u,"
-               "\"system_status\":%u}",
+               "\"sys_status\":%u}",
                telemetry.version, telemetry.deviceId, telemetry.timestamp,
                telemetry.uptime, telemetry.sequence, telemetry.dht.status,
                telemetry.ldr.status, telemetry.status);
@@ -35,11 +36,9 @@ bool serializeStatusSnprintf(const Telemetry &telemetry, char *buffer,
 
   if (static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';
-
     Serial.printf(
         "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
         length, bufferSize);
-
     return false;
   }
 

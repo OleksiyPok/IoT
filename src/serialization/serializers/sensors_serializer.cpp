@@ -19,6 +19,7 @@ bool serializeSensorsSnprintf(const Telemetry &telemetry, char *buffer,
                "\"timestamp\":%" PRIu32 ","
                "\"uptime\":%" PRIu32 ","
                "\"sequence\":%u,"
+               "\"type\":\"sensors\","
                "\"dht_temperature\":%.1f,"
                "\"dht_humidity\":%.1f,"
                "\"dht_updated\":%" PRIu32 ","
@@ -42,11 +43,9 @@ bool serializeSensorsSnprintf(const Telemetry &telemetry, char *buffer,
 
   if (static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';
-
     Serial.printf(
         "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
         length, bufferSize);
-
     return false;
   }
 

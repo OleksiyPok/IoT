@@ -27,11 +27,9 @@ bool serializeCommandsSnprintf(const char *commands, char *buffer,
 
   if (static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';
-
     Serial.printf(
         "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
         length, bufferSize);
-
     return false;
   }
 

@@ -22,20 +22,21 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
   doc["timestamp"] = telemetry.timestamp;
   doc["uptime"] = telemetry.uptime;
   doc["sequence"] = telemetry.sequence;
+  doc["type"] = "statuses";
 
   JsonObject dht = doc.createNestedObject("dht");
   dht["temperature"] = telemetry.dht.temperature;
   dht["humidity"] = telemetry.dht.humidity;
   dht["updated"] = telemetry.dht.updated;
-  dht["status"] = telemetry.dht.status;
+  dht["dht_status"] = telemetry.dht.status;
 
   JsonObject ldr = doc.createNestedObject("ldr");
   ldr["raw"] = telemetry.ldr.raw;
   ldr["lux"] = telemetry.ldr.lux;
   ldr["updated"] = telemetry.ldr.updated;
-  ldr["status"] = telemetry.ldr.status;
+  ldr["ldr_status"] = telemetry.ldr.status;
 
-  doc["status"] = telemetry.status;
+  doc["sys_status"] = telemetry.status;
 
   if (doc.overflowed()) {
     buffer[0] = '\0';
@@ -44,8 +45,17 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
 
   size_t length = serializeJson(doc, buffer, bufferSize);
 
-  if (length == 0 || length >= bufferSize) {
+  if (length < 0) {
     buffer[0] = '\0';
+    Serial.println("[SERIALIZER] ERROR: snprintf formatting failed");
+    return false;
+  }
+
+  if (static_cast<size_t>(length) >= bufferSize) {
+    buffer[0] = '\0';
+    Serial.printf(
+        "[SERIALIZER] ERROR: message too large: %d bytes, buffer: %u bytes\r\n",
+        length, bufferSize);
     return false;
   }
 

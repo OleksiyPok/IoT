@@ -15,10 +15,11 @@ void handleMqttSensors(const Telemetry &telemetry) {
   }
 
   if (!(telemetry.status & STATUS_DEVICE_SILENT_MODE)) {
-    publishSensors(telemetry);
-    // publishTelemetry();
+    // publishSensors(telemetry);
+    publishTelemetry(telemetry);
+  } else {
+    publishStatus(telemetry);
   }
-  publishStatus(telemetry);
 }
 
 void handleMqttCommands() {

@@ -39,7 +39,7 @@ bool publishStatus(const Telemetry &telemetry) {
     return true;
   }
 
-  if (!publishMqttMessage(TOPIC_STATUS, payload)) {
+  if (!publishMqttMessage(TOPIC_TELEMETRY, payload)) {
     return false;
   }
 
