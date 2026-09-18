@@ -10,12 +10,6 @@
 #include "../serialization/serialization.h"
 #include "http.h"
 
-#if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
-#include "../serialization/serializers/telemetry_serializer_aj.h"
-#else
-#include "../serialization/serializers/telemetry_serializer.h"
-#endif
-
 // ---------------------------------
 static void sendData(const Telemetry &telemetry);
 
@@ -34,7 +28,7 @@ static void sendData(const Telemetry &telemetry) {
   http.begin(SERVER_URL);
   http.addHeader("Content-Type", "application/json");
 
-  char payload[256];
+  char payload[512];
 
   if (!serializeTelemetry(telemetry, payload, sizeof(payload))) {
 

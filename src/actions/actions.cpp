@@ -6,7 +6,7 @@
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
-#include "../mqtt/mqtt_connection.h"
+#include "../mqtt/mqtt.h"
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "../wifi/wifi.h"

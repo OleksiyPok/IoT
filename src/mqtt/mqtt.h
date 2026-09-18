@@ -9,3 +9,4 @@
 void initMqtt();
 void handleMqttSensors(const Telemetry &telemetry);
 void handleMqttCommands();
+bool isMqttConnected();
