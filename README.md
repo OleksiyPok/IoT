@@ -88,51 +88,6 @@ Device A communicates with Device B through the MQTT broker. The devices do not 
 
 **MQTT client ID:** `OleksiiPok-esp32-a`
 
-Device A uses the following MQTT Topic Names:
-
-| Topic Name | Direction | Payload | Publishing interval |
-|---|---|---|---|
-| `iot-course/OleksiiPok/sensors` | Device A → Broker | JSON sensor data | 10 s |
-| `iot-course/OleksiiPok/status` | Device A → Broker | JSON system status | 10 s |
-| `iot-course/OleksiiPok/commands` | Device A → Broker | JSON command | On event |
-
-Sensor data and system status are published every 10 seconds. Commands are published when a command is pending, for example after a button action.
-
-Device A publishes with QoS 0. Device B subscribes to the `sensors` and `commands` Topic Names with QoS 1.
-
-The current MQTT exchange is:
-
-```text
-Device A
-   │
-   │ PUBLISH sensors / status / commands
-   ▼
-MQTT Broker
-   │
-   │
-   └───────────────┐
-                   │
-                   ▼
-               Device B
-          SUBSCRIBE sensors
-          SUBSCRIBE commands
-```
-
-### MQTT Topics on the Broker
-
-<img src="./images/mqtt_boker.png" alt="mqtt_boker_messages" width="700">
-
-
-The MQTT broker, Topic Names, client identifier, buffer size, and reconnection parameters can be configured in `src/mqtt/mqtt_config.h`.
-
-## HTTP Communication
-
-The project also contains an HTTP client for sending complete telemetry data as JSON to a server.
-
-The server endpoint can be configured using:
-
-* `SERVER_URL`
-
 ## Telemetry
 
 The internal telemetry structure contains:
