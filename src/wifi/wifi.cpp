@@ -22,6 +22,16 @@ void printWifiStatus(wl_status_t wlStatus);
 // ---------------------------------
 bool isWifiConnected() { return WiFi.isConnected(); }
 
+bool initWiFi() {
+  connectWifi();
+
+  while (wifiConnecting) {
+    handleWiFi();
+  }
+
+  return isWifiConnected();
+}
+
 void handleWiFi() {
   const uint32_t now = millis();
   const wl_status_t wlStatus = WiFi.status();
@@ -107,17 +117,6 @@ bool connectWifi() {
   }
 
   return true;
-}
-
-bool initWiFi() {
-
-  connectWifi();
-
-  while (wifiConnecting) {
-    handleWiFi();
-  }
-
-  return isWifiConnected();
 }
 
 bool disconnectWiFi() { return WiFi.disconnect(); };

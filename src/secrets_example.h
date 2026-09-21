@@ -5,15 +5,15 @@
 // ═══════════════════════════════════════════════════════════
 // WI-FI
 // ═══════════════════════════════════════════════════════════
-#define WIFI_SSID "Wokwi-GUEST" // SSID
-#define WIFI_PASSWORD ""        // Password (empty for Wokwi-GUEST)
+#define WIFI_SSID "SSID" // SSID
+#define WIFI_PASSWORD "" // Password (empty for Wokwi-GUEST)
 
 // ═══════════════════════════════════════════════════════════
 // MQTT broker
 // ═══════════════════════════════════════════════════════════
 #define MQTT_BROKER "broker.hivemq.com"
 #define MQTT_PORT 1883
-#define MQTT_CLIENT_ID "...."
+#define MQTT_CLIENT_ID "xxxx"
 
 // ═══════════════════════════════════════════════════════════
 // AWS IOT CORE

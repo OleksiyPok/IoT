@@ -21,7 +21,6 @@
 #include "time/time.h"
 #include "wifi/wifi.h"
 
-
 // ---------------------------------
 uint16_t buttonsState = 0x0000;
 uint16_t systemState = 0x0000;
@@ -51,7 +50,9 @@ void setup() {
   initButtons();
   initIndication();
 
-  if (initWiFi()) {
+  const bool wifiConnected = initWiFi();
+
+  if (wifiConnected) {
     initTime();
     initMqtt();
   }
