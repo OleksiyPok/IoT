@@ -98,13 +98,13 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetry, buttonsState, systemState, ledState);
+    handleActions(telemetry, buttonsState, systemState);
   }
 
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
-    handleIndication(ledState);
+    handleIndication(telemetry);
   }
 
   // Telemetry update
@@ -127,7 +127,7 @@ void loop() {
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetry, systemState, buttonsState, ledState);
+    handleMonitor(telemetry, systemState, buttonsState);
   }
 
   // Data send

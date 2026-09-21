@@ -17,20 +17,19 @@ static uint16_t previousButtonsState = 0x0000;
 static void updateSystemState(const Telemetry &telemetry,
                               const uint16_t &buttonsState,
                               uint16_t &systemState);
-static void updateDhtStatus(const DHTData &data, uint16_t &ledState);
-static void updateLdrStatus(const LDRData &data, uint16_t &ledState);
-static void updateLedState(const Telemetry &telemetry,
-                           const uint16_t &systemState, uint16_t &ledState);
+static void updateDhtStatus(const DHTData &data, Telemetry &telemetry);
+static void updateLdrStatus(const LDRData &data, Telemetry &telemetry);
+static void updateLedState(Telemetry &telemetry, const uint16_t &systemState);
 
 static void handleWifiTest(const uint16_t &buttonsState);
 static void handleCommand(const uint16_t &buttonsState);
 
 // ---------------------------------
-void handleActions(const Telemetry &telemetry, const uint16_t &buttonsState,
-                   uint16_t &systemState, uint16_t &ledState) {
+void handleActions(Telemetry &telemetry, const uint16_t &buttonsState,
+                   uint16_t &systemState) {
 
   updateSystemState(telemetry, buttonsState, systemState);
-  updateLedState(telemetry, systemState, ledState);
+  updateLedState(telemetry, systemState);
   handleCommand(buttonsState);
   handleWifiTest(buttonsState);
 
@@ -79,57 +78,57 @@ static void handleWifiTest(const uint16_t &buttonsState) {
   }
 }
 
-static void updateLedState(const Telemetry &telemetry,
-                           const uint16_t &systemState, uint16_t &ledState) {
+static void updateLedState(Telemetry &telemetry, const uint16_t &systemState) {
 
-  ledState = 0;
+  telemetry.ledState = 0;
 
   if (systemState & SYSTEM_COMMAND_MASK) {
-    ledState |= LED_COMMAND_MASK;
+    telemetry.ledState |= LED_COMMAND_MASK;
   }
 
   if (systemState & SYSTEM_SILENT_MASK) {
-    ledState |= LED_SILENT_MASK;
+    telemetry.ledState |= LED_SILENT_MASK;
   }
 
-  updateLdrStatus(telemetry.ldr, ledState);
-  updateDhtStatus(telemetry.dht, ledState);
+  updateLdrStatus(telemetry.ldr, telemetry);
+  updateDhtStatus(telemetry.dht, telemetry);
 }
 
-static void updateDhtStatus(const DHTData &data, uint16_t &ledState) {
-  ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
-                LED_HUMIDITY_MIN_MASK);
+static void updateDhtStatus(const DHTData &data, Telemetry &telemetry) {
+  telemetry.ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
+                          LED_HUMIDITY_MIN_MASK);
 
   if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
-    ledState |= LED_TEMPERATURE_MIN_MASK;
+    telemetry.ledState |= LED_TEMPERATURE_MIN_MASK;
   }
 
   if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MAX) {
-    ledState |= LED_TEMPERATURE_MAX_MASK;
+    telemetry.ledState |= LED_TEMPERATURE_MAX_MASK;
   }
 
   if (data.status & STATUS_DHT_HUMIDITY_ALARM_MIN) {
-    ledState |= LED_HUMIDITY_MIN_MASK;
+    telemetry.ledState |= LED_HUMIDITY_MIN_MASK;
   }
 
   if (data.status & STATUS_DHT_HUMIDITY_ALARM_MAX) {
-    ledState |= LED_HUMIDITY_MAX_MASK;
+    telemetry.ledState |= LED_HUMIDITY_MAX_MASK;
   }
 }
 
-static void updateLdrStatus(const LDRData &data, uint16_t &ledState) {
-  ledState &= ~(LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK);
+static void updateLdrStatus(const LDRData &data, Telemetry &telemetry) {
+  telemetry.ledState &=
+      ~(LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK);
 
   if (data.status & STATUS_LDR_LUX_ALARM_MIN) {
-    ledState |= LED_LIGHT_MIN_MASK;
+    telemetry.ledState |= LED_LIGHT_MIN_MASK;
   }
 
   if (data.status & STATUS_LDR_LUX_ALARM_MAX) {
-    ledState |= LED_LIGHT_MAX_MASK;
+    telemetry.ledState |= LED_LIGHT_MAX_MASK;
   }
 
   if (data.status & STATUS_LDR_LIGHT_LOW) {
-    ledState |= LED_LIGHT_AUTO_MASK;
+    telemetry.ledState |= LED_LIGHT_AUTO_MASK;
   }
 }
 

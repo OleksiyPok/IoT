@@ -29,8 +29,8 @@ void initTelemetry(Telemetry &telemetry) {
   getDeviceId(telemetry.deviceId);
   telemetry.status |= STATUS_INIT_ERR;
 
-  telemetry.buttonsState = 0x0000;
-  telemetry.systemState = 0x0000;
+  telemetry.buttonsStateN = 0x0000;
+  telemetry.systemStateN = 0x0000;
   telemetry.ledState = 0x0000;
 }
 

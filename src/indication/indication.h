@@ -4,6 +4,8 @@
 
 #include <Arduino.h>
 
+#include "../telemetry/telemetry.h"
+
 // ---------------------------------
 
 enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
@@ -35,5 +37,5 @@ enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
 #define LED_COMMAND_MASK (1U << 9)
 
 void initIndication();
-void handleIndication(const uint16_t &ledState);
+void handleIndication(const Telemetry &telemetry);
 void requestIndication(IndicationType type);
