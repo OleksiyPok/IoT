@@ -11,6 +11,12 @@
 // Uncomment to use ArduinoJson telemetry serializer
 // #define TELEMETRY_SERIALIZER_ARDUINO_JSON
 
+#define DEFAULT_TIMEZONE "UTC"
+
+// Set local timezone here.
+// Leave undefined to use UTC.
+#define LOCAL_TIMEZONE "CET-1CEST,M3.5.0,M10.5.0"
+
 #define BUTTONS_READ_INTERVAL_MS 100
 #define ACTIONS_MS 100
 #define INDICATION_CHANGE_INTERVAL_MS 100

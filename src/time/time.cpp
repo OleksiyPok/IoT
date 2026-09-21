@@ -3,16 +3,17 @@
 #include <Arduino.h>
 #include <time.h>
 
+#include "../config.h"
 #include "time.h"
 
 // ---------------------------------
 static const char *NTP_SERVER = "pool.ntp.org";
 
-static const char *DEFAULT_TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0";
-static const char *DEFAULT_TIMEZONE_NAME = "Europe/Amsterdam";
-
+#ifdef LOCAL_TIMEZONE
+static const char *currentTimezone = LOCAL_TIMEZONE;
+#else
 static const char *currentTimezone = DEFAULT_TIMEZONE;
-static const char *currentTimezoneName = DEFAULT_TIMEZONE_NAME;
+#endif
 
 static bool waitForTimeSync();
 static void printCurrentTime();
@@ -111,9 +112,9 @@ static void printCurrentTime() {
 
   if (getLocalTime(localTime)) {
 
-    Serial.printf("[NTP] %s: %04d-%02d-%02d %02d:%02d:%02d\r\n",
-                  currentTimezoneName, localTime.tm_year + 1900,
-                  localTime.tm_mon + 1, localTime.tm_mday, localTime.tm_hour,
-                  localTime.tm_min, localTime.tm_sec);
+    Serial.printf("[NTP] Local: %04d-%02d-%02d %02d:%02d:%02d\r\n",
+                  localTime.tm_year + 1900, localTime.tm_mon + 1,
+                  localTime.tm_mday, localTime.tm_hour, localTime.tm_min,
+                  localTime.tm_sec);
   }
 }
