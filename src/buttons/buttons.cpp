@@ -48,7 +48,7 @@ void initButtons() {
   attachInterrupt(BUTTON_3_PIN, onButton3Press, FALLING);
 }
 
-void handleButtons(uint16_t &buttonsState) {
+void handleButtons(Telemetry &telemetry) {
   uint32_t now = millis();
 
   if (button0Pressed) {
@@ -58,8 +58,8 @@ void handleButtons(uint16_t &buttonsState) {
         now - lastDebounce0 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce0 = now; // Update debounce time
 
-      buttonsState ^= BUTTON_0_MASK;   // Toggled
-      buttonsHandled |= BUTTON_0_MASK; // Mark button 0 as handled
+      telemetry.buttonsState ^= BUTTON_0_MASK; // Toggled
+      buttonsHandled |= BUTTON_0_MASK;         // Mark button 0 as handled
     }
   }
 
@@ -70,8 +70,8 @@ void handleButtons(uint16_t &buttonsState) {
         now - lastDebounce1 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce1 = now; // Update debounce time
 
-      buttonsState ^= BUTTON_1_MASK;   // Toggled
-      buttonsHandled |= BUTTON_1_MASK; // Mark button 1 as handled
+      telemetry.buttonsState ^= BUTTON_1_MASK; // Toggled
+      buttonsHandled |= BUTTON_1_MASK;         // Mark button 1 as handled
     }
   }
 
@@ -82,8 +82,8 @@ void handleButtons(uint16_t &buttonsState) {
         now - lastDebounce2 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce2 = now; // Update debounce time
 
-      buttonsState ^= BUTTON_2_MASK;   // Toggled
-      buttonsHandled |= BUTTON_2_MASK; // Mark button 2 as handled
+      telemetry.buttonsState ^= BUTTON_2_MASK; // Toggled
+      buttonsHandled |= BUTTON_2_MASK;         // Mark button 2 as handled
     }
   }
 
@@ -94,15 +94,15 @@ void handleButtons(uint16_t &buttonsState) {
         now - lastDebounce3 >= BUTTON_DEBOUNCE_TIME_MS) {
       lastDebounce3 = now; // Update debounce time
 
-      buttonsState ^= BUTTON_3_MASK;   // Toggled
-      buttonsHandled |= BUTTON_3_MASK; // Mark button 3 as handled
+      telemetry.buttonsState ^= BUTTON_3_MASK; // Toggled
+      buttonsHandled |= BUTTON_3_MASK;         // Mark button 3 as handled
     }
   }
 
   // Reset after button 0 release
   if ((buttonsHandled & BUTTON_0_MASK) && digitalRead(BUTTON_0_PIN) == HIGH) {
     if (!(BUTTON_0_FIXED)) {
-      buttonsState &= ~BUTTON_0_MASK;
+      telemetry.buttonsState &= ~BUTTON_0_MASK;
     }
     buttonsHandled &= ~BUTTON_0_MASK;
   }
@@ -110,7 +110,7 @@ void handleButtons(uint16_t &buttonsState) {
   // Reset after button 1 release
   if ((buttonsHandled & BUTTON_1_MASK) && digitalRead(BUTTON_1_PIN) == HIGH) {
     if (!(BUTTON_1_FIXED)) {
-      buttonsState &= ~BUTTON_1_MASK;
+      telemetry.buttonsState &= ~BUTTON_1_MASK;
     }
     buttonsHandled &= ~BUTTON_1_MASK;
   }
@@ -118,7 +118,7 @@ void handleButtons(uint16_t &buttonsState) {
   // Reset after button 2 release
   if ((buttonsHandled & BUTTON_2_MASK) && digitalRead(BUTTON_2_PIN) == HIGH) {
     if (!(BUTTON_2_FIXED)) {
-      buttonsState &= ~BUTTON_2_MASK;
+      telemetry.buttonsState &= ~BUTTON_2_MASK;
     }
     buttonsHandled &= ~BUTTON_2_MASK;
   }
@@ -126,7 +126,7 @@ void handleButtons(uint16_t &buttonsState) {
   // Reset after button 3 release
   if ((buttonsHandled & BUTTON_3_MASK) && digitalRead(BUTTON_3_PIN) == HIGH) {
     if (!(BUTTON_3_FIXED)) {
-      buttonsState &= ~BUTTON_3_MASK;
+      telemetry.buttonsState &= ~BUTTON_3_MASK;
     }
     buttonsHandled &= ~BUTTON_3_MASK;
   }

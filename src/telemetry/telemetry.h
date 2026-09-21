@@ -31,7 +31,7 @@ struct Telemetry {
   LDRData ldr;
   uint16_t status; // system status register
 
-  uint16_t buttonsStateN;
+  uint16_t buttonsState;
   uint16_t systemStateN;
   uint16_t ledState;
 };

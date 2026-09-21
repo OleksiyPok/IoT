@@ -15,39 +15,36 @@
 static uint16_t previousButtonsState = 0x0000;
 
 static void updateSystemState(const Telemetry &telemetry,
-                              const uint16_t &buttonsState,
                               uint16_t &systemState);
 static void updateDhtStatus(const DHTData &data, Telemetry &telemetry);
 static void updateLdrStatus(const LDRData &data, Telemetry &telemetry);
 static void updateLedState(Telemetry &telemetry, const uint16_t &systemState);
 
-static void handleWifiTest(const uint16_t &buttonsState);
-static void handleCommand(const uint16_t &buttonsState);
+static void handleWifiTest(const Telemetry &telemetry);
+static void handleCommand(const Telemetry &telemetry);
 
 // ---------------------------------
-void handleActions(Telemetry &telemetry, const uint16_t &buttonsState,
-                   uint16_t &systemState) {
+void handleActions(Telemetry &telemetry, uint16_t &systemState) {
 
-  updateSystemState(telemetry, buttonsState, systemState);
+  updateSystemState(telemetry, systemState);
   updateLedState(telemetry, systemState);
-  handleCommand(buttonsState);
-  handleWifiTest(buttonsState);
+  handleCommand(telemetry);
+  handleWifiTest(telemetry);
 
-  previousButtonsState = buttonsState;
+  previousButtonsState = telemetry.buttonsState;
 }
 
 static void updateSystemState(const Telemetry &telemetry,
-                              const uint16_t &buttonsState,
                               uint16_t &systemState) {
 
   systemState &= ~SYSTEM_STATE_MANAGED_MASK;
 
-  if ((buttonsState & BUTTON_COMMAND_MASK) &&
+  if ((telemetry.buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
     systemState |= SYSTEM_COMMAND_MASK;
   }
 
-  if (buttonsState & BUTTON_SILENT_MASK) {
+  if (telemetry.buttonsState & BUTTON_SILENT_MASK) {
     systemState |= SYSTEM_SILENT_MASK;
   }
 
@@ -70,8 +67,8 @@ static void updateSystemState(const Telemetry &telemetry,
   }
 }
 
-static void handleWifiTest(const uint16_t &buttonsState) {
-  if ((buttonsState & BUTTON_WIFI_DISABLE_MASK) &&
+static void handleWifiTest(const Telemetry &telemetry) {
+  if ((telemetry.buttonsState & BUTTON_WIFI_DISABLE_MASK) &&
       !(previousButtonsState & BUTTON_WIFI_DISABLE_MASK)) {
     Serial.println("[TEST] WiFi disconnect");
     disconnectWiFi();
@@ -132,9 +129,9 @@ static void updateLdrStatus(const LDRData &data, Telemetry &telemetry) {
   }
 }
 
-static void handleCommand(const uint16_t &buttonsState) {
+static void handleCommand(const Telemetry &telemetry) {
 
-  if ((buttonsState & BUTTON_COMMAND_MASK) &&
+  if ((telemetry.buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
     setCommand(MANUAL_READ_COMMAND);
   }

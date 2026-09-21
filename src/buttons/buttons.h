@@ -4,6 +4,8 @@
 
 #include <Arduino.h>
 
+#include "../telemetry/telemetry.h"
+
 // ---------------------------------
 #define BUTTON_DEBOUNCE_TIME_MS 100
 
@@ -13,4 +15,4 @@
 #define BUTTON_WIFI_DISABLE_MASK (1U << 3)
 
 void initButtons();
-void handleButtons(uint16_t &buttonsState);
+void handleButtons(Telemetry &telemetry);

@@ -22,9 +22,7 @@
 #include "wifi/wifi.h"
 
 // ---------------------------------
-uint16_t buttonsState = 0x0000;
 uint16_t systemState = 0x0000;
-uint16_t ledState = 0x0000;
 
 uint32_t lastTimeSyncMs = 0;
 uint32_t lastWiFiCheckConnectionMs = 0;
@@ -78,7 +76,7 @@ void loop() {
   // Buttons reading
   if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
-    handleButtons(buttonsState);
+    handleButtons(telemetry);
   }
 
   // DHT sensor reading
@@ -98,7 +96,7 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetry, buttonsState, systemState);
+    handleActions(telemetry, systemState);
   }
 
   // Indication
@@ -127,7 +125,7 @@ void loop() {
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetry, systemState, buttonsState);
+    handleMonitor(telemetry, systemState);
   }
 
   // Data send
