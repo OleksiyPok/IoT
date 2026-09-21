@@ -15,10 +15,12 @@
 #include "monitor/monitor.h"
 #include "mqtt/mqtt.h"
 #include "mqtt/mqtt_connection.h"
+#include "secrets.h"
 #include "system/system_state.h"
 #include "telemetry/telemetry.h"
 #include "time/time.h"
 #include "wifi/wifi.h"
+
 
 // ---------------------------------
 uint16_t buttonsState = 0x0000;

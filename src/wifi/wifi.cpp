@@ -4,6 +4,7 @@
 #include <WiFi.h>
 
 #include "../indication/indication.h"
+#include "../secrets.h"
 #include "wifi.h"
 
 // ---------------------------------

@@ -3,9 +3,12 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 
+#include "../secrets.h"
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
+
 
 // ---------------------------------
 static WiFiClient wifiClient;
