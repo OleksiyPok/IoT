@@ -7,6 +7,7 @@
 #include "time.h"
 
 // ---------------------------------
+
 static const char *NTP_SERVER = "pool.ntp.org";
 
 #ifdef LOCAL_TIMEZONE
