@@ -22,7 +22,6 @@
 #include "wifi/wifi.h"
 
 // ---------------------------------
-uint16_t systemState = 0x0000;
 
 uint32_t lastTimeSyncMs = 0;
 uint32_t lastWiFiCheckConnectionMs = 0;
@@ -82,7 +81,7 @@ void loop() {
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
-    if (!(systemState & SYSTEM_SILENT_MASK)) {
+    if (!(telemetry.systemState & SYSTEM_SILENT_MASK)) {
       handleDhtSensor(telemetry.dht);
     }
   }
@@ -96,7 +95,7 @@ void loop() {
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
-    handleActions(telemetry, systemState);
+    handleActions(telemetry);
   }
 
   // Indication
@@ -108,7 +107,7 @@ void loop() {
   // Telemetry update
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
-    updateTelemetry(telemetry, systemState);
+    updateTelemetry(telemetry);
   }
 
   // MQTT connection
@@ -125,7 +124,7 @@ void loop() {
   // Data monitor
   if (now - lastDataMonitorMs >= DATA_MONITOR_INTERVAL_MS) {
     lastDataMonitorMs = now;
-    handleMonitor(telemetry, systemState);
+    handleMonitor(telemetry);
   }
 
   // Data send

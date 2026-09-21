@@ -7,4 +7,4 @@
 #include "../telemetry/telemetry.h"
 
 // ---------------------------------
-void handleActions(Telemetry &telemetry, uint16_t &systemState);
+void handleActions(Telemetry &telemetry);

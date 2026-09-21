@@ -30,11 +30,11 @@ void initTelemetry(Telemetry &telemetry) {
   telemetry.status |= STATUS_INIT_ERR;
 
   telemetry.buttonsState = 0x0000;
-  telemetry.systemStateN = 0x0000;
+  telemetry.systemState = 0x0000;
   telemetry.ledState = 0x0000;
 }
 
-void updateTelemetry(Telemetry &telemetry, const uint16_t &systemState) {
+void updateTelemetry(Telemetry &telemetry) {
 
   // Update timestamp
   telemetry.timestamp = getCurrentTimestamp();
@@ -48,23 +48,23 @@ void updateTelemetry(Telemetry &telemetry, const uint16_t &systemState) {
   telemetry.status &= ~(STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR |
                         STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR);
 
-  if (systemState & SYSTEM_SILENT_MASK) {
+  if (telemetry.systemState & SYSTEM_SILENT_MASK) {
     telemetry.status |= STATUS_DEVICE_SILENT_MODE;
   }
 
-  if (systemState & SYSTEM_LDR_ERR_MASK) {
+  if (telemetry.systemState & SYSTEM_LDR_ERR_MASK) {
     telemetry.status |= STATUS_LDR_ERR;
   }
 
-  if (systemState & SYSTEM_DHT_ERR_MASK) {
+  if (telemetry.systemState & SYSTEM_DHT_ERR_MASK) {
     telemetry.status |= STATUS_DHT_ERR;
   }
 
-  if (systemState & SYSTEM_MQTT_ERR_MASK) {
+  if (telemetry.systemState & SYSTEM_MQTT_ERR_MASK) {
     telemetry.status |= STATUS_MQTT_ERR;
   }
 
-  if (systemState & SYSTEM_WIFI_ERR_MASK) {
+  if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
     telemetry.status |= STATUS_WIFI_ERR;
   }
 }

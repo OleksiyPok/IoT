@@ -18,7 +18,7 @@ static void printStatusBit(const char *name, uint16_t status, uint16_t mask);
 static void printDhtTelemetryStatus(uint16_t status);
 static void printLdrTelemetryStatus(uint16_t status);
 static void printTelemetrySystemStatus(uint16_t status);
-static void printSystemState(uint16_t systemState);
+static void printSystemState(const Telemetry &telemetry);
 
 // ---------------------------------
 void initMonitor() {
@@ -30,7 +30,7 @@ void initMonitor() {
   Serial.println();
 }
 
-void handleMonitor(const Telemetry &data, const uint16_t &systemState) {
+void handleMonitor(const Telemetry &data) {
 
 #if defined(DEBUG_MODE)
 
@@ -50,7 +50,7 @@ void handleMonitor(const Telemetry &data, const uint16_t &systemState) {
   printTelemetrySystemStatus(data.status);
   Serial.println();
 
-  printSystemState(systemState);
+  printSystemState(telemetry.systemState);
 
   Serial.println("================================");
   Serial.println();
@@ -124,16 +124,16 @@ static void printStatusByte(uint16_t status) {
   Serial.println();
 }
 
-static void printSystemState(uint16_t systemState) {
+static void printSystemState(const Telemetry &telemetry) {
   Serial.println("[SYSTEM STATE REGISTER]");
-  printStatusByte(systemState);
+  printStatusByte(telemetry.systemState);
 
-  printStatusBit("LIGHT_COMMAND", systemState, SYSTEM_COMMAND_MASK);
-  printStatusBit("SILENT_MODE", systemState, SYSTEM_SILENT_MASK);
-  printStatusBit("LDR_ERR", systemState, SYSTEM_LDR_ERR_MASK);
-  printStatusBit("DHT_ERR", systemState, SYSTEM_DHT_ERR_MASK);
-  printStatusBit("MQTT_ERR", systemState, SYSTEM_MQTT_ERR_MASK);
-  printStatusBit("WIFI_ERR", systemState, SYSTEM_WIFI_ERR_MASK);
+  printStatusBit("LIGHT_COMMAND", telemetry.systemState, SYSTEM_COMMAND_MASK);
+  printStatusBit("SILENT_MODE", telemetry.systemState, SYSTEM_SILENT_MASK);
+  printStatusBit("LDR_ERR", telemetry.systemState, SYSTEM_LDR_ERR_MASK);
+  printStatusBit("DHT_ERR", telemetry.systemState, SYSTEM_DHT_ERR_MASK);
+  printStatusBit("MQTT_ERR", telemetry.systemState, SYSTEM_MQTT_ERR_MASK);
+  printStatusBit("WIFI_ERR", telemetry.systemState, SYSTEM_WIFI_ERR_MASK);
 }
 
 static void printDhtTelemetryStatus(uint16_t status) {

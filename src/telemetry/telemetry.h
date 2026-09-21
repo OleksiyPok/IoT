@@ -32,7 +32,7 @@ struct Telemetry {
   uint16_t status; // system status register
 
   uint16_t buttonsState;
-  uint16_t systemStateN;
+  uint16_t systemState;
   uint16_t ledState;
 };
 
@@ -52,4 +52,4 @@ struct Telemetry {
    STATUS_MQTT_ERR | STATUS_WIFI_ERR)
 
 void initTelemetry(Telemetry &telemetry);
-void updateTelemetry(Telemetry &telemetry, const uint16_t &systemState);
+void updateTelemetry(Telemetry &telemetry);

@@ -7,7 +7,7 @@
 
 // ---------------------------------
 void initMonitor();
-void handleMonitor(const Telemetry &data, const uint16_t &systemState);
+void handleMonitor(const Telemetry &data);
 
 #if defined(DEBUG_MODE)
 void printMonitorPayload(const char *payload);
