@@ -10,6 +10,9 @@
 static bool wifiInitialized = false;
 static uint32_t wifiConnectStartedAt = 0;
 static uint32_t wifiLastReconnectAt = 0;
+static uint32_t wifiNextConnectionCycleAt = 0;
+static uint8_t wifiConnectionAttempts = 0;
+
 static bool wifiConnecting = false;
 static wl_status_t wlLastStatus = WL_IDLE_STATUS;
 
@@ -30,6 +33,10 @@ void handleWiFi() {
 
       wifiConnecting = false;
     }
+
+    wifiConnectionAttempts = 0;
+    wifiNextConnectionCycleAt = 0;
+
     wlLastStatus = wlStatus;
     return;
   }
@@ -41,6 +48,13 @@ void handleWiFi() {
       wifiConnecting = false;
       wifiLastReconnectAt = now;
       wlLastStatus = WiFi.status();
+
+      if (wifiConnectionAttempts >= WIFI_MAX_CONNECTION_ATTEMPTS) {
+        wifiNextConnectionCycleAt = now;
+        Serial.print("[Wi-Fi] ");
+        Serial.print(WIFI_MAX_CONNECTION_ATTEMPTS);
+        Serial.println(" attempts failed - waiting 5 minutes");
+      }
     }
     return;
   }
@@ -50,6 +64,15 @@ void handleWiFi() {
     Serial.print(wlStatus);
     printWifiStatus(wlStatus);
     wlLastStatus = wlStatus;
+  }
+
+  if (wifiNextConnectionCycleAt != 0) {
+    if (now - wifiNextConnectionCycleAt < WIFI_RECONNECT_CYCLE_DELAY_MS) {
+      return;
+    }
+
+    wifiConnectionAttempts = 0;
+    wifiNextConnectionCycleAt = 0;
   }
 
   if (now - wifiLastReconnectAt < WIFI_RECONNECT_INTERVAL_MS) {
@@ -69,6 +92,7 @@ bool connectWifi() {
   wifiLastReconnectAt = now;
   wifiConnectStartedAt = now;
   wifiConnecting = true;
+  wifiConnectionAttempts++;
 
   requestIndication(IndicationType::WIFI_CONNECTING);
 
@@ -82,6 +106,17 @@ bool connectWifi() {
   }
 
   return true;
+}
+
+bool initWiFi() {
+
+  connectWifi();
+
+  while (wifiConnecting) {
+    handleWiFi();
+  }
+
+  return isWifiConnected();
 }
 
 bool disconnectWiFi() { return WiFi.disconnect(); };

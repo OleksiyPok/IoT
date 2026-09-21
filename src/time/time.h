@@ -8,6 +8,9 @@
 // Initialize system time and synchronize with NTP.
 void initTime();
 
+// Synchronize system time with NTP server.
+void syncTime();
+
 // Get current UTC timestamp.
 time_t getCurrentTimestamp();
 

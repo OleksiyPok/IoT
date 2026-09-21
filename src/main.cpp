@@ -25,6 +25,7 @@ uint16_t buttonsState = 0x0000;
 uint16_t systemState = 0x0000;
 uint16_t ledState = 0x0000;
 
+uint32_t lastTimeSyncMs = 0;
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
@@ -47,9 +48,11 @@ void setup() {
   initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
-  connectWifi();
-  initTime();
-  initMqtt();
+
+  if (initWiFi()) {
+    initTime();
+    initMqtt();
+  }
 }
 
 void loop() {
@@ -60,6 +63,13 @@ void loop() {
   if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_INTERVAL_MS) {
     lastWiFiCheckConnectionMs = now;
     handleWiFi();
+  }
+
+  // Time synchronization
+  if (isWifiConnected() &&
+      (lastTimeSyncMs == 0 || now - lastTimeSyncMs >= TIME_SYNC_INTERVAL_MS)) {
+    lastTimeSyncMs = now;
+    syncTime();
   }
 
   // Buttons reading
