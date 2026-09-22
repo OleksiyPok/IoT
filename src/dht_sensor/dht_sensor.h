@@ -19,8 +19,8 @@
 #define STATUS_DHT_HUMIDITY_ALARM_MIN (1U << 6)
 #define STATUS_DHT_HUMIDITY_ALARM_MAX (1U << 7)
 
-#define STATUS_DHT_INIT_ERR                                                    \
-  (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR |                         \
+#define STATUS_DHT_ERR_INIT                                                    \
+  (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_STALE | STATUS_DHT_DATA_VALID_ERR | \
    STATUS_DHT_TEMPERATURE_ALARM_MIN | STATUS_DHT_TEMPERATURE_ALARM_MAX |       \
    STATUS_DHT_HUMIDITY_ALARM_MIN | STATUS_DHT_HUMIDITY_ALARM_MAX)
 

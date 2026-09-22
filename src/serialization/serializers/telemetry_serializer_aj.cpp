@@ -36,7 +36,7 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
   ldr["updated"] = telemetry.ldr.updated;
   ldr["ldr_status"] = telemetry.ldr.status;
 
-  doc["sys_status"] = telemetry.status;
+  doc["sys_state"] = telemetry.systemState;
 
   if (doc.overflowed()) {
     buffer[0] = '\0';

@@ -17,7 +17,6 @@
 // Leave undefined to use UTC.
 #define LOCAL_TIMEZONE "CET-1CEST,M3.5.0,M10.5.0"
 #define TIME_SYNC_INTERVAL_HOURS 24
-#define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_HOURS * 60UL * 60UL * 1000UL)
 
 #define BUTTONS_READ_INTERVAL_MS 100
 #define ACTIONS_MS 100
@@ -34,6 +33,10 @@
   ((SENSOR_DHT_READ_INTERVAL_MS < SENSOR_LDR_READ_INTERVAL_MS                  \
         ? SENSOR_DHT_READ_INTERVAL_MS                                          \
         : SENSOR_LDR_READ_INTERVAL_MS))
+
+#define SENSOR_STALE_AFTER_CYCLES 2
+#define SENSOR_STALE_INTERVAL_MS                                               \
+  (TELEMETRY_UPDATE_INTERVAL_MS * SENSOR_STALE_AFTER_CYCLES)
 
 // Use the same monitor interval as data send
 #define DATA_MONITOR_INTERVAL_MS TELEMETRY_UPDATE_INTERVAL_MS

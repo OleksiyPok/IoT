@@ -15,9 +15,8 @@
 static void printJsonPretty(const JsonDocument &doc);
 static void printStatusBit(const char *name, uint16_t status, uint16_t mask);
 
-static void printDhtTelemetryStatus(uint16_t status);
-static void printLdrTelemetryStatus(uint16_t status);
-static void printTelemetrySystemStatus(uint16_t status);
+static void printDhtTelemetryStatus(const Telemetry &telemetry);
+static void printLdrTelemetryStatus(const Telemetry &telemetry);
 static void printSystemState(const Telemetry &telemetry);
 
 // ---------------------------------
@@ -41,13 +40,10 @@ void handleMonitor(const Telemetry &telemetry) {
   // Serial.println("| to switch to Production mode |");
   Serial.println("================================");
 
-  printDhtTelemetryStatus(telemetry.dht.status);
+  printDhtTelemetryStatus(telemetry);
   Serial.println();
 
-  printLdrTelemetryStatus(telemetry.ldr.status);
-  Serial.println();
-
-  printTelemetrySystemStatus(telemetry.status);
+  printLdrTelemetryStatus(telemetry);
   Serial.println();
 
   printSystemState(telemetry);
@@ -128,7 +124,6 @@ static void printSystemState(const Telemetry &telemetry) {
   Serial.println("[SYSTEM STATE REGISTER]");
   printStatusByte(telemetry.systemState);
 
-  printStatusBit("LIGHT_COMMAND", telemetry.systemState, SYSTEM_COMMAND_MASK);
   printStatusBit("SILENT_MODE", telemetry.systemState, SYSTEM_SILENT_MASK);
   printStatusBit("LDR_ERR", telemetry.systemState, SYSTEM_LDR_ERR_MASK);
   printStatusBit("DHT_ERR", telemetry.systemState, SYSTEM_DHT_ERR_MASK);
@@ -136,43 +131,38 @@ static void printSystemState(const Telemetry &telemetry) {
   printStatusBit("WIFI_ERR", telemetry.systemState, SYSTEM_WIFI_ERR_MASK);
 }
 
-static void printDhtTelemetryStatus(uint16_t status) {
+static void printDhtTelemetryStatus(const Telemetry &telemetry) {
   Serial.println("[DHT STATUS]");
-  printStatusByte(status);
+  printStatusByte(telemetry.dht.status);
 
-  printStatusBit("DEVICE_ERR", status, STATUS_DHT_DEVICE_ERR);
-  printStatusBit("DATA_STALE", status, STATUS_DHT_DATA_STALE);
-  printStatusBit("DATA_VALID_ERR", status, STATUS_DHT_DATA_VALID_ERR);
+  printStatusBit("DEVICE_ERR", telemetry.dht.status, STATUS_DHT_DEVICE_ERR);
+  printStatusBit("DATA_STALE", telemetry.dht.status, STATUS_DHT_DATA_STALE);
+  printStatusBit("DATA_VALID_ERR", telemetry.dht.status,
+                 STATUS_DHT_DATA_VALID_ERR);
 
-  printStatusBit("TEMPERATURE_ALARM_MIN", status,
+  printStatusBit("TEMPERATURE_ALARM_MIN", telemetry.dht.status,
                  STATUS_DHT_TEMPERATURE_ALARM_MIN);
-  printStatusBit("TEMPERATURE_ALARM_MAX", status,
+  printStatusBit("TEMPERATURE_ALARM_MAX", telemetry.dht.status,
                  STATUS_DHT_TEMPERATURE_ALARM_MAX);
 
-  printStatusBit("HUMIDITY_ALARM_MIN", status, STATUS_DHT_HUMIDITY_ALARM_MIN);
-  printStatusBit("HUMIDITY_ALARM_MAX", status, STATUS_DHT_HUMIDITY_ALARM_MAX);
+  printStatusBit("HUMIDITY_ALARM_MIN", telemetry.dht.status,
+                 STATUS_DHT_HUMIDITY_ALARM_MIN);
+  printStatusBit("HUMIDITY_ALARM_MAX", telemetry.dht.status,
+                 STATUS_DHT_HUMIDITY_ALARM_MAX);
 }
 
-static void printLdrTelemetryStatus(uint16_t status) {
+static void printLdrTelemetryStatus(const Telemetry &telemetry) {
   Serial.println("[LDR STATUS]");
-  printStatusByte(status);
+  printStatusByte(telemetry.ldr.status);
 
-  printStatusBit("DEVICE_ERR", status, STATUS_LDR_DEVICE_ERR);
-  printStatusBit("DATA_STALE", status, STATUS_LDR_DATA_STALE);
-  printStatusBit("DATA_VALID_ERR", status, STATUS_LDR_DATA_VALID_ERR);
+  printStatusBit("DEVICE_ERR", telemetry.ldr.status, STATUS_LDR_DEVICE_ERR);
+  printStatusBit("DATA_STALE", telemetry.ldr.status, STATUS_LDR_DATA_STALE);
+  printStatusBit("DATA_VALID_ERR", telemetry.ldr.status,
+                 STATUS_LDR_DATA_VALID_ERR);
 
-  printStatusBit("LUX_ALARM_MIN", status, STATUS_LDR_LUX_ALARM_MIN);
-  printStatusBit("LUX_ALARM_MAX", status, STATUS_LDR_LUX_ALARM_MAX);
-  printStatusBit("LIGHT_LOW", status, STATUS_LDR_LIGHT_LOW);
-}
-
-static void printTelemetrySystemStatus(uint16_t status) {
-  Serial.println("[SYSTEM STATUS]");
-  printStatusByte(status);
-
-  printStatusBit("DEVICE_SILENT_MODE", status, STATUS_DEVICE_SILENT_MODE);
-  printStatusBit("LDR_ERR", status, STATUS_LDR_ERR);
-  printStatusBit("DHT_ERR", status, STATUS_DHT_ERR);
-  printStatusBit("MQTT_ERR", status, STATUS_MQTT_ERR);
-  printStatusBit("WIFI_ERR", status, STATUS_WIFI_ERR);
+  printStatusBit("LUX_ALARM_MIN", telemetry.ldr.status,
+                 STATUS_LDR_LUX_ALARM_MIN);
+  printStatusBit("LUX_ALARM_MAX", telemetry.ldr.status,
+                 STATUS_LDR_LUX_ALARM_MAX);
+  printStatusBit("LIGHT_LOW", telemetry.ldr.status, STATUS_LDR_LIGHT_LOW);
 }

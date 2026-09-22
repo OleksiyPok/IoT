@@ -5,6 +5,9 @@
 #include <time.h>
 
 // ---------------------------------
+#define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_HOURS * 60UL * 60UL * 1000UL)
+
+// ---------------------------------
 // Initialize system time and synchronize with NTP.
 void initTime();
 

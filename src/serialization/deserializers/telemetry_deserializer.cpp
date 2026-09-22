@@ -39,7 +39,7 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   // Root fields
   if (!doc["deviceId"].is<uint64_t>() || !doc["timestamp"].is<uint32_t>() ||
       !doc["uptime"].is<uint32_t>() || !doc["sequence"].is<uint8_t>() ||
-      !doc["status"].is<uint8_t>()) {
+      !doc["sys_state"].is<uint16_t>()) {
     return false;
   }
 
@@ -47,7 +47,7 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   data.timestamp = doc["timestamp"].as<uint32_t>();
   data.uptime = doc["uptime"].as<uint32_t>();
   data.sequence = doc["sequence"].as<uint8_t>();
-  data.status = doc["status"].as<uint16_t>();
+  data.systemState = doc["sys_state"].as<uint16_t>();
 
   // DHT
   JsonObject dht = doc["dht"];

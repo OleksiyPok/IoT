@@ -13,32 +13,32 @@ bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
     return false;
   }
 
-  int length =
-      snprintf(buffer, bufferSize,
-               "{\"version\":%u,"
-               "\"deviceId\":%" PRIu64 ","
-               "\"timestamp\":%" PRIu32 ","
-               "\"uptime\":%" PRIu32 ","
-               "\"sequence\":%u,"
-               "\"type\":\"telemetry\","
-               "\"dht\":{"
-               "\"temperature\":%.1f,"
-               "\"humidity\":%.1f,"
-               "\"updated\":%" PRIu32 ","
-               "\"dht_status\":%u"
-               "},"
-               "\"ldr\":{"
-               "\"raw\":%u,"
-               "\"lux\":%.1f,"
-               "\"updated\":%" PRIu32 ","
-               "\"ldr_status\":%u"
-               "},"
-               "\"sys_status\":%u}",
-               telemetry.version, telemetry.deviceId, telemetry.timestamp,
-               telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
-               telemetry.dht.humidity, telemetry.dht.updated,
-               telemetry.dht.status, telemetry.ldr.raw, telemetry.ldr.lux,
-               telemetry.ldr.updated, telemetry.ldr.status, telemetry.status);
+  int length = snprintf(
+      buffer, bufferSize,
+      "{\"version\":%u,"
+      "\"deviceId\":%" PRIu64 ","
+      "\"timestamp\":%" PRIu32 ","
+      "\"uptime\":%" PRIu32 ","
+      "\"sequence\":%u,"
+      "\"type\":\"telemetry\","
+      "\"dht\":{"
+      "\"temperature\":%.1f,"
+      "\"humidity\":%.1f,"
+      "\"updated\":%" PRIu32 ","
+      "\"dht_status\":%u"
+      "},"
+      "\"ldr\":{"
+      "\"raw\":%u,"
+      "\"lux\":%.1f,"
+      "\"updated\":%" PRIu32 ","
+      "\"ldr_status\":%u"
+      "},"
+      "\"sys_state\":%u}",
+      telemetry.version, telemetry.deviceId, telemetry.timestamp,
+      telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
+      telemetry.dht.humidity, telemetry.dht.updated, telemetry.dht.status,
+      telemetry.ldr.raw, telemetry.ldr.lux, telemetry.ldr.updated,
+      telemetry.ldr.status, telemetry.systemState);
 
   // Serial.printf("[SERIALIZER] Sensors size: %d bytes, buffer: %u bytes\r\n",
   //               length, bufferSize);

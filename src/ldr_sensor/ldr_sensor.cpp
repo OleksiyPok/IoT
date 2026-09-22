@@ -41,7 +41,7 @@ float adcToLux(const uint16_t &adcValue);
 // ---------------------------------
 void initLdrSensor(LDRData &data) {
   pinMode(LDR_ADC_PIN, INPUT);
-  data.status |= STATUS_LDR_INIT_ERR;
+  data.status |= STATUS_LDR_ERR_INIT;
 }
 
 void handleLdrSensor(LDRData &data) {
@@ -50,6 +50,7 @@ void handleLdrSensor(LDRData &data) {
 
   if (raw <= LDR_ADC_VALID_MIN || raw >= LDR_ADC_VALID_MAX) {
     status |= STATUS_LDR_DEVICE_ERR;
+    status |= STATUS_LDR_DATA_VALID_ERR;
     data.status = status;
     return;
   }
@@ -81,6 +82,7 @@ void handleLdrSensor(LDRData &data) {
     status &= ~STATUS_LDR_LIGHT_LOW;
   }
 
+  data.status &= ~STATUS_LDR_DATA_STALE;
   data.updated = getCurrentTimestamp();
   data.uptime = millis() / 1000;
   data.raw = raw;

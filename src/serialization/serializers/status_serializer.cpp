@@ -20,10 +20,10 @@ bool serializeStatusSnprintf(const Telemetry &telemetry, char *buffer,
                "\"type\":\"statuses\","
                "\"dht_status\":%u,"
                "\"ldr_status\":%u,"
-               "\"sys_status\":%u}",
+               "\"sys_state\":%u}",
                telemetry.version, telemetry.deviceId, telemetry.timestamp,
                telemetry.uptime, telemetry.sequence, telemetry.dht.status,
-               telemetry.ldr.status, telemetry.status);
+               telemetry.ldr.status, telemetry.systemState);
 
   // Serial.printf("[SERIALIZER] Status size: %d bytes, buffer: %u bytes\r\n",
   //               length, bufferSize);

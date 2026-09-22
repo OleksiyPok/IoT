@@ -27,7 +27,9 @@ void initTelemetry(Telemetry &telemetry) {
   telemetry.uptime = millis() / 1000;
   telemetry.version = TELEMETRY_PROTOCOL_VERSION;
   getDeviceId(telemetry.deviceId);
-  telemetry.status |= STATUS_INIT_ERR;
+
+  telemetry.systemState &= ~SYSTEM_STATE_MANAGED_MASK;
+  telemetry.systemState |= SYSTEM_STATE_ERR_INIT_MASK;
 
   telemetry.buttonsState = 0x0000;
   telemetry.systemState = 0x0000;
@@ -35,7 +37,6 @@ void initTelemetry(Telemetry &telemetry) {
 }
 
 void updateTelemetry(Telemetry &telemetry) {
-
   // Update timestamp
   telemetry.timestamp = getCurrentTimestamp();
 
@@ -44,27 +45,24 @@ void updateTelemetry(Telemetry &telemetry) {
 
   // Update sequence
   telemetry.sequence = sequenceCounter++;
+}
 
-  telemetry.status &= ~(STATUS_DEVICE_SILENT_MODE | STATUS_LDR_ERR |
-                        STATUS_DHT_ERR | STATUS_MQTT_ERR | STATUS_WIFI_ERR);
+void updateStaleStatus(Telemetry &telemetry) {
 
-  if (telemetry.systemState & SYSTEM_SILENT_MASK) {
-    telemetry.status |= STATUS_DEVICE_SILENT_MODE;
-  }
+  // Update ldr STALE status
+  telemetry.ldr.status |= STATUS_LDR_DATA_STALE;
+  // Update dht STALE status
+  telemetry.dht.status |= STATUS_DHT_DATA_STALE;
 
-  if (telemetry.systemState & SYSTEM_LDR_ERR_MASK) {
-    telemetry.status |= STATUS_LDR_ERR;
-  }
+  // // Update ldr STALE status
+  // if ((now - telemetry.ldr.uptime) >
+  //     (SENSOR_LDR_READ_INTERVAL_MS * SENSOR_STALE_AFTER_CYCLES)) {
+  //   telemetry.ldr.status |= STATUS_LDR_DATA_STALE;
+  // }
 
-  if (telemetry.systemState & SYSTEM_DHT_ERR_MASK) {
-    telemetry.status |= STATUS_DHT_ERR;
-  }
-
-  if (telemetry.systemState & SYSTEM_MQTT_ERR_MASK) {
-    telemetry.status |= STATUS_MQTT_ERR;
-  }
-
-  if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
-    telemetry.status |= STATUS_WIFI_ERR;
-  }
+  // // Update dht STALE status
+  // if ((now - telemetry.dht.uptime) >
+  //     (SENSOR_DHT_READ_INTERVAL_MS * SENSOR_STALE_AFTER_CYCLES)) {
+  //   telemetry.dht.status |= STATUS_DHT_DATA_STALE;
+  // }
 }

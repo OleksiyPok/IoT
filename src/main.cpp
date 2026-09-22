@@ -28,6 +28,7 @@ uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
 uint32_t lastIndicationChangeMs = 0;
+uint32_t lastStaleWatchdogMs = 0;
 uint32_t lastLdrSensorReadMs = 0;
 uint32_t lastDhtSensorReadMs = 0;
 uint32_t lastDataMonitorMs = 0;
@@ -46,6 +47,8 @@ void setup() {
   initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
+
+  initBlink(telemetry);
 
   const bool wifiConnected = initWiFi();
 
@@ -78,6 +81,11 @@ void loop() {
     handleButtons(telemetry);
   }
 
+  // STALE status watchdog
+  if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
+    updateStaleStatus(telemetry);
+  }
+
   // DHT sensor reading
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
@@ -98,16 +106,16 @@ void loop() {
     handleActions(telemetry);
   }
 
-  // Indication
-  if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
-    lastIndicationChangeMs = now;
-    handleIndication(telemetry);
-  }
-
   // Telemetry update
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
     updateTelemetry(telemetry);
+  }
+
+  // Indication
+  if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
+    lastIndicationChangeMs = now;
+    handleIndication(telemetry);
   }
 
   // MQTT connection

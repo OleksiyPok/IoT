@@ -16,6 +16,8 @@ static const char *currentTimezone = LOCAL_TIMEZONE;
 static const char *currentTimezone = DEFAULT_TIMEZONE;
 #endif
 
+
+
 static bool waitForTimeSync();
 static void printCurrentTime();
 

@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 
+#include "../system/system_state.h"
 #include "../wifi/wifi.h"
 #include "mqtt_connection.h"
 #include "mqtt_publish.h"
@@ -14,7 +15,7 @@ void handleMqttSensors(const Telemetry &telemetry) {
     return;
   }
 
-  if (!(telemetry.status & STATUS_DEVICE_SILENT_MODE)) {
+  if (!(telemetry.systemState & SYSTEM_SILENT_MASK)) {
     // publishSensors(telemetry);
     publishTelemetry(telemetry);
   } else {

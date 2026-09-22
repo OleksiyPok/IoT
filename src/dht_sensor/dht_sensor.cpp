@@ -46,7 +46,7 @@ DHT dht(DHT_PIN, DHT_TYPE);
 void initDhtSensor(DHTData &data) {
   pinMode(DHT_PIN, INPUT);
   dht.begin();
-  data.status |= STATUS_DHT_INIT_ERR;
+  data.status |= STATUS_DHT_ERR_INIT;
 }
 
 void handleDhtSensor(DHTData &data) {
@@ -62,6 +62,7 @@ void handleDhtSensor(DHTData &data) {
     return;
   }
 
+  data.status &= ~STATUS_DHT_DATA_STALE;
   data.updated = getCurrentTimestamp();
   data.uptime = millis() / 1000;
 

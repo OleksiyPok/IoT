@@ -36,6 +36,14 @@ enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
 #define LED_SILENT_MASK (1U << 8)
 #define LED_COMMAND_MASK (1U << 9)
 
+#define ALL_LED_MASK                                                           \
+  (LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK |             \
+   LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |                       \
+   LED_HUMIDITY_MIN_MASK | LED_HUMIDITY_MAX_MASK | LED_SILENT_MASK |           \
+   LED_COMMAND_MASK)
+
 void initIndication();
+
+void initBlink(Telemetry telemetry);
 void handleIndication(const Telemetry &telemetry);
 void requestIndication(IndicationType type);
