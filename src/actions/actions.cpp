@@ -15,9 +15,9 @@
 static uint16_t previousButtonsState = 0x0000;
 
 static void updateSystemState(Telemetry &telemetry);
+static void updateLedState(Telemetry &telemetry);
 static void updateDhtStatus(const DHTData &data, Telemetry &telemetry);
 static void updateLdrStatus(const LDRData &data, Telemetry &telemetry);
-static void updateLedState(Telemetry &telemetry);
 
 static void handleWifiTest(const Telemetry &telemetry);
 static void handleCommand(const Telemetry &telemetry);
