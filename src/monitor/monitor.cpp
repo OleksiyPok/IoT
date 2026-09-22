@@ -30,7 +30,7 @@ void initMonitor() {
   Serial.println();
 }
 
-void handleMonitor(const Telemetry &data) {
+void handleMonitor(const Telemetry &telemetry) {
 
 #if defined(DEBUG_MODE)
 
@@ -41,16 +41,16 @@ void handleMonitor(const Telemetry &data) {
   // Serial.println("| to switch to Production mode |");
   Serial.println("================================");
 
-  printDhtTelemetryStatus(data.dht.status);
+  printDhtTelemetryStatus(telemetry.dht.status);
   Serial.println();
 
-  printLdrTelemetryStatus(data.ldr.status);
+  printLdrTelemetryStatus(telemetry.ldr.status);
   Serial.println();
 
-  printTelemetrySystemStatus(data.status);
+  printTelemetrySystemStatus(telemetry.status);
   Serial.println();
 
-  printSystemState(telemetry.systemState);
+  printSystemState(telemetry);
 
   Serial.println("================================");
   Serial.println();
