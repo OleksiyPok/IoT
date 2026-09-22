@@ -28,6 +28,7 @@ void handleActions(Telemetry &telemetry) {
   updateSystemState(telemetry);
   handleCommand(telemetry);
   handleWifiTest(telemetry);
+  updateLedState(telemetry);
 
   previousButtonsState = telemetry.buttonsState;
 }
@@ -90,7 +91,7 @@ static void updateLedState(Telemetry &telemetry) {
 
 static void updateDhtStatus(const DHTData &data, Telemetry &telemetry) {
   telemetry.ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
-                          LED_HUMIDITY_MIN_MASK);
+                          LED_HUMIDITY_MIN_MASK | LED_HUMIDITY_MAX_MASK);
 
   if (data.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
     telemetry.ledState |= LED_TEMPERATURE_MIN_MASK;

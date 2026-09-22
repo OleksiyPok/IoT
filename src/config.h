@@ -5,7 +5,7 @@
 // ---------------------------------
 
 // Uncomment to see the debug message in the Serial Monitor
-// #define DEBUG_MODE
+#define DEBUG_MODE
 
 // Telemetry serialization
 // Uncomment to use ArduinoJson telemetry serializer
