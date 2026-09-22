@@ -48,21 +48,8 @@ void updateTelemetry(Telemetry &telemetry) {
 }
 
 void updateStaleStatus(Telemetry &telemetry) {
-
   // Update ldr STALE status
   telemetry.ldr.status |= STATUS_LDR_DATA_STALE;
   // Update dht STALE status
   telemetry.dht.status |= STATUS_DHT_DATA_STALE;
-
-  // // Update ldr STALE status
-  // if ((now - telemetry.ldr.uptime) >
-  //     (SENSOR_LDR_READ_INTERVAL_MS * SENSOR_STALE_AFTER_CYCLES)) {
-  //   telemetry.ldr.status |= STATUS_LDR_DATA_STALE;
-  // }
-
-  // // Update dht STALE status
-  // if ((now - telemetry.dht.uptime) >
-  //     (SENSOR_DHT_READ_INTERVAL_MS * SENSOR_STALE_AFTER_CYCLES)) {
-  //   telemetry.dht.status |= STATUS_DHT_DATA_STALE;
-  // }
 }
