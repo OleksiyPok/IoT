@@ -47,14 +47,7 @@ void setup() {
   initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
-
   initWiFi();
-
-  if (isWifiConnected()) {
-    telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
-  } else {
-    telemetry.systemState |= SYSTEM_WIFI_ERR_MASK;
-  }
 
   if (isWifiConnected()) {
     initTime();
@@ -71,11 +64,6 @@ void loop() {
   if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_INTERVAL_MS) {
     lastWiFiCheckConnectionMs = now;
     handleWiFi();
-    if (isWifiConnected()) {
-      telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
-    } else {
-      telemetry.systemState |= SYSTEM_WIFI_ERR_MASK;
-    }
   }
 
   // Time synchronization
@@ -93,6 +81,7 @@ void loop() {
 
   // STALE status watchdog
   if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
+    lastStaleWatchdogMs = now;
     updateStaleStatus(telemetry);
   }
 
@@ -109,6 +98,9 @@ void loop() {
     lastLdrSensorReadMs = now;
     handleLdrSensor(telemetry.ldr);
   }
+
+  // System state
+  updateSystemState(telemetry);
 
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "../telemetry/telemetry.h"
+
 // ---------------------------------
 
 #define SYSTEM_SILENT_MASK (1U << 0)
@@ -21,6 +23,4 @@
 
 // ---------------------------------
 
-bool updateWiFiStatus();
-
-bool updateMqttStatus();
+void updateSystemState(Telemetry &telemetry);

@@ -1,10 +1,10 @@
 // src/mqtt/mqtt_connection.cpp
 
 #include <Arduino.h>
-#include <WiFi.h>
 
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
+#include "../wifi/wifi.h"
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
 
@@ -25,7 +25,9 @@ static void printMqttStatus(MqttStatus mqttStatus);
 
 void initMqtt() { mqttService.init(); }
 
-bool isMqttConnected() { return mqttService.isConnected(); }
+bool isMqttConnected() {
+  return isWifiConnected() && mqttService.isConnected(); // ?
+}
 
 static bool connectMQTT() {
   const uint32_t now = millis();
@@ -49,11 +51,14 @@ bool handleMqttConnection(Telemetry &telemetry) {
 
   const uint32_t now = millis();
 
-  if (!WiFi.isConnected()) {
-    telemetry.systemState |= SYSTEM_MQTT_ERR_MASK;
-
+  if (!isWifiConnected()) {
     if (mqttService.isConnected()) {
       mqttService.disconnect();
+    }
+
+    if (mqttLastStatus != MqttStatus::Disconnected) {
+      Serial.println("[MQTT] Status:  (DISCONNECTED)");
+      mqttLastStatus = MqttStatus::Disconnected;
     }
 
     mqttConnectionAttempts = 0;
@@ -65,7 +70,6 @@ bool handleMqttConnection(Telemetry &telemetry) {
   handleMqttStatus();
 
   if (mqttService.isConnected()) {
-    telemetry.systemState &= ~SYSTEM_MQTT_ERR_MASK;
 
     mqttConnectionAttempts = 0;
     mqttNextConnectionCycleAt = 0;
@@ -74,8 +78,6 @@ bool handleMqttConnection(Telemetry &telemetry) {
 
     return true;
   }
-
-  telemetry.systemState |= SYSTEM_MQTT_ERR_MASK;
 
   if (mqttNextConnectionCycleAt != 0) {
     if (now - mqttNextConnectionCycleAt < MQTT_RECONNECT_CYCLE_DELAY_MS) {
@@ -129,7 +131,7 @@ static void handleMqttStatus() {
 }
 
 bool mqttPublish(const char *topic, const char *payload) {
-  if (!mqttService.isConnected()) {
+  if (!isMqttConnected()) {
     Serial.println("[MQTT] Not connected - skip publish");
     return false;
   }

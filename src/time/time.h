@@ -9,7 +9,7 @@
 
 // ---------------------------------
 // Initialize system time and synchronize with NTP.
-void initTime();
+bool initTime();
 
 // Synchronize system time with NTP server.
 void syncTime();

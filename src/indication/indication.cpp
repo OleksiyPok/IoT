@@ -55,7 +55,7 @@ void initIndication() {
   pinMode(LED_SILENT_PIN, OUTPUT);
 }
 
-void initBlink(Telemetry telemetry) { telemetry.ledState |= ALL_LED_MASK; }
+void initBlink(Telemetry &telemetry) { telemetry.ledState |= ALL_LED_MASK; }
 
 void handleIndication(const Telemetry &telemetry) {
   for (uint16_t i = 0; i < sizeof(LED_PINS) / sizeof(LED_PINS[0]); ++i) {

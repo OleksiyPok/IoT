@@ -22,7 +22,7 @@ static wl_status_t wlLastStatus = WL_IDLE_STATUS;
 void printWifiStatus(wl_status_t wlStatus);
 
 // ---------------------------------
-bool isWifiConnected() { return WiFi.isConnected(); }
+bool isWifiConnected() { return WiFi.status() == WL_CONNECTED; }
 
 bool initWiFi() {
   connectWifi();
@@ -55,20 +55,29 @@ void handleWiFi() {
   }
 
   if (wifiConnecting) {
-    if (now - wifiConnectStartedAt >= WIFI_CONNECTION_TIMEOUT_MS) {
-      Serial.println("[Wi-Fi] Connection timeout");
-      WiFi.disconnect();
-      wifiConnecting = false;
-      wifiLastReconnectAt = now;
-      wlLastStatus = WiFi.status();
-
-      if (wifiConnectionAttempts >= WIFI_MAX_CONNECTION_ATTEMPTS) {
-        wifiNextConnectionCycleAt = now;
-        Serial.print("[Wi-Fi] ");
-        Serial.print(WIFI_MAX_CONNECTION_ATTEMPTS);
-        Serial.println(" attempts failed - waiting 5 minutes");
-      }
+    if (now - wifiConnectStartedAt < WIFI_CONNECTION_TIMEOUT_MS) {
+      return;
     }
+
+    Serial.println("[Wi-Fi] Connection timeout");
+
+    WiFi.disconnect();
+    wifiConnecting = false;
+    wlLastStatus = WiFi.status();
+
+    if (wifiConnectionAttempts >= WIFI_MAX_CONNECTION_ATTEMPTS) {
+      wifiNextConnectionCycleAt = now;
+
+      Serial.print("[Wi-Fi] ");
+      Serial.print(WIFI_MAX_CONNECTION_ATTEMPTS);
+      Serial.print(" attempts failed - waiting ");
+      Serial.print(WIFI_RECONNECT_CYCLE_DELAY_MS / 1000 / 60);
+      Serial.println(" minutes");
+
+      return;
+    }
+
+    wifiLastReconnectAt = now;
     return;
   }
 
@@ -86,6 +95,7 @@ void handleWiFi() {
 
     wifiConnectionAttempts = 0;
     wifiNextConnectionCycleAt = 0;
+    wifiLastReconnectAt = now;
   }
 
   if (now - wifiLastReconnectAt < WIFI_RECONNECT_INTERVAL_MS) {

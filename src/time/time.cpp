@@ -16,14 +16,12 @@ static const char *currentTimezone = LOCAL_TIMEZONE;
 static const char *currentTimezone = DEFAULT_TIMEZONE;
 #endif
 
-
-
 static bool waitForTimeSync();
 static void printCurrentTime();
 
 // ---------------------------------
 
-void initTime() {
+bool initTime() {
 
   // Internal system time is UTC.
   configTime(0, 0, NTP_SERVER);
@@ -36,12 +34,13 @@ void initTime() {
 
   if (!waitForTimeSync()) {
     Serial.println("FAILED");
-    return;
+    return false;
   }
 
   Serial.println("OK");
-
   printCurrentTime();
+
+  return true;
 }
 
 void syncTime() { configTime(0, 0, NTP_SERVER); }
