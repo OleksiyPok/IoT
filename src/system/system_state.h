@@ -18,3 +18,9 @@
 #define SYSTEM_STATE_ERR_INIT_MASK                                             \
   (SYSTEM_LDR_ERR_MASK | SYSTEM_DHT_ERR_MASK | SYSTEM_MQTT_ERR_MASK |          \
    SYSTEM_WIFI_ERR_MASK)
+
+// ---------------------------------
+
+bool updateWiFiStatus();
+
+bool updateMqttStatus();
