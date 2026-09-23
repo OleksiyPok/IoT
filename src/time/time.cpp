@@ -93,7 +93,6 @@ static bool waitForTimeSync() {
     if (millis() - startTime >= 10000) {
       return false;
     }
-    delay(50);
     now = time(nullptr);
   }
 

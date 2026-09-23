@@ -44,6 +44,6 @@ enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
 
 void initIndication();
 
-void initBlink(Telemetry telemetry);
+void initBlink(Telemetry &telemetry);
 void handleIndication(const Telemetry &telemetry);
 void requestIndication(IndicationType type);

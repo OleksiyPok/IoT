@@ -51,6 +51,7 @@ void setup() {
 
   if (isWifiConnected()) {
     initTime();
+    delay(50);
     initMqtt();
     initBlink(telemetry);
   }
