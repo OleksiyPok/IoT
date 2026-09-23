@@ -28,11 +28,8 @@ void initTelemetry(Telemetry &telemetry) {
   telemetry.version = TELEMETRY_PROTOCOL_VERSION;
   getDeviceId(telemetry.deviceId);
 
-  telemetry.systemState &= ~SYSTEM_STATE_MANAGED_MASK;
-  telemetry.systemState |= SYSTEM_STATE_ERR_INIT_MASK;
-
   telemetry.buttonsState = 0x0000;
-  telemetry.systemState = 0x0000;
+  telemetry.systemState = SYSTEM_STATE_ERR_INIT_MASK;
   telemetry.ledState = 0x0000;
 }
 

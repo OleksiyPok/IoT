@@ -48,13 +48,18 @@ void setup() {
   initButtons();
   initIndication();
 
-  initBlink(telemetry);
+  initWiFi();
 
-  const bool wifiConnected = initWiFi();
+  if (isWifiConnected()) {
+    telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
+  } else {
+    telemetry.systemState |= SYSTEM_WIFI_ERR_MASK;
+  }
 
-  if (wifiConnected) {
+  if (isWifiConnected()) {
     initTime();
     initMqtt();
+    initBlink(telemetry);
   }
 }
 
@@ -66,6 +71,11 @@ void loop() {
   if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_INTERVAL_MS) {
     lastWiFiCheckConnectionMs = now;
     handleWiFi();
+    if (isWifiConnected()) {
+      telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
+    } else {
+      telemetry.systemState |= SYSTEM_WIFI_ERR_MASK;
+    }
   }
 
   // Time synchronization
@@ -119,7 +129,7 @@ void loop() {
   }
 
   // MQTT connection
-  handleMqttConnection();
+  handleMqttConnection(telemetry);
 
   // MQTT publish
   handleMqttCommands();

@@ -5,6 +5,8 @@
 #include <Arduino.h>
 
 // ---------------------------------
+
+void initMqtt();
 bool isMqttConnected();
-bool handleMqttConnection();
+bool handleMqttConnection(Telemetry &telemetry);
 bool mqttPublish(const char *topic, const char *payload);

@@ -5,7 +5,6 @@
 #include <Arduino.h>
 
 #include "../system/system_state.h"
-#include "../wifi/wifi.h"
 #include "mqtt_connection.h"
 #include "mqtt_publish.h"
 

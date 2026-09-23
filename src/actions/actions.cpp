@@ -72,14 +72,6 @@ static void updateSystemState(Telemetry &telemetry) {
         (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR))) {
     telemetry.systemState &= ~SYSTEM_DHT_ERR_MASK;
   }
-
-  if (isWifiConnected()) {
-    telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
-  }
-
-  if (isMqttConnected()) {
-    telemetry.systemState &= ~SYSTEM_MQTT_ERR_MASK;
-  }
 }
 
 static void updateLedState(Telemetry &telemetry) {

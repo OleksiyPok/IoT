@@ -65,6 +65,7 @@ void handleLdrSensor(LDRData &data) {
 
   // ADC light validation (in LUX)
   if (lux < LDR_LUX_VALID_MIN || lux > LDR_LUX_VALID_MAX) {
+    status |= STATUS_LDR_DEVICE_ERR;
     status |= STATUS_LDR_DATA_VALID_ERR;
   }
 
@@ -85,6 +86,7 @@ void handleLdrSensor(LDRData &data) {
   data.status &= ~STATUS_LDR_DATA_STALE;
   data.updated = getCurrentTimestamp();
   data.uptime = millis() / 1000;
+
   data.raw = raw;
   data.lux = lux;
   data.status = status;

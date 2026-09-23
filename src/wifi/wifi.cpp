@@ -5,6 +5,8 @@
 
 #include "../indication/indication.h"
 #include "../secrets.h"
+#include "../system/system_state.h"
+#include "../telemetry/telemetry.h"
 #include "wifi.h"
 
 // ---------------------------------
