@@ -25,7 +25,6 @@ void initTelemetry(Telemetry &telemetry) {
 
   telemetry.buttonsState = 0x0000;
   telemetry.systemState = SYSTEM_STATE_ERR_INIT_MASK;
-  telemetry.ledState = 0x0000;
 }
 
 void updateTelemetry(Telemetry &telemetry) {

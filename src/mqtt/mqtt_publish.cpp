@@ -91,7 +91,7 @@ static bool publishMqttMessage(const char *topic, const char *payload) {
   const bool ok = mqttPublish(topic, payload);
 
   if (ok) {
-    requestIndication(IndicationType::MQTT_PUBLISH);
+    requestIndication(LED_BUILTIN_PIN, IndicationType::MQTT_PUBLISH);
   }
 
   return ok;

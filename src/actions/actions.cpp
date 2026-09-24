@@ -10,14 +10,12 @@
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "../wifi/wifi.h"
+#include "config.h"
 
 // ---------------------------------
 static uint16_t previousButtonsState = 0x0000;
 
-static void updateLedState(Telemetry &telemetry);
-static void updateDhtLedState(Telemetry &telemetry);
-static void updateLdrLedState(Telemetry &telemetry);
-
+static void updateLedIndications(const Telemetry &telemetry);
 static void handleWifiTest(const Telemetry &telemetry);
 static void handleCommand(const Telemetry &telemetry);
 
@@ -26,7 +24,7 @@ void handleActions(Telemetry &telemetry) {
 
   handleCommand(telemetry);
   handleWifiTest(telemetry);
-  updateLedState(telemetry);
+  updateLedIndications(telemetry);
 
   previousButtonsState = telemetry.buttonsState;
 }
@@ -47,56 +45,48 @@ static void handleCommand(const Telemetry &telemetry) {
   }
 }
 
-static void updateLedState(Telemetry &telemetry) {
+static void updateLedIndications(const Telemetry &telemetry) {
 
-  telemetry.ledState = 0;
+  requestIndication(LED_COMMAND_PIN, telemetry.systemState & SYSTEM_COMMAND_MASK
+                                         ? IndicationType::ON
+                                         : IndicationType::OFF);
 
-  if (telemetry.systemState & SYSTEM_COMMAND_MASK) {
-    telemetry.ledState |= LED_COMMAND_MASK;
-  }
+  requestIndication(LED_SILENT_PIN, telemetry.systemState & SYSTEM_SILENT_MASK
+                                        ? IndicationType::ON
+                                        : IndicationType::OFF);
 
-  if (telemetry.systemState & SYSTEM_SILENT_MASK) {
-    telemetry.ledState |= LED_SILENT_MASK;
-  }
+  requestIndication(LED_LIGHT_MIN_PIN,
+                    telemetry.ldr.status & STATUS_LDR_LUX_ALARM_MIN
+                        ? IndicationType::ON
+                        : IndicationType::OFF);
 
-  updateLdrLedState(telemetry);
-  updateDhtLedState(telemetry);
-}
+  requestIndication(LED_LIGHT_MAX_PIN,
+                    telemetry.ldr.status & STATUS_LDR_LUX_ALARM_MAX
+                        ? IndicationType::ON
+                        : IndicationType::OFF);
 
-static void updateLdrLedState(Telemetry &telemetry) {
-  telemetry.ledState &=
-      ~(LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK);
+  requestIndication(LED_LIGHT_AUTO_PIN,
+                    telemetry.ldr.status & STATUS_LDR_LIGHT_LOW
+                        ? IndicationType::ON
+                        : IndicationType::OFF);
 
-  if (telemetry.ldr.status & STATUS_LDR_LUX_ALARM_MIN) {
-    telemetry.ledState |= LED_LIGHT_MIN_MASK;
-  }
+  requestIndication(LED_TEMPERATURE_MIN_PIN,
+                    telemetry.dht.status & STATUS_DHT_TEMPERATURE_ALARM_MIN
+                        ? IndicationType::ON
+                        : IndicationType::OFF);
 
-  if (telemetry.ldr.status & STATUS_LDR_LUX_ALARM_MAX) {
-    telemetry.ledState |= LED_LIGHT_MAX_MASK;
-  }
+  requestIndication(LED_TEMPERATURE_MAX_PIN,
+                    telemetry.dht.status & STATUS_DHT_TEMPERATURE_ALARM_MAX
+                        ? IndicationType::ON
+                        : IndicationType::OFF);
 
-  if (telemetry.ldr.status & STATUS_LDR_LIGHT_LOW) {
-    telemetry.ledState |= LED_LIGHT_AUTO_MASK;
-  }
-}
+  requestIndication(LED_HUMIDITY_MIN_PIN,
+                    telemetry.dht.status & STATUS_DHT_HUMIDITY_ALARM_MIN
+                        ? IndicationType::ON
+                        : IndicationType::OFF);
 
-static void updateDhtLedState(Telemetry &telemetry) {
-  telemetry.ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
-                          LED_HUMIDITY_MIN_MASK | LED_HUMIDITY_MAX_MASK);
-
-  if (telemetry.dht.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
-    telemetry.ledState |= LED_TEMPERATURE_MIN_MASK;
-  }
-
-  if (telemetry.dht.status & STATUS_DHT_TEMPERATURE_ALARM_MAX) {
-    telemetry.ledState |= LED_TEMPERATURE_MAX_MASK;
-  }
-
-  if (telemetry.dht.status & STATUS_DHT_HUMIDITY_ALARM_MIN) {
-    telemetry.ledState |= LED_HUMIDITY_MIN_MASK;
-  }
-
-  if (telemetry.dht.status & STATUS_DHT_HUMIDITY_ALARM_MAX) {
-    telemetry.ledState |= LED_HUMIDITY_MAX_MASK;
-  }
+  // requestIndication(LED_HUMIDITY_MAX_PIN,
+  //                   telemetry.dht.status & STATUS_DHT_HUMIDITY_ALARM_MAX
+  //                       ? IndicationType::ON
+  //                       : IndicationType::OFF);
 }

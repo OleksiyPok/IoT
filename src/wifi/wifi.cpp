@@ -3,11 +3,13 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
+#include "../config.h"
 #include "../indication/indication.h"
 #include "../secrets.h"
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "wifi.h"
+
 
 // ---------------------------------
 static bool wifiInitialized = false;
@@ -113,7 +115,7 @@ bool connectWifi() {
   wifiConnecting = true;
   wifiConnectionAttempts++;
 
-  requestIndication(IndicationType::WIFI_CONNECTING);
+  requestIndication(LED_BUILTIN_PIN, IndicationType::WIFI_CONNECTING);
 
   Serial.println("[Wi-Fi] Connecting...");
 
