@@ -61,8 +61,31 @@ void loop() {
     handleWiFi();
   }
 
-  // System state
-  updateSystemState(telemetry);
+  // Buttons reading
+  if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
+    lastButtonsReadMs = now;
+    handleButtons(telemetry);
+  }
+
+  // DHT sensor reading
+  if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
+    lastDhtSensorReadMs = now;
+    if (!(telemetry.systemState & SYSTEM_SILENT_MASK)) {
+      handleDhtSensor(telemetry.dht);
+    }
+  }
+
+  // LDR sensor reading
+  if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
+    lastLdrSensorReadMs = now;
+    handleLdrSensor(telemetry.ldr);
+  }
+
+  // STALE status watchdog
+  if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
+    lastStaleWatchdogMs = now;
+    updateStaleStatus(telemetry);
+  }
 
   // Connection sequence: Wi-Fi -> Time -> MQTT.
   if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
@@ -79,31 +102,14 @@ void loop() {
     initMqtt();
   }
 
-  // Buttons reading
-  if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
-    lastButtonsReadMs = now;
-    handleButtons(telemetry);
+  // MQTT connection
+  if (!(telemetry.systemState & SYSTEM_WIFI_ERR_MASK) &&
+      !(telemetry.systemState & SYSTEM_TIME_ERR_MASK)) {
+    handleMqttConnection(telemetry);
   }
 
-  // STALE status watchdog
-  if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
-    lastStaleWatchdogMs = now;
-    updateStaleStatus(telemetry);
-  }
-
-  // DHT sensor reading
-  if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
-    lastDhtSensorReadMs = now;
-    if (!(telemetry.systemState & SYSTEM_SILENT_MASK)) {
-      handleDhtSensor(telemetry.dht);
-    }
-  }
-
-  // LDR sensor reading
-  if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
-    lastLdrSensorReadMs = now;
-    handleLdrSensor(telemetry.ldr);
-  }
+  // System state
+  updateSystemState(telemetry);
 
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {
@@ -121,12 +127,6 @@ void loop() {
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
     handleIndication(telemetry);
-  }
-
-  // MQTT connection
-  if (!(telemetry.systemState & SYSTEM_WIFI_ERR_MASK) &&
-      !(telemetry.systemState & SYSTEM_TIME_ERR_MASK)) {
-    handleMqttConnection(telemetry);
   }
 
   // MQTT publish
