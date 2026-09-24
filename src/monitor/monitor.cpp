@@ -127,6 +127,7 @@ static void printSystemState(const Telemetry &telemetry) {
   printStatusBit("SILENT_MODE", telemetry.systemState, SYSTEM_SILENT_MASK);
   printStatusBit("LDR_ERR", telemetry.systemState, SYSTEM_LDR_ERR_MASK);
   printStatusBit("DHT_ERR", telemetry.systemState, SYSTEM_DHT_ERR_MASK);
+  printStatusBit("TIME_ERR", telemetry.systemState, SYSTEM_TIME_ERR_MASK);
   printStatusBit("MQTT_ERR", telemetry.systemState, SYSTEM_MQTT_ERR_MASK);
   printStatusBit("WIFI_ERR", telemetry.systemState, SYSTEM_WIFI_ERR_MASK);
 }
