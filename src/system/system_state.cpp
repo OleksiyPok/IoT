@@ -5,6 +5,7 @@
 #include "../dht_sensor/dht_sensor.h"
 #include "../ldr_sensor/ldr_sensor.h"
 #include "../mqtt/mqtt_connection.h"
+#include "../time/time.h"
 #include "../wifi/wifi.h"
 
 // ---------------------------------
@@ -14,8 +15,10 @@ static uint16_t previousButtonsState = 0x0000;
 // ---------------------------------
 
 void updateSystemState(Telemetry &telemetry) {
+
   // All errors are active until confirmed otherwise.
   telemetry.systemState |= SYSTEM_STATE_ERR_INIT_MASK;
+
   // Managed states.
   telemetry.systemState &= ~SYSTEM_STATE_MANAGED_MASK;
 
@@ -43,6 +46,13 @@ void updateSystemState(Telemetry &telemetry) {
   // Wi-Fi error confirmation.
   if (isWifiConnected()) {
     telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
+  } else {
+    invalidateTimeSync();
+  }
+
+  // Time error confirmation.
+  if (isWifiConnected() && isTimeSynchronized()) {
+    telemetry.systemState &= ~SYSTEM_TIME_ERR_MASK;
   }
 
   // MQTT error confirmation.

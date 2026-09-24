@@ -1,6 +1,7 @@
 // src/time/time.cpp
 
 #include <Arduino.h>
+#include <esp_sntp.h>
 #include <time.h>
 
 #include "../config.h"
@@ -16,34 +17,53 @@ static const char *currentTimezone = LOCAL_TIMEZONE;
 static const char *currentTimezone = DEFAULT_TIMEZONE;
 #endif
 
-static bool waitForTimeSync();
+static bool timeSyncPending = false;
+static bool timeSynchronized = false;
+static uint32_t timeSyncStartedAt = 0;
+
 static void printCurrentTime();
 
 // ---------------------------------
 
-bool initTime() {
+void syncTime() {
 
-  // Internal system time is UTC.
+  if (timeSyncPending) {
+    return;
+  }
+
+  sntp_set_sync_status(SNTP_SYNC_STATUS_RESET);
+
   configTime(0, 0, NTP_SERVER);
 
-  // Set timezone for local time conversion.
   setenv("TZ", currentTimezone, 1);
   tzset();
 
-  Serial.print("[NTP] Time synchronization... ");
+  sntp_set_sync_interval(TIME_SYNC_INTERVAL_MS);
+  sntp_restart();
 
-  if (!waitForTimeSync()) {
-    Serial.println("FAILED");
-    return false;
-  }
-
-  Serial.println("OK");
-  printCurrentTime();
-
-  return true;
+  timeSyncPending = true;
+  timeSynchronized = false;
+  timeSyncStartedAt = millis();
 }
 
-void syncTime() { configTime(0, 0, NTP_SERVER); }
+bool isTimeSynchronized() {
+
+  if (sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED) {
+    timeSyncPending = false;
+    timeSynchronized = true;
+  }
+
+  if (timeSyncPending && millis() - timeSyncStartedAt >= TIME_SYNC_TIMEOUT_MS) {
+    timeSyncPending = false;
+  }
+
+  return timeSynchronized;
+}
+
+void invalidateTimeSync() {
+  timeSyncPending = false;
+  timeSynchronized = false;
+}
 
 time_t getCurrentTimestamp() { return time(nullptr); }
 
@@ -83,20 +103,6 @@ void setTimezone(const char *timezone) {
 
   setenv("TZ", currentTimezone, 1);
   tzset();
-}
-
-static bool waitForTimeSync() {
-  time_t now = time(nullptr);
-  const unsigned long startTime = millis();
-
-  while (now < 100000) {
-    if (millis() - startTime >= 10000) {
-      return false;
-    }
-    now = time(nullptr);
-  }
-
-  return true;
 }
 
 static void printCurrentTime() {

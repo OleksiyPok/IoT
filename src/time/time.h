@@ -6,13 +6,17 @@
 
 // ---------------------------------
 #define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_HOURS * 60UL * 60UL * 1000UL)
-
+#define TIME_SYNC_TIMEOUT_MS 5000
 // ---------------------------------
-// Initialize system time and synchronize with NTP.
-bool initTime();
 
-// Synchronize system time with NTP server.
+// Request NTP synchronization.
 void syncTime();
+
+// Check whether the requested NTP synchronization has completed.
+bool isTimeSynchronized();
+
+// Invalidate synchronization after Wi-Fi loss.
+void invalidateTimeSync();
 
 // Get current UTC timestamp.
 time_t getCurrentTimestamp();

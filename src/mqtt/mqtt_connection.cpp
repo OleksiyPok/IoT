@@ -16,6 +16,7 @@ static MqttStatus mqttLastStatus = MqttStatus::Disconnected;
 static uint32_t mqttLastConnectAttemptAt = 0;
 static uint32_t mqttNextConnectionCycleAt = 0;
 static uint8_t mqttConnectionAttempts = 0;
+static bool mqttInitialized = false;
 
 static bool connectMQTT();
 static void handleMqttStatus();
@@ -23,10 +24,18 @@ static void printMqttStatus(MqttStatus mqttStatus);
 
 // ---------------------------------
 
-void initMqtt() { mqttService.init(); }
+void initMqtt() {
+
+  if (mqttInitialized) {
+    return;
+  }
+
+  mqttService.init();
+  mqttInitialized = true;
+}
 
 bool isMqttConnected() {
-  return isWifiConnected() && mqttService.isConnected(); // ?
+  return isWifiConnected() && mqttInitialized && mqttService.isConnected();
 }
 
 static bool connectMQTT() {
@@ -54,6 +63,19 @@ bool handleMqttConnection(Telemetry &telemetry) {
   if (!isWifiConnected()) {
     if (mqttService.isConnected()) {
       mqttService.disconnect();
+    }
+
+    if (telemetry.systemState & SYSTEM_TIME_ERR_MASK) {
+
+      if (mqttService.isConnected()) {
+        mqttService.disconnect();
+      }
+
+      return false;
+    }
+
+    if (!mqttInitialized) {
+      return false;
     }
 
     if (mqttLastStatus != MqttStatus::Disconnected) {

@@ -23,8 +23,8 @@
 
 // ---------------------------------
 
-uint32_t lastTimeSyncMs = 0;
 uint32_t lastWiFiCheckConnectionMs = 0;
+uint32_t lastTimeSyncRequestMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
 uint32_t lastIndicationChangeMs = 0;
@@ -47,14 +47,8 @@ void setup() {
   initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
+  initBlink(telemetry);
   initWiFi();
-
-  if (isWifiConnected()) {
-    initTime();
-    delay(50);
-    initMqtt();
-    initBlink(telemetry);
-  }
 }
 
 void loop() {
@@ -67,11 +61,22 @@ void loop() {
     handleWiFi();
   }
 
-  // Time synchronization
-  if (isWifiConnected() &&
-      (lastTimeSyncMs == 0 || now - lastTimeSyncMs >= TIME_SYNC_INTERVAL_MS)) {
-    lastTimeSyncMs = now;
-    syncTime();
+  // System state
+  updateSystemState(telemetry);
+
+  // Connection sequence: Wi-Fi -> Time -> MQTT.
+  if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
+    lastTimeSyncRequestMs = 0;
+
+  } else if (telemetry.systemState & SYSTEM_TIME_ERR_MASK) {
+    if (lastTimeSyncRequestMs == 0 ||
+        now - lastTimeSyncRequestMs >= TIME_SYNC_RETRY_INTERVAL_MS) {
+      lastTimeSyncRequestMs = now;
+      syncTime();
+    }
+
+  } else if (telemetry.systemState & SYSTEM_MQTT_ERR_MASK) {
+    initMqtt();
   }
 
   // Buttons reading
@@ -99,9 +104,6 @@ void loop() {
     lastLdrSensorReadMs = now;
     handleLdrSensor(telemetry.ldr);
   }
-
-  // System state
-  updateSystemState(telemetry);
 
   // Actions
   if (now - lastActionsMs >= ACTIONS_MS) {

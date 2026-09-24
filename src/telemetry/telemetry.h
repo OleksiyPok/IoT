@@ -37,11 +37,11 @@ struct Telemetry {
   uint16_t ledState;
 };
 
-struct System {
-  uint16_t buttonsState;
-  uint16_t systemState;
-  uint16_t ledState;
-};
+// struct System {
+//   uint16_t buttonsState;
+//   uint16_t systemState;
+//   uint16_t ledState;
+// };
 
 #define TELEMETRY_PROTOCOL_VERSION 3
 

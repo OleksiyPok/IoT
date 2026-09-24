@@ -25,13 +25,9 @@ void printWifiStatus(wl_status_t wlStatus);
 bool isWifiConnected() { return WiFi.status() == WL_CONNECTED; }
 
 bool initWiFi() {
-  connectWifi();
-
-  while (wifiConnecting) {
-    handleWiFi();
-  }
-
-  return isWifiConnected();
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(false);
+  return true;
 }
 
 void handleWiFi() {
