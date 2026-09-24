@@ -10,8 +10,6 @@
 
 // ---------------------------------
 
-static uint16_t previousButtonsState = 0x0000;
-
 // ---------------------------------
 
 void updateSystemState(Telemetry &telemetry) {
@@ -22,8 +20,7 @@ void updateSystemState(Telemetry &telemetry) {
   // Managed states.
   telemetry.systemState &= ~SYSTEM_STATE_MANAGED_MASK;
 
-  if ((telemetry.buttonsState & BUTTON_COMMAND_MASK) &&
-      !(previousButtonsState & BUTTON_COMMAND_MASK)) {
+  if (telemetry.buttonsState & BUTTON_COMMAND_MASK) {
     telemetry.systemState |= SYSTEM_COMMAND_MASK;
   }
 
@@ -59,6 +56,4 @@ void updateSystemState(Telemetry &telemetry) {
   if (isMqttConnected()) {
     telemetry.systemState &= ~SYSTEM_MQTT_ERR_MASK;
   }
-
-  previousButtonsState = telemetry.buttonsState;
 }

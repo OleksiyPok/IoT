@@ -55,19 +55,19 @@ void loop() {
 
   uint32_t now = millis();
 
-  // WiFi check connection
+  // WiFi
   if (now - lastWiFiCheckConnectionMs >= WIFI_CHECK_INTERVAL_MS) {
     lastWiFiCheckConnectionMs = now;
     handleWiFi();
   }
 
-  // Buttons reading
+  // Buttons
   if (now - lastButtonsReadMs >= BUTTONS_READ_INTERVAL_MS) {
     lastButtonsReadMs = now;
     handleButtons(telemetry);
   }
 
-  // DHT sensor reading
+  // DHT sensor
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
     if (!(telemetry.systemState & SYSTEM_SILENT_MASK)) {
@@ -75,19 +75,19 @@ void loop() {
     }
   }
 
-  // LDR sensor reading
+  // LDR sensor
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
     lastLdrSensorReadMs = now;
     handleLdrSensor(telemetry.ldr);
   }
 
-  // STALE status watchdog
+  // Sensors STALE status
   if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
     lastStaleWatchdogMs = now;
     updateStaleStatus(telemetry);
   }
 
-  // Connection sequence: Wi-Fi -> Time -> MQTT.
+  // Time synchronization
   if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
     lastTimeSyncRequestMs = 0;
 
@@ -117,7 +117,7 @@ void loop() {
     handleActions(telemetry);
   }
 
-  // Telemetry update
+  // Telemetry
   if (now - lastUpdateTelemetryMs >= TELEMETRY_UPDATE_INTERVAL_MS) {
     lastUpdateTelemetryMs = now;
     updateTelemetry(telemetry);
