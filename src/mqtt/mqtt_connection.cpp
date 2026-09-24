@@ -60,32 +60,41 @@ bool handleMqttConnection(Telemetry &telemetry) {
 
   const uint32_t now = millis();
 
-  if (!isWifiConnected()) {
+  // Wi-Fi is required for everything below.
+  if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
     if (mqttService.isConnected()) {
       mqttService.disconnect();
     }
 
-    if (telemetry.systemState & SYSTEM_TIME_ERR_MASK) {
-
-      if (mqttService.isConnected()) {
-        mqttService.disconnect();
-      }
-
-      return false;
-    }
-
-    if (!mqttInitialized) {
-      return false;
-    }
+    mqttConnectionAttempts = 0;
+    mqttNextConnectionCycleAt = 0;
 
     if (mqttLastStatus != MqttStatus::Disconnected) {
       Serial.println("[MQTT] Status:  (DISCONNECTED)");
       mqttLastStatus = MqttStatus::Disconnected;
     }
 
+    return false;
+  }
+
+  // Time synchronization is required before MQTT connection.
+  if (telemetry.systemState & SYSTEM_TIME_ERR_MASK) {
+    if (mqttService.isConnected()) {
+      mqttService.disconnect();
+    }
+
     mqttConnectionAttempts = 0;
     mqttNextConnectionCycleAt = 0;
 
+    if (mqttLastStatus != MqttStatus::Disconnected) {
+      Serial.println("[MQTT] Status:  (DISCONNECTED)");
+      mqttLastStatus = MqttStatus::Disconnected;
+    }
+
+    return false;
+  }
+
+  if (!mqttInitialized) {
     return false;
   }
 

@@ -50,7 +50,10 @@ bool isTimeSynchronized() {
 
   if (sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED) {
     timeSyncPending = false;
-    timeSynchronized = true;
+    if (!timeSynchronized) {
+      timeSynchronized = true;
+      printCurrentTime();
+    }
   }
 
   if (timeSyncPending && millis() - timeSyncStartedAt >= TIME_SYNC_TIMEOUT_MS) {

@@ -124,13 +124,22 @@ void loop() {
   }
 
   // MQTT connection
-  handleMqttConnection(telemetry);
+  if (!(telemetry.systemState & SYSTEM_WIFI_ERR_MASK) &&
+      !(telemetry.systemState & SYSTEM_TIME_ERR_MASK)) {
+    handleMqttConnection(telemetry);
+  }
 
   // MQTT publish
-  handleMqttCommands();
-  if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
-    lastMqttPublish = now;
-    handleMqttSensors(telemetry);
+  if (!(telemetry.systemState & SYSTEM_WIFI_ERR_MASK) &&
+      !(telemetry.systemState & SYSTEM_TIME_ERR_MASK) &&
+      !(telemetry.systemState & SYSTEM_MQTT_ERR_MASK)) {
+
+    handleMqttCommands();
+
+    if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
+      lastMqttPublish = now;
+      handleMqttSensors(telemetry);
+    }
   }
 
 #if defined(DEBUG_MODE)
