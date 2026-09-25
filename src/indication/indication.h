@@ -10,8 +10,29 @@
 
 enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
 
-// Built-in LED indication
+enum class IndicationMode : uint8_t { CONTINUOUS, BLINK };
 
+struct IndicationPattern {
+  IndicationMode mode;
+  uint8_t blinkCount;
+  uint32_t onMs;
+  uint32_t offMs;
+};
+
+struct LedIndicationState {
+  uint16_t mask;
+  uint8_t pin;
+  IndicationPattern pattern;
+
+  uint8_t currentBlink;
+  bool active;
+  bool outputOn;
+  uint32_t stateChangedAt;
+};
+
+#define INDICATION_STARTUP_BLINK_ON_MS 200
+
+// Built-in LED indication
 #define INDICATION_MQTT_PUBLISH_BLINK_COUNT 1
 #define INDICATION_MQTT_PUBLISH_BLINK_ON_MS 200
 #define INDICATION_MQTT_PUBLISH_BLINK_OFF_MS 400
@@ -19,6 +40,27 @@ enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
 #define INDICATION_WIFI_CONNECTING_BLINK_COUNT 5
 #define INDICATION_WIFI_CONNECTING_BLINK_ON_MS 50
 #define INDICATION_WIFI_CONNECTING_BLINK_OFF_MS 50
+
+// LED indication patterns
+#define LED_COMMAND_MODE IndicationMode::BLINK
+#define LED_COMMAND_BLINK_COUNT 1
+#define LED_COMMAND_BLINK_ON_MS 100
+#define LED_COMMAND_BLINK_OFF_MS 200
+
+#define LED_LIGHT_AUTO_MODE IndicationMode::CONTINUOUS
+#define LED_LIGHT_MIN_MODE IndicationMode::CONTINUOUS
+#define LED_LIGHT_MAX_MODE IndicationMode::CONTINUOUS
+
+#define LED_TEMPERATURE_MIN_MODE IndicationMode::CONTINUOUS
+#define LED_TEMPERATURE_MAX_MODE IndicationMode::CONTINUOUS
+
+#define LED_HUMIDITY_MIN_MODE IndicationMode::CONTINUOUS
+#define LED_HUMIDITY_MAX_MODE IndicationMode::CONTINUOUS
+
+#define LED_SILENT_MODE IndicationMode::BLINK
+#define LED_SILENT_BLINK_COUNT 0
+#define LED_SILENT_BLINK_ON_MS 400
+#define LED_SILENT_BLINK_OF_MS 1000
 
 // ---------------------------------
 
@@ -42,8 +84,11 @@ enum class IndicationType : uint8_t { NONE, MQTT_PUBLISH, WIFI_CONNECTING };
    LED_HUMIDITY_MIN_MASK | LED_HUMIDITY_MAX_MASK | LED_SILENT_MASK |           \
    LED_COMMAND_MASK)
 
-void initIndication();
+// ---------------------------------
 
-void initBlink(Telemetry &telemetry);
-void handleIndication(const Telemetry &telemetry);
+void initIndication();
+void startStartupBlink();
+
 void requestIndication(IndicationType type);
+
+void handleLedIndication(const uint16_t &ledState);
