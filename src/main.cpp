@@ -47,7 +47,7 @@ void setup() {
   initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
-  initBlink(telemetry);
+  startStartupBlink();
   initWiFi();
 }
 
@@ -126,7 +126,8 @@ void loop() {
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
-    handleIndication(telemetry);
+    // handleIndication(telemetry);
+    handleLedIndication(telemetry.ledState);
   }
 
   // MQTT publish
