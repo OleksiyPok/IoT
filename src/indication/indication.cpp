@@ -5,6 +5,7 @@
 #include "../telemetry/telemetry.h"
 #include "config.h"
 #include "indication.h"
+#include "indication_config.h"
 
 // ---------------------------------
 
@@ -20,7 +21,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_LIGHT_AUTO_MASK,
      LED_LIGHT_AUTO_PIN,
-     {LED_LIGHT_AUTO_MODE, 0, 0, 0},
+     {LED_LIGHT_AUTO_MODE, LED_LIGHT_AUTO_BLINK_COUNT,
+      LED_LIGHT_AUTO_BLINK_ON_MS, LED_LIGHT_AUTO_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -28,7 +30,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_LIGHT_MIN_MASK,
      LED_LIGHT_MIN_PIN,
-     {LED_LIGHT_MIN_MODE, 0, 0, 0},
+     {LED_LIGHT_MIN_MODE, LED_LIGHT_MIN_BLINK_COUNT, LED_LIGHT_MIN_BLINK_ON_MS,
+      LED_LIGHT_MIN_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -36,7 +39,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_LIGHT_MAX_MASK,
      LED_LIGHT_MAX_PIN,
-     {LED_LIGHT_MAX_MODE, 0, 0, 0},
+     {LED_LIGHT_MAX_MODE, LED_LIGHT_MAX_BLINK_COUNT, LED_LIGHT_MAX_BLINK_ON_MS,
+      LED_LIGHT_MAX_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -44,7 +48,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_TEMPERATURE_MIN_MASK,
      LED_TEMPERATURE_MIN_PIN,
-     {LED_TEMPERATURE_MIN_MODE, 0, 0, 0},
+     {LED_TEMPERATURE_MIN_MODE, LED_TEMPERATURE_MIN_BLINK_COUNT,
+      LED_TEMPERATURE_MIN_BLINK_ON_MS, LED_TEMPERATURE_MIN_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -52,7 +57,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_TEMPERATURE_MAX_MASK,
      LED_TEMPERATURE_MAX_PIN,
-     {LED_TEMPERATURE_MAX_MODE, 0, 0, 0},
+     {LED_TEMPERATURE_MAX_MODE, LED_TEMPERATURE_MAX_BLINK_COUNT,
+      LED_TEMPERATURE_MAX_BLINK_ON_MS, LED_TEMPERATURE_MAX_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -60,7 +66,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_HUMIDITY_MIN_MASK,
      LED_HUMIDITY_MIN_PIN,
-     {LED_HUMIDITY_MIN_MODE, 0, 0, 0},
+     {LED_HUMIDITY_MIN_MODE, LED_HUMIDITY_MIN_BLINK_COUNT,
+      LED_HUMIDITY_MIN_BLINK_ON_MS, LED_HUMIDITY_MIN_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -68,7 +75,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_HUMIDITY_MAX_MASK,
      LED_HUMIDITY_MAX_PIN,
-     {LED_HUMIDITY_MAX_MODE, 0, 0, 0},
+     {LED_HUMIDITY_MAX_MODE, LED_HUMIDITY_MAX_BLINK_COUNT,
+      LED_HUMIDITY_MAX_BLINK_ON_MS, LED_HUMIDITY_MAX_BLINK_OFF_MS},
      0,
      false,
      false,
@@ -76,7 +84,8 @@ static LedIndicationState ledStates[] = {
 
     {LED_SILENT_MASK,
      LED_SILENT_PIN,
-     {LED_SILENT_MODE, 0, 0, 0},
+     {LED_SILENT_MODE, LED_SILENT_BLINK_COUNT, LED_SILENT_BLINK_ON_MS,
+      LED_SILENT_BLINK_OFF_MS},
      0,
      false,
      false,

@@ -49,14 +49,16 @@ static void handleCommand(const Telemetry &telemetry) {
 
 static void updateLedState(Telemetry &telemetry) {
 
-  telemetry.ledState = 0;
-
   if (telemetry.systemState & SYSTEM_COMMAND_MASK) {
     telemetry.ledState |= LED_COMMAND_MASK;
+  } else {
+    telemetry.ledState &= ~LED_COMMAND_MASK;
   }
 
   if (telemetry.systemState & SYSTEM_SILENT_MASK) {
     telemetry.ledState |= LED_SILENT_MASK;
+  } else {
+    telemetry.ledState &= ~LED_SILENT_MASK;
   }
 
   updateLdrLedState(telemetry);

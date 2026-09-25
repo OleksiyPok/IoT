@@ -163,5 +163,5 @@ void loop() {
   }
 #endif
 
-  delay(20); // To simplify the simulation process
+  // delay(20); // To simplify the simulation process
 }
