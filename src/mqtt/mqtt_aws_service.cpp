@@ -33,7 +33,7 @@ bool MqttAwsService::isConnected() { return mqttClient.connected(); }
 
 // ---------------------------------
 
-bool MqttAwsService::connect() { return mqttClient.connect(THINGNAME); }
+bool MqttAwsService::connect() { return mqttClient.connect(AWS_THINGNAME); }
 
 // ---------------------------------
 

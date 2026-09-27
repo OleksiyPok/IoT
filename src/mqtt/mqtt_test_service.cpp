@@ -12,7 +12,7 @@ static WiFiClient wifiClient;
 static PubSubClient mqttClient(wifiClient);
 
 void MqttTestService::init() {
-  mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+  mqttClient.setServer(MQTT_TEST_BROKER, MQTT_TEST_PORT);
   mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
   mqttClient.setSocketTimeout(MQTT_SOCKET_TIMEOUT_SEC);
   mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
@@ -20,7 +20,9 @@ void MqttTestService::init() {
 
 bool MqttTestService::isConnected() { return mqttClient.connected(); }
 
-bool MqttTestService::connect() { return mqttClient.connect(MQTT_CLIENT_ID); }
+bool MqttTestService::connect() {
+  return mqttClient.connect(MQTT_TEST_CLIENT_ID);
+}
 
 void MqttTestService::disconnect() { mqttClient.disconnect(); }
 
