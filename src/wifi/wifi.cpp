@@ -22,11 +22,12 @@ static wl_status_t wlLastStatus = WL_IDLE_STATUS;
 void printWifiStatus(wl_status_t wlStatus);
 
 // ---------------------------------
-bool isWifiConnected() { return WiFi.status() == WL_CONNECTED; }
+bool isWifiConnected() { return wlLastStatus == WL_CONNECTED; }
 
 bool initWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(false);
+  wlLastStatus = WiFi.status();
   return true;
 }
 
@@ -122,6 +123,17 @@ bool connectWifi() {
     wifiInitialized = true;
   } else {
     WiFi.reconnect();
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("[Wi-Fi] Connected");
+    Serial.print("[Wi-Fi] IP: ");
+    Serial.println(WiFi.localIP());
+
+    wifiConnecting = false;
+    wifiConnectionAttempts = 0;
+    wifiNextConnectionCycleAt = 0;
+    wlLastStatus = WL_CONNECTED;
   }
 
   return true;

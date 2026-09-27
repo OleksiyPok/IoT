@@ -88,23 +88,22 @@ void loop() {
   }
 
   // Time synchronization
-  if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
+  if (!isWifiConnected()) {
     lastTimeSyncRequestMs = 0;
 
-  } else if (telemetry.systemState & SYSTEM_TIME_ERR_MASK) {
+  } else if (!isTimeSynchronized()) {
     if (lastTimeSyncRequestMs == 0 ||
         now - lastTimeSyncRequestMs >= TIME_SYNC_RETRY_INTERVAL_MS) {
       lastTimeSyncRequestMs = now;
       syncTime();
     }
 
-  } else if (telemetry.systemState & SYSTEM_MQTT_ERR_MASK) {
+  } else if (isWifiConnected() && isTimeSynchronized()) {
     initMqtt();
   }
 
   // MQTT connection
-  if (!(telemetry.systemState & SYSTEM_WIFI_ERR_MASK) &&
-      !(telemetry.systemState & SYSTEM_TIME_ERR_MASK)) {
+  if (isWifiConnected() && isTimeSynchronized()) {
     handleMqttConnection(telemetry);
   }
 
@@ -129,13 +128,9 @@ void loop() {
     handleLedIndication(telemetry.ledState);
   }
 
-  // MQTT publish
-  if (!(telemetry.systemState & SYSTEM_WIFI_ERR_MASK) &&
-      !(telemetry.systemState & SYSTEM_TIME_ERR_MASK) &&
-      !(telemetry.systemState & SYSTEM_MQTT_ERR_MASK)) {
-
+  // // MQTT publish
+  if (isWifiConnected() && isTimeSynchronized() && isMqttConnected()) {
     handleMqttCommands();
-
     if ((now - lastMqttPublish) > MQTT_PUBLISH_INTERVAL_MS) {
       lastMqttPublish = now;
       handleMqttSensors(telemetry);

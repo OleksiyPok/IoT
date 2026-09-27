@@ -13,7 +13,7 @@ static PubSubClient mqttClient(wifiClient);
 
 void MqttTestService::init() {
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
-  mqttClient.setKeepAlive(60);
+  mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
   mqttClient.setSocketTimeout(MQTT_SOCKET_TIMEOUT_SEC);
   mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
 }

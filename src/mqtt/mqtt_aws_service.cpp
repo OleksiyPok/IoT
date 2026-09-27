@@ -22,7 +22,7 @@ void MqttAwsService::init() {
   wifiClientSecure.setPrivateKey(AWS_CERT_PRIVATE);
 
   mqttClient.setServer(AWS_IOT_ENDPOINT, MQTT_AWS_PORT);
-  mqttClient.setKeepAlive(60);
+  mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
   mqttClient.setSocketTimeout(MQTT_SOCKET_TIMEOUT_SEC);
   mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
 }

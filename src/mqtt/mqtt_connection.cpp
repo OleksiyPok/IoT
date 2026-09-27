@@ -4,9 +4,11 @@
 
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
+#include "../time/time.h"
 #include "../wifi/wifi.h"
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
+
 
 // ---------------------------------
 
@@ -61,7 +63,7 @@ bool handleMqttConnection(Telemetry &telemetry) {
   const uint32_t now = millis();
 
   // Wi-Fi is required for everything below.
-  if (telemetry.systemState & SYSTEM_WIFI_ERR_MASK) {
+  if (!isWifiConnected()) {
     if (mqttService.isConnected()) {
       mqttService.disconnect();
     }
@@ -78,7 +80,7 @@ bool handleMqttConnection(Telemetry &telemetry) {
   }
 
   // Time synchronization is required before MQTT connection.
-  if (telemetry.systemState & SYSTEM_TIME_ERR_MASK) {
+  if (!isTimeSynchronized()) {
     if (mqttService.isConnected()) {
       mqttService.disconnect();
     }
