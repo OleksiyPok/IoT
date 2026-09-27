@@ -113,6 +113,7 @@ bool connectWifi() {
   wifiConnectStartedAt = now;
   wifiConnecting = true;
   wifiConnectionAttempts++;
+  wlLastStatus = WL_DISCONNECTED;
 
   requestIndication(IndicationType::WIFI_CONNECTING);
 

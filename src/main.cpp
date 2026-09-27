@@ -103,9 +103,7 @@ void loop() {
   }
 
   // MQTT connection
-  if (isWifiConnected() && isTimeSynchronized()) {
-    handleMqttConnection(telemetry);
-  }
+  handleMqttConnection(telemetry);
 
   // System state
   updateSystemState(telemetry);

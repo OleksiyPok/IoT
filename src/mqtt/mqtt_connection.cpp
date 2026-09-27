@@ -9,7 +9,6 @@
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
 
-
 // ---------------------------------
 
 static MqttServiceType mqttService;
@@ -62,9 +61,10 @@ bool handleMqttConnection(Telemetry &telemetry) {
 
   const uint32_t now = millis();
 
-  // Wi-Fi is required for everything below.
-  if (!isWifiConnected()) {
-    if (mqttService.isConnected()) {
+  // Wi-Fi and time synchronization are required for MQTT.
+  if (!isWifiConnected() || !isTimeSynchronized()) {
+
+    if (mqttInitialized && mqttService.isConnected()) {
       mqttService.disconnect();
     }
 
@@ -72,24 +72,8 @@ bool handleMqttConnection(Telemetry &telemetry) {
     mqttNextConnectionCycleAt = 0;
 
     if (mqttLastStatus != MqttStatus::Disconnected) {
-      Serial.println("[MQTT] Status:  (DISCONNECTED)");
-      mqttLastStatus = MqttStatus::Disconnected;
-    }
-
-    return false;
-  }
-
-  // Time synchronization is required before MQTT connection.
-  if (!isTimeSynchronized()) {
-    if (mqttService.isConnected()) {
-      mqttService.disconnect();
-    }
-
-    mqttConnectionAttempts = 0;
-    mqttNextConnectionCycleAt = 0;
-
-    if (mqttLastStatus != MqttStatus::Disconnected) {
-      Serial.println("[MQTT] Status:  (DISCONNECTED)");
+      Serial.println(
+          "[MQTT] Status: (DISCONNECTED - prerequisite unavailable)");
       mqttLastStatus = MqttStatus::Disconnected;
     }
 
