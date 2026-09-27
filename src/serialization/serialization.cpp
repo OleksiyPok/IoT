@@ -1,6 +1,6 @@
 // src/serialization/serialization.cpp
 
-#include "../config.h"
+#include "../project_config.h"
 
 #include "serialization.h"
 

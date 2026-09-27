@@ -4,9 +4,9 @@
 #include <time.h>
 
 #include "actions/actions.h"
+#include "app_config.h"
 #include "buttons/buttons.h"
 #include "commands/commands.h"
-#include "config.h"
 #include "dht_sensor/dht_sensor.h"
 #include "http/http.h"
 #include "indication/indication.h"
@@ -19,6 +19,7 @@
 #include "system/system_state.h"
 #include "telemetry/telemetry.h"
 #include "time/time.h"
+#include "time/time_config.h"
 #include "wifi/wifi.h"
 
 // ---------------------------------

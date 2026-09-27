@@ -4,18 +4,11 @@
 #include <esp_sntp.h>
 #include <time.h>
 
-#include "../config.h"
+#include "../project_config.h"
 #include "time.h"
+#include "time_config.h"
 
 // ---------------------------------
-
-static const char *NTP_SERVER = "pool.ntp.org";
-
-#ifdef LOCAL_TIMEZONE
-static const char *currentTimezone = LOCAL_TIMEZONE;
-#else
-static const char *currentTimezone = DEFAULT_TIMEZONE;
-#endif
 
 static bool timeSyncPending = false;
 static bool timeSynchronized = false;

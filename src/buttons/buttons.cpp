@@ -3,9 +3,11 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
+#include "../hardware_config.h"
 #include "../indication/indication.h"
 #include "buttons.h"
-#include "config.h"
+#include "buttons_config.h"
+
 
 // ---------------------------------
 #define BUTTON_0_MASK BUTTON_COMMAND_MASK

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../config.h"
+#include "../project_config.h"
 #include "../telemetry/telemetry.h"
 
 // ---------------------------------

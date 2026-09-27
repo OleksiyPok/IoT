@@ -2,10 +2,17 @@
 
 #include <Arduino.h>
 
+#include "../hardware_config.h"
 #include "../telemetry/telemetry.h"
 #include "config.h"
 #include "indication.h"
 #include "indication_config.h"
+
+// ---------------------------------
+
+static constexpr uint8_t INDICATION_PENDING_MQTT_MASK = 0x01;
+static constexpr uint8_t INDICATION_PENDING_HTTP_MASK = 0x02;
+static constexpr uint8_t INDICATION_PENDING_WIFI_MASK = 0x04;
 
 // ---------------------------------
 
@@ -128,12 +135,6 @@ static IndicationPattern getIndicationPattern(IndicationType type);
 
 static bool handleStartupBlink();
 static bool startPendingIndication();
-
-// ---------------------------------
-
-#define INDICATION_PENDING_MQTT_MASK 0x01
-#define INDICATION_PENDING_HTTP_MASK 0x02
-#define INDICATION_PENDING_WIFI_MASK 0x04
 
 // ---------------------------------
 

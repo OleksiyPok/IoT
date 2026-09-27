@@ -4,11 +4,12 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
-#include "../config.h"
 #include "../indication/indication.h"
 #include "../monitor/monitor.h"
+#include "../project_config.h"
 #include "../serialization/serialization.h"
 #include "http.h"
+
 
 // ---------------------------------
 static void sendData(const Telemetry &telemetry);

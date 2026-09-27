@@ -5,9 +5,6 @@
 #include <time.h>
 
 // ---------------------------------
-#define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_HOURS * 60UL * 60UL * 1000UL)
-#define TIME_SYNC_TIMEOUT_MS 5000
-// ---------------------------------
 
 // Request NTP synchronization.
 void syncTime();

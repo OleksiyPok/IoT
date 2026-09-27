@@ -2,43 +2,15 @@
 
 #include <DHT.h>
 
+#include "../hardware_config.h"
 #include "../indication/indication.h"
 #include "../time/time.h"
 #include "config.h"
+#include "dht_config.h"
 #include "dht_sensor.h"
 
 // ---------------------------------
 #define DHT_TYPE DHT22
-
-#define DHT_TEMPERATURE_VALID_MIN -35 // device error
-#define DHT_TEMPERATURE_VALID_MAX 75  // device error
-
-#define DHT_HUMIDITY_VALID_MIN 10 // device error
-#define DHT_HUMIDITY_VALID_MAX 90 // device error
-
-#if defined(DHT_TEMPERATURE_ALARM_MIN_CONFIG)
-#define DHT_TEMPERATURE_ALARM_MIN DHT_TEMPERATURE_ALARM_MIN_CONFIG
-#else
-#define DHT_TEMPERATURE_ALARM_MIN 0 // default
-#endif
-
-#if defined(DHT_TEMPERATURE_ALARM_MAX_CONFIG)
-#define DHT_TEMPERATURE_ALARM_MAX DHT_TEMPERATURE_ALARM_MAX_CONFIG
-#else
-#define DHT_TEMPERATURE_ALARM_MAX 40 // default
-#endif
-
-#if defined(DHT_HUMIDITY_ALARM_MIN_CONFIG)
-#define DHT_HUMIDITY_ALARM_MIN DHT_HUMIDITY_ALARM_MIN_CONFIG
-#else
-#define DHT_HUMIDITY_ALARM_MIN 20 // default
-#endif
-
-#if defined(DHT_HUMIDITY_ALARM_MAX_CONFIG)
-#define DHT_HUMIDITY_ALARM_MAX DHT_HUMIDITY_ALARM_MAX_CONFIG
-#else
-#define DHT_HUMIDITY_ALARM_MAX 80 // default
-#endif
 
 DHT dht(DHT_PIN, DHT_TYPE);
 

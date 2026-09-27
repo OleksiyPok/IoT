@@ -3,9 +3,9 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-#include "../config.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../ldr_sensor/ldr_sensor.h"
+#include "../project_config.h"
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "../time/time.h"
@@ -35,9 +35,6 @@ void handleMonitor(const Telemetry &telemetry) {
 
   Serial.println("================================");
   Serial.println("| !!!!!!!! DEBUG MODE !!!!!!!! |");
-  // Serial.println("|  Comment out ''DEBUG_MODE''  |");
-  // Serial.println("|    in the configuration      |");
-  // Serial.println("| to switch to Production mode |");
   Serial.println("================================");
 
   printDhtTelemetryStatus(telemetry);
