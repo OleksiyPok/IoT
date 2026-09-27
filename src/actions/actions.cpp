@@ -50,15 +50,15 @@ static void handleCommand(const Telemetry &telemetry) {
 static void updateLedState(Telemetry &telemetry) {
 
   if (telemetry.systemState & SYSTEM_COMMAND_MASK) {
-    telemetry.ledState |= LED_COMMAND_MASK;
+    telemetry.ledState |= INDICATION_COMMAND_MASK;
   } else {
-    telemetry.ledState &= ~LED_COMMAND_MASK;
+    telemetry.ledState &= ~INDICATION_COMMAND_MASK;
   }
 
   if (telemetry.systemState & SYSTEM_SILENT_MASK) {
-    telemetry.ledState |= LED_SILENT_MASK;
+    telemetry.ledState |= INDICATION_SILENT_MASK;
   } else {
-    telemetry.ledState &= ~LED_SILENT_MASK;
+    telemetry.ledState &= ~INDICATION_SILENT_MASK;
   }
 
   updateLdrLedState(telemetry);
@@ -67,38 +67,40 @@ static void updateLedState(Telemetry &telemetry) {
 
 static void updateLdrLedState(Telemetry &telemetry) {
   telemetry.ledState &=
-      ~(LED_LIGHT_MIN_MASK | LED_LIGHT_MAX_MASK | LED_LIGHT_AUTO_MASK);
+      ~(INDICATION_LIGHT_MIN_MASK | INDICATION_LIGHT_MAX_MASK |
+        INDICATION_LIGHT_AUTO_MASK);
 
   if (telemetry.ldr.status & STATUS_LDR_LUX_ALARM_MIN) {
-    telemetry.ledState |= LED_LIGHT_MIN_MASK;
+    telemetry.ledState |= INDICATION_LIGHT_MIN_MASK;
   }
 
   if (telemetry.ldr.status & STATUS_LDR_LUX_ALARM_MAX) {
-    telemetry.ledState |= LED_LIGHT_MAX_MASK;
+    telemetry.ledState |= INDICATION_LIGHT_MAX_MASK;
   }
 
   if (telemetry.ldr.status & STATUS_LDR_LIGHT_LOW) {
-    telemetry.ledState |= LED_LIGHT_AUTO_MASK;
+    telemetry.ledState |= INDICATION_LIGHT_AUTO_MASK;
   }
 }
 
 static void updateDhtLedState(Telemetry &telemetry) {
-  telemetry.ledState &= ~(LED_TEMPERATURE_MIN_MASK | LED_TEMPERATURE_MAX_MASK |
-                          LED_HUMIDITY_MIN_MASK | LED_HUMIDITY_MAX_MASK);
+  telemetry.ledState &=
+      ~(INDICATION_TEMPERATURE_MIN_MASK | INDICATION_TEMPERATURE_MAX_MASK |
+        INDICATION_HUMIDITY_MIN_MASK | INDICATION_HUMIDITY_MAX_MASK);
 
   if (telemetry.dht.status & STATUS_DHT_TEMPERATURE_ALARM_MIN) {
-    telemetry.ledState |= LED_TEMPERATURE_MIN_MASK;
+    telemetry.ledState |= INDICATION_TEMPERATURE_MIN_MASK;
   }
 
   if (telemetry.dht.status & STATUS_DHT_TEMPERATURE_ALARM_MAX) {
-    telemetry.ledState |= LED_TEMPERATURE_MAX_MASK;
+    telemetry.ledState |= INDICATION_TEMPERATURE_MAX_MASK;
   }
 
   if (telemetry.dht.status & STATUS_DHT_HUMIDITY_ALARM_MIN) {
-    telemetry.ledState |= LED_HUMIDITY_MIN_MASK;
+    telemetry.ledState |= INDICATION_HUMIDITY_MIN_MASK;
   }
 
   if (telemetry.dht.status & STATUS_DHT_HUMIDITY_ALARM_MAX) {
-    telemetry.ledState |= LED_HUMIDITY_MAX_MASK;
+    telemetry.ledState |= INDICATION_HUMIDITY_MAX_MASK;
   }
 }
