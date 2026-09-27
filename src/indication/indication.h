@@ -30,8 +30,6 @@ struct LedIndicationState {
   uint32_t stateChangedAt;
 };
 
-#define INDICATION_STARTUP_BLINK_ON_MS 100
-
 // ---------------------------------
 
 // "ledState" bits

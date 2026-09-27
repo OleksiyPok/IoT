@@ -96,6 +96,12 @@ static LedIndicationState ledStates[] = {
      0},
 };
 
+static LedIndicationState builtinLedState = {
+    0, LED_BUILTIN_PIN, {IndicationMode::BLINK, 0, 0, 0}, 0, false, false, 0};
+
+static IndicationPattern startupPattern = {
+    INDICATION_STARTUP_MODE, INDICATION_STARTUP_BLINK_COUNT,
+    INDICATION_STARTUP_BLINK_ON_MS, INDICATION_STARTUP_BLINK_OFF_MS};
 // ---------------------------------
 
 static bool startupBlinkActive = false;
@@ -106,24 +112,22 @@ static constexpr uint8_t INDICATION_STATE_COUNT =
 
 static void resetLedState(LedIndicationState &ledState);
 static void startLedIndication(LedIndicationState &ledState, uint32_t now);
-static void handleLedIndicationState(LedIndicationState &ledState,
-                                     const uint16_t &ledStateMask,
+// static void handleLedIndicationState(LedIndicationState &ledState,
+//                                      const uint16_t &ledStateMask,
+//                                      uint32_t now);
+
+static void handleLedIndicationState(LedIndicationState &ledState, bool allowed,
                                      uint32_t now);
 
 static bool indicationActive = false;
-static bool indicationLedOn = false;
-
-static uint8_t indicationBlinkCount = 0;
-static uint32_t indicationStateChangedAt = 0;
 
 static IndicationType indicationType = IndicationType::MQTT_PUBLISH;
 static uint8_t pendingIndications = 0;
 
+static IndicationPattern getIndicationPattern(IndicationType type);
+
 static bool handleStartupBlink();
 static bool startPendingIndication();
-static uint8_t getBlinkCount();
-static uint32_t getBlinkOnDuration();
-static uint32_t getBlinkOffDuration();
 
 // ---------------------------------
 
@@ -177,14 +181,41 @@ void requestIndication(IndicationType type) {
   }
 }
 
+static IndicationPattern getIndicationPattern(IndicationType type) {
+  switch (type) {
+  case IndicationType::MQTT_PUBLISH:
+    return {INDICATION_MQTT_PUBLISH_MODE, INDICATION_MQTT_PUBLISH_BLINK_COUNT,
+            INDICATION_MQTT_PUBLISH_BLINK_ON_MS,
+            INDICATION_MQTT_PUBLISH_BLINK_OFF_MS};
+
+  case IndicationType::WIFI_CONNECTING:
+    return {INDICATION_WIFI_CONNECTING_MODE,
+            INDICATION_WIFI_CONNECTING_BLINK_COUNT,
+            INDICATION_WIFI_CONNECTING_BLINK_ON_MS,
+            INDICATION_WIFI_CONNECTING_BLINK_OFF_MS};
+
+  case IndicationType::NONE:
+    break;
+  }
+
+  return {IndicationMode::BLINK, 0, 0, 0};
+}
+
+// static void startIndication(IndicationType type) {
+//   indicationType = type;
+//   indicationBlinkCount = 0;
+//   indicationLedOn = true;
+//   indicationActive = true;
+//   indicationStateChangedAt = millis();
+
+//   digitalWrite(LED_BUILTIN_PIN, HIGH);
+// }
+
 static void startIndication(IndicationType type) {
   indicationType = type;
-  indicationBlinkCount = 0;
-  indicationLedOn = true;
+  builtinLedState.pattern = getIndicationPattern(type);
+  startLedIndication(builtinLedState, millis());
   indicationActive = true;
-  indicationStateChangedAt = millis();
-
-  digitalWrite(LED_BUILTIN_PIN, HIGH);
 }
 
 static bool startPendingIndication() {
@@ -202,44 +233,6 @@ static bool startPendingIndication() {
 
   return false;
 }
-
-static uint8_t getBlinkCount() {
-  switch (indicationType) {
-  case IndicationType::MQTT_PUBLISH:
-    return INDICATION_MQTT_PUBLISH_BLINK_COUNT;
-
-  case IndicationType::WIFI_CONNECTING:
-    return INDICATION_WIFI_CONNECTING_BLINK_COUNT;
-  }
-
-  return 0;
-}
-
-static uint32_t getBlinkOnDuration() {
-  switch (indicationType) {
-  case IndicationType::MQTT_PUBLISH:
-    return INDICATION_MQTT_PUBLISH_BLINK_ON_MS;
-
-  case IndicationType::WIFI_CONNECTING:
-    return INDICATION_WIFI_CONNECTING_BLINK_ON_MS;
-  }
-
-  return 0;
-}
-
-static uint32_t getBlinkOffDuration() {
-  switch (indicationType) {
-  case IndicationType::MQTT_PUBLISH:
-    return INDICATION_MQTT_PUBLISH_BLINK_OFF_MS;
-
-  case IndicationType::WIFI_CONNECTING:
-    return INDICATION_WIFI_CONNECTING_BLINK_OFF_MS;
-  }
-
-  return 0;
-}
-
-//++
 
 static void resetLedState(LedIndicationState &ledState) {
   digitalWrite(ledState.pin, LOW);
@@ -259,10 +252,8 @@ static void startLedIndication(LedIndicationState &ledState, uint32_t now) {
   digitalWrite(ledState.pin, HIGH);
 }
 
-static void handleLedIndicationState(LedIndicationState &ledState,
-                                     const uint16_t &ledStateMask,
+static void handleLedIndicationState(LedIndicationState &ledState, bool allowed,
                                      uint32_t now) {
-  const bool allowed = (ledStateMask & ledState.mask) != 0;
 
   // CONTINUOUS
   if (ledState.pattern.mode == IndicationMode::CONTINUOUS) {
@@ -353,7 +344,17 @@ void handleLedIndication(const uint16_t &ledState) {
   const uint32_t now = millis();
 
   for (uint8_t i = 0; i < INDICATION_STATE_COUNT; ++i) {
-    handleLedIndicationState(ledStates[i], ledState, now);
+    const bool allowed = (ledState & ledStates[i].mask) != 0;
+    handleLedIndicationState(ledStates[i], allowed, now);
+  }
+
+  if (indicationActive) {
+    handleLedIndicationState(builtinLedState, true, now);
+
+    if (!builtinLedState.active) {
+      indicationActive = false;
+      startPendingIndication();
+    }
   }
 }
 
@@ -362,7 +363,7 @@ static bool handleStartupBlink() {
     return false;
   }
 
-  if (millis() - startupBlinkStartedAt < INDICATION_STARTUP_BLINK_ON_MS) {
+  if (millis() - startupBlinkStartedAt < startupPattern.onMs) {
     return true;
   }
 
