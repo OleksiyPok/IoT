@@ -23,7 +23,7 @@ void MqttAwsService::init() {
 
   mqttClient.setServer(AWS_IOT_ENDPOINT, MQTT_AWS_PORT);
   mqttClient.setKeepAlive(60);
-  mqttClient.setSocketTimeout(30);
+  mqttClient.setSocketTimeout(MQTT_SOCKET_TIMEOUT_SEC);
   mqttClient.setBufferSize(MQTT_BUFFER_SIZE);
 }
 

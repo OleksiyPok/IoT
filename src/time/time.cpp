@@ -31,6 +31,8 @@ void syncTime() {
     return;
   }
 
+  Serial.println("[NTP] Synchronizing time...");
+
   sntp_set_sync_status(SNTP_SYNC_STATUS_RESET);
 
   configTime(0, 0, NTP_SERVER);
