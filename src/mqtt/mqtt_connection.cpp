@@ -124,7 +124,9 @@ bool handleMqttConnection(Telemetry &telemetry) {
 
     Serial.print("[MQTT] ");
     Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
-    Serial.println(" attempts failed - waiting 5 minutes");
+    Serial.print(" attempts failed - waiting ");
+    Serial.print(MQTT_RECONNECT_CYCLE_DELAY_MS / 1000 / 60);
+    Serial.println(" minutes");
 
     return false;
   }

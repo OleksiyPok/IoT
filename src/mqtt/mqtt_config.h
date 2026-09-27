@@ -3,8 +3,8 @@
 #pragma once
 
 // Uncomment exactly one service
-// #define MQTT_SERVICE_AWS
-#define MQTT_SERVICE_TEST
+#define MQTT_SERVICE_AWS
+// #define MQTT_SERVICE_TEST
 
 #if defined(MQTT_SERVICE_AWS) && defined(MQTT_SERVICE_TEST)
 #error "Only one MQTT service can be selected"
