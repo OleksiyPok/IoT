@@ -201,16 +201,6 @@ static IndicationPattern getIndicationPattern(IndicationType type) {
   return {IndicationMode::BLINK, 0, 0, 0};
 }
 
-// static void startIndication(IndicationType type) {
-//   indicationType = type;
-//   indicationBlinkCount = 0;
-//   indicationLedOn = true;
-//   indicationActive = true;
-//   indicationStateChangedAt = millis();
-
-//   digitalWrite(LED_BUILTIN_PIN, HIGH);
-// }
-
 static void startIndication(IndicationType type) {
   indicationType = type;
   builtinLedState.pattern = getIndicationPattern(type);

@@ -126,7 +126,6 @@ void loop() {
   // Indication
   if (now - lastIndicationChangeMs >= INDICATION_CHANGE_INTERVAL_MS) {
     lastIndicationChangeMs = now;
-    // handleIndication(telemetry);
     handleLedIndication(telemetry.ledState);
   }
 
