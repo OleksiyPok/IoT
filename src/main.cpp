@@ -26,6 +26,7 @@
 
 uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastTimeSyncRequestMs = 0;
+uint32_t lastMqttCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
 uint32_t lastIndicationChangeMs = 0;
@@ -48,7 +49,7 @@ void setup() {
   initLdrSensor(telemetry.ldr);
   initButtons();
   initIndication();
-  startStartupBlink();
+  // startStartupBlink();
   initWiFi();
 }
 
@@ -104,7 +105,10 @@ void loop() {
   }
 
   // MQTT connection
-  handleMqttConnection(telemetry);
+  if (now - lastMqttCheckConnectionMs >= MQTT_CHECK_INTERVAL_MS) {
+    lastMqttCheckConnectionMs = now;
+    handleMqttConnection();
+  }
 
   // System state
   updateSystemState(telemetry);

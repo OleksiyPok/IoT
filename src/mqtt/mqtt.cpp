@@ -15,7 +15,6 @@ void handleMqttSensors(const Telemetry &telemetry) {
   }
 
   if (!(telemetry.systemState & SYSTEM_SILENT_MASK)) {
-    // publishSensors(telemetry);
     publishTelemetry(telemetry);
   } else {
     publishStatus(telemetry);

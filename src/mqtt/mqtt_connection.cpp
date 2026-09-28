@@ -3,7 +3,6 @@
 #include <Arduino.h>
 
 #include "../system/system_state.h"
-#include "../telemetry/telemetry.h"
 #include "../time/time.h"
 #include "../wifi/wifi.h"
 #include "mqtt_config.h"
@@ -54,10 +53,24 @@ static bool connectMQTT() {
 
   const bool connected = mqttService.connect();
 
-  return connected;
+  if (connected) {
+    mqttLastStatus = MqttStatus::Connected;
+
+    Serial.println("[MQTT] Connected");
+    Serial.println();
+
+    mqttConnectionAttempts = 0;
+    mqttNextConnectionCycleAt = 0;
+
+    return true;
+  }
+
+  handleMqttStatus();
+
+  return false;
 }
 
-bool handleMqttConnection(Telemetry &telemetry) {
+bool handleMqttConnection() {
 
   const uint32_t now = millis();
 
@@ -96,6 +109,8 @@ bool handleMqttConnection(Telemetry &telemetry) {
     return true;
   }
 
+  handleMqttStatus();
+
   if (mqttNextConnectionCycleAt != 0) {
     if (now - mqttNextConnectionCycleAt < MQTT_RECONNECT_CYCLE_DELAY_MS) {
       return false;
@@ -121,9 +136,7 @@ bool handleMqttConnection(Telemetry &telemetry) {
     return false;
   }
 
-  connectMQTT();
-
-  return false;
+  return connectMQTT();
 }
 
 static void handleMqttStatus() {
@@ -131,13 +144,6 @@ static void handleMqttStatus() {
   const MqttStatus mqttStatus = mqttService.status();
 
   if (mqttStatus == MqttStatus::Connected) {
-    if (mqttStatus != mqttLastStatus) {
-      Serial.println("[MQTT] Connected");
-      Serial.println();
-
-      mqttLastStatus = mqttStatus;
-    }
-
     return;
   }
 

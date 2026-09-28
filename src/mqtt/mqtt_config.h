@@ -33,7 +33,6 @@ using MqttServiceType = MqttAwsService;
 #define MQTT_TOP_TOPIC "iot-course/OleksiiPok"
 
 #define TOPIC_COMMANDS MQTT_TOP_TOPIC "/commands"
-#define TOPIC_SENSORS MQTT_TOP_TOPIC "/sensors"
 #define TOPIC_TELEMETRY MQTT_TOP_TOPIC "/telemetry"
 #define TOPIC_STATUS MQTT_TOP_TOPIC "/status"
 // #define TOPIC_ACTUATORS_LED MQTT_TOP_TOPIC "/events"

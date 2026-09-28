@@ -8,5 +8,5 @@
 
 void initMqtt();
 bool isMqttConnected();
-bool handleMqttConnection(Telemetry &telemetry);
+bool handleMqttConnection();
 bool mqttPublish(const char *topic, const char *payload);

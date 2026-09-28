@@ -11,7 +11,6 @@
 #endif
 
 #include "serializers/commands_serializer.h"
-#include "serializers/sensors_serializer.h"
 #include "serializers/status_serializer.h"
 
 // ---------------------------------
@@ -29,10 +28,6 @@ bool serializeTelemetry(const Telemetry &telemetry, char *buffer,
 #endif
 }
 
-bool serializeSensors(const Telemetry &telemetry, char *buffer,
-                      size_t bufferSize) {
-  return serializeSensorsSnprintf(telemetry, buffer, bufferSize);
-};
 bool serializeStatus(const Telemetry &telemetry, char *buffer,
                      size_t bufferSize) {
   return serializeStatusSnprintf(telemetry, buffer, bufferSize);

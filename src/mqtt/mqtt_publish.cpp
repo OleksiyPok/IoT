@@ -17,20 +17,8 @@ static bool publishMqttMessage(const char *topic, const char *payload);
 #define SENSORS_PAYLOAD_BUFFER_SIZE 256
 #define STATUS_PAYLOAD_BUFFER_SIZE 256
 #define COMMANDS_PAYLOAD_BUFFER_SIZE 128
+
 // ---------------------------------
-bool publishSensors(const Telemetry &telemetry) {
-  char payload[SENSORS_PAYLOAD_BUFFER_SIZE];
-  if (!serializeSensors(telemetry, payload, sizeof(payload))) {
-    Serial.println("[MQTT] Failed to serialize sensors");
-    return true;
-  }
-
-  if (!publishMqttMessage(TOPIC_SENSORS, payload)) {
-    return false;
-  }
-
-  return true;
-}
 
 bool publishStatus(const Telemetry &telemetry) {
   char payload[STATUS_PAYLOAD_BUFFER_SIZE];
