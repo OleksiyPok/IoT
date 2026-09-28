@@ -2,10 +2,8 @@
 
 #include <ArduinoJson.h>
 
+#include "../serialization_config.h"
 #include "telemetry_serializer_aj.h"
-
-// ---------------------------------
-#define TELEMETRY_JSON_DOCUMENT_SIZE 512
 
 // ---------------------------------
 bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,

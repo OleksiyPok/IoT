@@ -8,6 +8,7 @@
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
 #include "wifi.h"
+#include "wifi_config.h"
 
 // ---------------------------------
 static bool wifiInitialized = false;
@@ -22,7 +23,7 @@ static wl_status_t wlLastStatus = WL_IDLE_STATUS;
 void printWifiStatus(wl_status_t wlStatus);
 
 // ---------------------------------
-bool isWifiConnected() { return wlLastStatus == WL_CONNECTED; }
+bool isWifiConnected() { return WiFi.status() == WL_CONNECTED; }
 
 bool initWiFi() {
   WiFi.mode(WIFI_STA);

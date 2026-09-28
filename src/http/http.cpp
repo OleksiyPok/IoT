@@ -10,6 +10,8 @@
 #include "../serialization/serialization.h"
 #include "http.h"
 
+// ---------------------------------
+#define SERVER_URL "http://httpbun.com/post" // HTTP POST
 
 // ---------------------------------
 static void sendData(const Telemetry &telemetry);
