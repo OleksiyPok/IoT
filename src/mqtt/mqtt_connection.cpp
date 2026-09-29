@@ -18,7 +18,7 @@ static uint32_t mqttNextConnectionCycleAt = 0;
 static uint8_t mqttConnectionAttempts = 0;
 static bool mqttInitialized = false;
 
-static bool connectMQTT();
+static bool connectMQTT(uint64_t deviceId);
 static void handleMqttStatus();
 static void printMqttStatus(MqttStatus mqttStatus);
 
@@ -38,7 +38,7 @@ bool isMqttConnected() {
   return isWifiConnected() && mqttInitialized && mqttService.isConnected();
 }
 
-static bool connectMQTT() {
+static bool connectMQTT(uint64_t deviceId) {
   const uint32_t now = millis();
 
   mqttLastConnectAttemptAt = now;
@@ -51,7 +51,11 @@ static bool connectMQTT() {
   Serial.print(MQTT_MAX_CONNECTION_ATTEMPTS);
   Serial.println(")...");
 
-  const bool connected = mqttService.connect();
+  char clientId[21];
+  snprintf(clientId, sizeof(clientId), "%llu",
+           static_cast<unsigned long long>(deviceId));
+
+  const bool connected = mqttService.connect(clientId);
 
   if (connected) {
     mqttLastStatus = MqttStatus::Connected;
@@ -70,7 +74,7 @@ static bool connectMQTT() {
   return false;
 }
 
-bool handleMqttConnection() {
+bool handleMqttConnection(const Telemetry &telemetry) {
 
   const uint32_t now = millis();
 
@@ -136,7 +140,7 @@ bool handleMqttConnection() {
     return false;
   }
 
-  return connectMQTT();
+  return connectMQTT(telemetry.device_id);
 }
 
 static void handleMqttStatus() {

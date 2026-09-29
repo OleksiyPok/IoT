@@ -107,7 +107,7 @@ void loop() {
   // MQTT connection
   if (now - lastMqttCheckConnectionMs >= MQTT_CHECK_INTERVAL_MS) {
     lastMqttCheckConnectionMs = now;
-    handleMqttConnection();
+    handleMqttConnection(telemetry);
   }
 
   // System state

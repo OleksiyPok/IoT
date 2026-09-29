@@ -8,7 +8,7 @@ class MqttAwsService : public MqttService {
 public:
   void init() override;
   bool isConnected() override;
-  bool connect() override;
+  bool connect(const char *clientId) override;
   void disconnect() override;
   void loop() override;
   bool publish(const char *topic, const char *payload) override;

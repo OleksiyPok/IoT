@@ -20,8 +20,9 @@ void MqttTestService::init() {
 
 bool MqttTestService::isConnected() { return mqttClient.connected(); }
 
-bool MqttTestService::connect() {
-  return mqttClient.connect(MQTT_TEST_CLIENT_ID);
+bool MqttTestService::connect(const char *clientId) {
+  // return mqttClient.connect(MQTT_TEST_CLIENT_ID);
+  return mqttClient.connect(clientId);
 }
 
 void MqttTestService::disconnect() { mqttClient.disconnect(); }

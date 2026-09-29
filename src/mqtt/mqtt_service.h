@@ -24,7 +24,7 @@ public:
 
   virtual void init() = 0;
   virtual bool isConnected() = 0;
-  virtual bool connect() = 0;
+  virtual bool connect(const char *clientId) = 0;
   virtual void disconnect() = 0;
   virtual void loop() = 0;
   virtual bool publish(const char *topic, const char *payload) = 0;

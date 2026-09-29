@@ -13,14 +13,14 @@
 // ═══════════════════════════════════════════════════════════
 #define MQTT_TEST_BROKER "broker.hivemq.com"
 #define MQTT_TEST_PORT 1883
-#define MQTT_TEST_CLIENT_ID "xxxx"
+// #define MQTT_TEST_CLIENT_ID "xxxx"
 
 // ═══════════════════════════════════════════════════════════
 // AWS IOT CORE
 // ═══════════════════════════════════════════════════════════
 #define MQTT_AWS_PORT 8883
 // THINGNAME == MQTT client ID
-#define AWS_THINGNAME "xxxx"
+// #define AWS_THINGNAME "xxxx"
 // Endpoint: AWS IoT Console → Settings → Device data endpoint
 #define AWS_IOT_ENDPOINT "a14905hl20lubp-ats.iot.us-east-1.amazonaws.com"
 
