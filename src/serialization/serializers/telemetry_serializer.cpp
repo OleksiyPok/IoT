@@ -16,7 +16,7 @@ bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
   int length = snprintf(
       buffer, bufferSize,
       "{\"version\":%u,"
-      "\"deviceId\":%" PRIu64 ","
+      "\"device_id\":%" PRIu64 ","
       "\"timestamp\":%" PRIu32 ","
       "\"uptime\":%" PRIu32 ","
       "\"sequence\":%u,"
@@ -34,7 +34,7 @@ bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
       "\"ldr_status\":%u"
       "},"
       "\"sys_state\":%u}",
-      telemetry.version, telemetry.deviceId, telemetry.timestamp,
+      telemetry.version, telemetry.device_id, telemetry.timestamp,
       telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
       telemetry.dht.humidity, telemetry.dht.updated, telemetry.dht.status,
       telemetry.ldr.raw, telemetry.ldr.lux, telemetry.ldr.updated,

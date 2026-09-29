@@ -7,20 +7,18 @@
 
 // ---------------------------------
 
-bool getDeviceId(uint64_t &deviceId) {
+bool getDeviceId(uint64_t &device_id) {
   uint8_t mac[6];
 
   if (esp_read_mac(mac, ESP_MAC_WIFI_STA) != ESP_OK) {
     Serial.println("Failed to get device ID");
-    deviceId = 000000000000;
+    device_id = 000000000000;
     return false;
   }
 
-  deviceId = ((uint64_t)mac[0] << 40) | ((uint64_t)mac[1] << 32) |
-             ((uint64_t)mac[2] << 24) | ((uint64_t)mac[3] << 16) |
-             ((uint64_t)mac[4] << 8) | ((uint64_t)mac[5]);
-
-  // deviceId = 111111111111;
+  device_id = ((uint64_t)mac[0] << 40) | ((uint64_t)mac[1] << 32) |
+              ((uint64_t)mac[2] << 24) | ((uint64_t)mac[3] << 16) |
+              ((uint64_t)mac[4] << 8) | ((uint64_t)mac[5]);
 
   printDeviceInfo();
 

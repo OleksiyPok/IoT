@@ -16,7 +16,7 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
   DynamicJsonDocument doc(TELEMETRY_JSON_DOCUMENT_SIZE);
 
   doc["version"] = telemetry.version;
-  doc["deviceId"] = telemetry.deviceId;
+  doc["device_id"] = telemetry.device_id;
   doc["timestamp"] = telemetry.timestamp;
   doc["uptime"] = telemetry.uptime;
   doc["sequence"] = telemetry.sequence;

@@ -25,7 +25,7 @@ struct LDRData {
 
 struct Telemetry {
   uint8_t version; // protocol version
-  uint64_t deviceId;
+  uint64_t device_id;
   uint32_t timestamp;
   uint32_t uptime;
   uint8_t sequence;

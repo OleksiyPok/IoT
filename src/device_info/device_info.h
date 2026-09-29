@@ -7,5 +7,5 @@
 #include "../telemetry/telemetry.h"
 
 // ---------------------------------
-bool getDeviceId(uint64_t &deviceId);
+bool getDeviceId(uint64_t &device_id);
 void printDeviceInfo();

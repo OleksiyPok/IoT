@@ -21,7 +21,7 @@ static uint8_t sequenceCounter = 0;
 void initTelemetry(Telemetry &telemetry) {
   telemetry.uptime = millis() / 1000;
   telemetry.version = TELEMETRY_PROTOCOL_VERSION;
-  getDeviceId(telemetry.deviceId);
+  getDeviceId(telemetry.device_id);
 
   telemetry.buttonsState = 0x0000;
   telemetry.systemState = SYSTEM_STATE_ERR_INIT_MASK;

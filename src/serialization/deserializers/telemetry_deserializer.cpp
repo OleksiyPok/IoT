@@ -35,13 +35,13 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   data.version = version;
 
   // Root fields
-  if (!doc["deviceId"].is<uint64_t>() || !doc["timestamp"].is<uint32_t>() ||
+  if (!doc["device_id"].is<uint64_t>() || !doc["timestamp"].is<uint32_t>() ||
       !doc["uptime"].is<uint32_t>() || !doc["sequence"].is<uint8_t>() ||
       !doc["sys_state"].is<uint16_t>()) {
     return false;
   }
 
-  data.deviceId = doc["deviceId"].as<uint64_t>();
+  data.device_id = doc["device_id"].as<uint64_t>();
   data.timestamp = doc["timestamp"].as<uint32_t>();
   data.uptime = doc["uptime"].as<uint32_t>();
   data.sequence = doc["sequence"].as<uint8_t>();
