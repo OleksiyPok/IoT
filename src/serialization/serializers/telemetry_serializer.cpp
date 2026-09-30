@@ -16,7 +16,7 @@ bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
   int length = snprintf(
       buffer, bufferSize,
       "{\"version\":%u,"
-      "\"device_id\":%" PRIu64 ","
+      "\"device_id\":\"%" PRIu64 "\","
       "\"timestamp\":%" PRIu32 ","
       "\"uptime\":%" PRIu32 ","
       "\"sequence\":%u,"
