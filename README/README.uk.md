@@ -147,4 +147,6 @@ MQTT-сервіс і топіки визначаються у `src/mqtt/mqtt_con
 
 Якщо увімкнено `DEBUG_MODE`, Serial Monitor виводить інформацію про дані сенсорів, стан системи, події підключення та MQTT payload.
 
+##
+
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
