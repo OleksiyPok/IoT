@@ -25,7 +25,7 @@ void initLdrSensor(LDRData &data) {
 }
 
 void handleLdrSensor(LDRData &data) {
-  uint16_t status = STATUS_LDR_OK;
+  uint16_t status = data.status & STATUS_LDR_DATA_STALE;
   uint16_t raw = analogRead(LDR_ADC_PIN);
 
   if (raw <= LDR_ADC_VALID_MIN || raw >= LDR_ADC_VALID_MAX) {
@@ -63,7 +63,8 @@ void handleLdrSensor(LDRData &data) {
     status &= ~STATUS_LDR_LIGHT_LOW;
   }
 
-  data.status &= ~STATUS_LDR_DATA_STALE;
+  status &= ~STATUS_LDR_DATA_STALE;
+
   data.updated = getCurrentTimestamp();
   data.uptime = millis() / 1000;
 

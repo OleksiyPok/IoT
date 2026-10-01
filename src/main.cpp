@@ -69,6 +69,12 @@ void loop() {
     handleButtons(telemetry);
   }
 
+  // Sensors STALE status
+  if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
+    lastStaleWatchdogMs = now;
+    updateStaleStatus(telemetry);
+  }
+
   // DHT sensor
   if (now - lastDhtSensorReadMs >= SENSOR_DHT_READ_INTERVAL_MS) {
     lastDhtSensorReadMs = now;
@@ -81,12 +87,6 @@ void loop() {
   if (now - lastLdrSensorReadMs >= SENSOR_LDR_READ_INTERVAL_MS) {
     lastLdrSensorReadMs = now;
     handleLdrSensor(telemetry.ldr);
-  }
-
-  // Sensors STALE status
-  if (now - lastStaleWatchdogMs >= SENSOR_STALE_INTERVAL_MS) {
-    lastStaleWatchdogMs = now;
-    updateStaleStatus(telemetry);
   }
 
   // Time synchronization

@@ -25,7 +25,7 @@ void handleDhtSensor(DHTData &data) {
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
 
-  uint16_t status = STATUS_DHT_OK;
+  uint16_t status = data.status & STATUS_DHT_DATA_STALE;
 
   // Is NaN
   if (isnan(temperature) || isnan(humidity)) {
@@ -62,7 +62,8 @@ void handleDhtSensor(DHTData &data) {
     status |= STATUS_DHT_HUMIDITY_ALARM_MAX;
   }
 
-  data.status &= ~STATUS_DHT_DATA_STALE;
+  status &= ~STATUS_DHT_DATA_STALE;
+
   data.updated = getCurrentTimestamp();
   data.uptime = millis() / 1000;
 
