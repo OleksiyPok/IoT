@@ -6,192 +6,144 @@
 
 ## Project Description
 
-The project is an ESP32 firmware for monitoring environmental conditions and controlling device operation.
+The project is an ESP32 firmware for monitoring environmental conditions, processing device states, and communicating telemetry.
 
-The device:
+The firmware is organized into independent modules for:
 
-* reads temperature and humidity from a DHT22 sensor;
-* reads ambient light from an LDR sensor and converts it to lux;
-* checks sensor data for invalid values and alarm conditions;
-* maintains separate sensor and system status registers;
-* controls LEDs according to the current system and sensor states;
-* provides button-based control of device modes;
-* connects to WiFi and automatically attempts to restore the connection if it is lost;
-* connects to an MQTT broker and publishes sensor data, status information, and commands;
-* can send telemetry to an HTTP server;
-* provides detailed information through the Serial Monitor in debug mode.
+* DHT22 temperature and humidity monitoring;
+* LDR ambient light measurement and lux calculation;
+* telemetry and status processing;
+* buttons and device actions;
+* LED indication;
+* Wi-Fi and NTP time synchronization;
+* MQTT communication;
+* Serial Monitor diagnostics.
 
-## Sensor Monitoring
+## Project Structure
 
-The DHT22 sensor provides:
+The main modules are:
 
-* temperature;
-* humidity;
-* sensor status.
+* `dht_sensor` — temperature, humidity, validation, alarms, and sensor status;
+* `ldr_sensor` — ADC reading, lux calculation, validation, alarms, and sensor status;
+* `telemetry` — common device data, timestamps, uptime, sequence, and STALE watchdog;
+* `system` — aggregated system state;
+* `buttons` — physical button input;
+* `actions` — device commands and LED state processing;
+* `indication` — LED indication patterns;
+* `wifi` — Wi-Fi connection management;
+* `time` — NTP synchronization and timezone;
+* `mqtt` — MQTT connection, publishing, and services;
+* `serialization` — telemetry, status, and command JSON;
+* `monitor` — debug output.
 
-Temperature and humidity are checked against configurable validation limits and alarm thresholds.
-
-The configurable alarm thresholds are:
-
-* `DHT_TEMPERATURE_ALARM_MIN_CONFIG`
-* `DHT_TEMPERATURE_ALARM_MAX_CONFIG`
-* `DHT_HUMIDITY_ALARM_MIN_CONFIG`
-* `DHT_HUMIDITY_ALARM_MAX_CONFIG`
-
-The LDR sensor provides:
-
-* raw ADC value;
-* calculated illumination in lux;
-* sensor status.
-
-The light level is checked against configurable limits and thresholds:
-
-* `LDR_LUX_ALARM_MIN_CONFIG`
-* `LDR_LUX_THRESHOLD_LIGHT_LOW_CONFIG`
-* `LDR_LUX_ALARM_MAX_CONFIG`
-
-The LDR conversion can also be adjusted using parameters such as `LDR_GAMMA`, `RL10`, `LDR_R_DIV_OHM`, and `LDR_VCC_V`.
-
-## Status and Indication
-
-Sensor and system conditions are represented by bit flags.
-
-The device can detect and report conditions such as:
-
-* sensor errors;
-* invalid sensor data;
-* low or high sensor values;
-* silent mode;
-* WiFi connection errors;
-* MQTT connection errors.
-
-LEDs indicate the current operating and alarm states, including light, temperature, humidity, silent mode, and command activity.
-
-## Buttons
-
-The device provides four physical buttons.
-
-They are used for:
-
-* manual command activation;
-* silent mode;
-* an additional button-controlled function;
-* testing WiFi disconnection and automatic recovery.
-
-Button states are processed separately from the device actions. Button handling also includes interrupt-based detection and debouncing.
-
-## MQTT Communication
-
-Device A communicates with Device B through the MQTT broker. The devices do not communicate directly with each other.
-
-**MQTT broker:** `broker.hivemq.com:1883`
-
-**MQTT client ID:** `OleksiiPok-esp32-a`
-
-Device A uses the following MQTT Topic Names:
-
-| Topic Name | Direction | Payload | Publishing interval |
-|---|---|---|---|
-| `iot-course/OleksiiPok/sensors` | Device A → Broker | JSON sensor data | 10 s |
-| `iot-course/OleksiiPok/status` | Device A → Broker | JSON system status | 10 s |
-| `iot-course/OleksiiPok/commands` | Device A → Broker | JSON command | On event |
-
-Sensor data and system status are published every 10 seconds. Commands are published when a command is pending, for example after a button action.
-
-Device A publishes with QoS 0. Device B subscribes to the `sensors` and `commands` Topic Names with QoS 1.
-
-The current MQTT exchange is:
-
-```text
-Device A
-   │
-   │ PUBLISH sensors / status / commands
-   ▼
-MQTT Broker
-   │
-   │
-   └───────────────┐
-                   │
-                   ▼
-               Device B
-          SUBSCRIBE sensors
-          SUBSCRIBE commands
-```
-
-### MQTT Topics on the Broker
-
-<img src="../images/mqtt_boker.png" alt="mqtt_boker_messages" width="700">
-
-The MQTT broker, Topic Names, client identifier, buffer size, and reconnection parameters can be configured in `src/mqtt/mqtt_config.h`.
-
-## HTTP Communication
-
-The project also contains an HTTP client for sending complete telemetry data as JSON to a server.
-
-The server endpoint can be configured using:
-
-* `SERVER_URL`
-
-## Telemetry
+## Telemetry Data
 
 The internal telemetry structure contains:
 
 * protocol version;
-* device identifier;
+* device ID;
 * timestamp;
 * uptime;
-* message sequence number;
+* sequence number;
 * DHT22 data;
 * LDR data;
-* system status.
+* button state;
+* system state;
+* LED state.
 
-Telemetry can be serialized to JSON and is used for MQTT and HTTP communication.
+DHT22 data contains:
 
-The MQTT interface separates sensor data and system status into different messages.
+* temperature;
+* humidity;
+* last successful update time;
+* update uptime;
+* status.
 
-## Time
+LDR data contains:
 
-The device synchronizes its internal time using NTP.
+* raw ADC value;
+* calculated lux;
+* last successful update time;
+* update uptime;
+* status.
 
-It supports:
+## STATE, STALE and Status Aggregation
 
-* UTC time;
-* local time;
-* configurable timezone.
+### STATE
 
-The default timezone and NTP server are defined in `src/time/time.cpp`.
+`systemState` is a bit-field representing the current system conditions.
 
-## Serial Monitor
+It contains managed states such as:
 
-In debug mode, the Serial Monitor provides detailed information about:
+* silent mode;
+* command activity;
 
-* DHT sensor status;
-* LDR sensor status;
-* system status;
-* system state register;
-* MQTT JSON payloads;
-* WiFi and MQTT connection events.
+and system error states for:
 
-Debug mode can be enabled with:
+* DHT;
+* LDR;
+* Wi-Fi;
+* time synchronization;
+* MQTT.
 
-* `DEBUG_MODE`
+Error bits are initialized as active and are cleared only after the corresponding condition is confirmed to be normal.
+
+### STALE
+
+`STALE` is a sensor-data freshness flag.
+
+The watchdog periodically sets `STALE` for DHT and LDR data. A successful sensor read clears the corresponding `STALE` flag. If a read fails, `STALE` remains active.
+
+Thus, `STALE` indicates that a new successful sensor update has not been confirmed.
+
+### Status Aggregation
+
+Sensor status is maintained separately for DHT and LDR.
+
+`systemState` aggregates the important sensor and communication errors into system-level error flags. LED indication and other actions use these states without duplicating the underlying sensor data.
+
+## MQTT Communication
+
+The device communicates with an MQTT broker through the configured MQTT service.
+
+The MQTT interface uses three message types:
+
+* `telemetry` — sensor data together with common telemetry fields and system state;
+* `status` — DHT, LDR, and system status information;
+* `commands` — device commands.
+
+Telemetry and status messages include:
+
+* protocol version;
+* device ID;
+* timestamp;
+* uptime;
+* sequence number;
+* DHT status;
+* LDR status;
+* system state.
+
+Telemetry additionally contains DHT temperature and humidity and LDR raw ADC and lux values.
+
+Commands are serialized as JSON command messages.
 
 ## Configuration
 
-The main operating intervals and sensor parameters are configured at compile time in `src/config.h`.
+Main operating intervals are defined in `src/app_config.h`.
 
-This includes:
+Hardware pins are defined in `src/hardware_config.h`.
 
-* button polling interval;
-* action processing interval;
-* LED indication interval;
-* WiFi checking interval;
-* sensor reading intervals;
-* telemetry and MQTT publishing intervals;
-* memory checking interval;
-* sensor alarm thresholds;
-* ESP32 pin assignments.
+Sensor limits and alarm thresholds are defined in:
 
-The project is designed so that these parameters can be changed without modifying the main application logic.
+* `src/dht_sensor/dht_config.h`;
+* `src/ldr_sensor/ldr_config.h`.
+
+MQTT service and topics are defined in `src/mqtt/mqtt_config.h`.
+
+Timezone and NTP settings are defined in `src/time/time_config.h`.
+
+## Debug Monitor
+
+When `DEBUG_MODE` is enabled, the Serial Monitor provides information about sensor data, system state, connection events, and MQTT payloads.
 
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
