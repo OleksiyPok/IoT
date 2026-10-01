@@ -1,7 +1,5 @@
 [🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
 
-##
-
 # IoT Project
 
 
