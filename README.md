@@ -246,6 +246,6 @@ Timezone and NTP settings are defined in `src/time/time_config.h`.
 
 When `DEBUG_MODE` is enabled, the Serial Monitor provides information about sensor data, system state, connection events, and MQTT payloads.
 
-##
+<br>
 
 [🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
