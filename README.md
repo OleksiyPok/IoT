@@ -1,12 +1,12 @@
 [🇬🇧 English](./README/README.en.md) | [🇺🇦 Українська](./README/README.uk.md)
 
-
 ##
 
 # IoT Project
 
 
 <img src="./images/wokwi-A.png" alt="Project Circuit" width="700">
+
 
 ## Project Description
 
@@ -15,12 +15,19 @@ The project is an ESP32 firmware for monitoring environmental conditions, proces
 The firmware is organized into independent modules for:
 
 * DHT22 temperature and humidity monitoring;
+
 * LDR ambient light measurement and lux calculation;
+
 * telemetry and status processing;
+
 * buttons and device actions;
+
 * LED indication;
+
 * Wi-Fi and NTP time synchronization;
+
 * MQTT communication;
+
 * Serial Monitor diagnostics.
 
 ## Project Structure
@@ -28,16 +35,27 @@ The firmware is organized into independent modules for:
 The main modules are:
 
 * `dht_sensor` — temperature, humidity, validation, alarms, and sensor status;
+
 * `ldr_sensor` — ADC reading, lux calculation, validation, alarms, and sensor status;
+
 * `telemetry` — common device data, timestamps, uptime, sequence, and STALE watchdog;
+
 * `system` — aggregated system state;
+
 * `buttons` — physical button input;
+
 * `actions` — device commands and LED state processing;
+
 * `indication` — LED indication patterns;
+
 * `wifi` — Wi-Fi connection management;
+
 * `time` — NTP synchronization and timezone;
+
 * `mqtt` — MQTT connection, publishing, and services;
+
 * `serialization` — telemetry, status, and command JSON;
+
 * `monitor` — debug output.
 
 ## Telemetry Data
@@ -45,31 +63,96 @@ The main modules are:
 The internal telemetry structure contains:
 
 * protocol version;
+
 * device ID;
+
 * timestamp;
+
 * uptime;
+
 * sequence number;
+
 * DHT22 data;
+
 * LDR data;
+
 * button state;
+
 * system state;
+
 * LED state.
 
 DHT22 data contains:
 
 * temperature;
+
 * humidity;
+
 * last successful update time;
+
 * update uptime;
+
 * status.
 
 LDR data contains:
 
 * raw ADC value;
+
 * calculated lux;
+
 * last successful update time;
+
 * update uptime;
+
 * status.
+
+## Sensor Limits and Thresholds
+
+Temperature, humidity, and illumination are checked using three types of configured values:
+
+* **valid limits** define the range in which the measured data is considered valid;
+
+* **alarm thresholds** define conditions that require an alarm status;
+
+* **device limits** are used to detect sensor or device errors.
+
+For DHT22:
+
+* `DHT_TEMPERATURE_VALID_MIN`;
+
+* `DHT_TEMPERATURE_VALID_MAX`;
+
+* `DHT_TEMPERATURE_ALARM_MIN`;
+
+* `DHT_TEMPERATURE_ALARM_MAX`;
+
+* `DHT_HUMIDITY_VALID_MIN`;
+
+* `DHT_HUMIDITY_VALID_MAX`;
+
+* `DHT_HUMIDITY_ALARM_MIN`;
+
+* `DHT_HUMIDITY_ALARM_MAX`.
+
+For LDR:
+
+* `LDR_ADC_VALID_MIN`;
+
+* `LDR_ADC_VALID_MAX`;
+
+* `LDR_LUX_VALID_MIN`;
+
+* `LDR_LUX_VALID_MAX`;
+
+* `LDR_LUX_ALARM_MIN`;
+
+* `LDR_LUX_ALARM_MAX`;
+
+* `LDR_LUX_THRESHOLD_LIGHT_LOW`.
+
+A sensor receives an `ERROR` status when the sensor read fails or when measured data is outside its valid range.
+
+Crossing an alarm threshold does not by itself mean `ERROR`; it sets the corresponding alarm status.
 
 ## STATE, STALE and Status Aggregation
 
@@ -80,14 +163,19 @@ LDR data contains:
 It contains managed states such as:
 
 * silent mode;
+
 * command activity;
 
 and system error states for:
 
 * DHT;
+
 * LDR;
+
 * Wi-Fi;
+
 * time synchronization;
+
 * MQTT.
 
 Error bits are initialized as active and are cleared only after the corresponding condition is confirmed to be normal.
@@ -113,18 +201,27 @@ The device communicates with an MQTT broker through the configured MQTT service.
 The MQTT interface uses three message types:
 
 * `telemetry` — sensor data together with common telemetry fields and system state;
+
 * `status` — DHT, LDR, and system status information;
+
 * `commands` — device commands.
 
 Telemetry and status messages include:
 
 * protocol version;
+
 * device ID;
+
 * timestamp;
+
 * uptime;
+
 * sequence number;
+
 * DHT status;
+
 * LDR status;
+
 * system state.
 
 Telemetry additionally contains DHT temperature and humidity and LDR raw ADC and lux values.
@@ -140,6 +237,7 @@ Hardware pins are defined in `src/hardware_config.h`.
 Sensor limits and alarm thresholds are defined in:
 
 * `src/dht_sensor/dht_config.h`;
+
 * `src/ldr_sensor/ldr_config.h`.
 
 MQTT service and topics are defined in `src/mqtt/mqtt_config.h`.
