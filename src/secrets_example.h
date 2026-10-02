@@ -22,7 +22,7 @@
 // THINGNAME == MQTT client ID
 // #define AWS_THINGNAME "xxxx"
 // Endpoint: AWS IoT Console → Settings → Device data endpoint
-#define AWS_IOT_ENDPOINT "a14905hl20lubp-ats.iot.us-east-1.amazonaws.com"
+#define AWS_IOT_ENDPOINT "xxxx.amazonaws.com"
 
 // ═══════════════════════════════════════════════════════════
 // CERTIFICATES
