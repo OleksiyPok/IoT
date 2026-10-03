@@ -160,5 +160,5 @@ void loop() {
   }
 #endif
 
-  delay(20); // To simplify the simulation process. Only for WOKWI !!!
+  delay(20); // To simplify the wokwi simulation process. Only for WOKWI !!!
 }
