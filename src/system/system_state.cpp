@@ -30,13 +30,15 @@ void updateSystemState(Telemetry &telemetry) {
 
   // LDR error confirmation.
   if (!(telemetry.ldr.status &
-        (STATUS_LDR_DEVICE_ERR | STATUS_LDR_DATA_VALID_ERR))) {
+        (STATUS_LDR_DEVICE_ERR | STATUS_LDR_DATA_VALID_ERR |
+         STATUS_LDR_DATA_STALE))) {
     telemetry.systemState &= ~SYSTEM_LDR_ERR_MASK;
   }
 
   // DHT error confirmation.
   if (!(telemetry.dht.status &
-        (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR))) {
+        (STATUS_DHT_DEVICE_ERR | STATUS_DHT_DATA_VALID_ERR |
+         STATUS_DHT_DATA_STALE))) {
     telemetry.systemState &= ~SYSTEM_DHT_ERR_MASK;
   }
 
