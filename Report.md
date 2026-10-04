@@ -195,6 +195,7 @@ WHERE sys_state <> 0
 ##### SQL query for rule "temperature_alarm"
 ```
 SELECT dht
+SELECT dht
 FROM 'iot-course/OleksiiPok/telemetry'
 WHERE bitand(sys_state, 2) = 0 
 AND bitand(sys_state, 4) = 0
