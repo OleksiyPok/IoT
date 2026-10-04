@@ -198,21 +198,18 @@ AND dht.temperature > 28
 ```
 
 
----
 ### Tables
 
 <img src="./images/AWS/Tables_01_.png" alt="AWS example data" width="700">
 
 
 
----
 ### Logs
 
 <img src="./images/AWS/Logs_01_.png" alt="AWS example data" width="700">
 
 
 
----
 ## Examples of received and processed data
 ### MQTT input messages
 
@@ -220,19 +217,20 @@ _"Silent mode" and "Normal mode"_
 <img src="./images/AWS/Mqtt_input_01_.png" alt="AWS example data" width="700">
 
 
----
+
 ### Tables
 
 _DynamoDB > Explore items > iot_telemetry_
 <img src="./images/AWS/Tables_03_.png" alt="AWS example data" width="700">
 
 
----
+
 ### Logs
 
 #### "telemetry_alarms"
 _CloudWatch > Log management > /aws/iot/rules/telemetry_alarms_
 <img src="./images/AWS/Logs_telemetry_alarms_01_.png" alt="AWS example data" width="700">
+
 _CloudWatch > Log management > /aws/iot/rules/telemetry_alarms (one)_
 <img src="./images/AWS/Logs_telemetry_alarms_02_.png" alt="AWS example data" width="700">
 
@@ -240,6 +238,7 @@ _CloudWatch > Log management > /aws/iot/rules/telemetry_alarms (one)_
 #### "state_alarms"
 _CloudWatch > Log management > /aws/iot/rules/state_alarms_
 <img src="./images/AWS/Logs_state_alarms_01_.png" alt="AWS example data" width="700">
+
 _CloudWatch > Log management > /aws/iot/rules/state_alarms (one)_
 <img src="./images/AWS/Logs_state_alarms_02_.png" alt="AWS example data" width="700">
 
@@ -247,5 +246,6 @@ _CloudWatch > Log management > /aws/iot/rules/state_alarms (one)_
 #### "errors"
 _CloudWatch > Log management > /aws/iot/rules/errors_
 <img src="./images/AWS/Logs_errors_01_.png" alt="AWS example data" width="700">
+
 _CloudWatch > Log management > /aws/iot/rules/errors_ (one)
 <img src="./images/AWS/Logs_errors_02_.png" alt="AWS example data" width="700">
