@@ -211,9 +211,10 @@ AND dht.temperature > 28
 
 
 ## Examples of received and processed data
+
 ### MQTT input messages
 
-_"Silent mode" and "Normal mode"_ 
+_Messages in the "Silent mode" and "Normal mode"_ 
 <img src="./images/AWS/Mqtt_input_01_.png" alt="AWS example data" width="700">
 
 
