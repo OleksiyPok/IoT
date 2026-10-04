@@ -34,7 +34,7 @@
 
 #### Policies in the JSON
 
-##### Policies of"aws-iot-rule-StoreTelemetry-action-1-role-iot_rule_db_role"
+##### Policies of "aws-iot-rule-StoreTelemetry-action-1-role-iot_rule_db_role"
 
 ```
 {
