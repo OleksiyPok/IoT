@@ -3,7 +3,7 @@
 ## Document Contents
 - IoT Core configuration
 - Examples of received and processed data
----
+
 ## IoT Core Configuration
 ### Roles
 
@@ -159,7 +159,7 @@
 #### Rules overview
 <img src="./images/AWS/Rules_01_.png" alt="AWS example data" width="700">
 
----
+
 #### Rule "StoreTelemetry" in detail
 <img src="./images/AWS/Rules_StoreTelemetry_03_.png" alt="AWS example data" width="700">
 
@@ -174,7 +174,6 @@ WHERE bitand(sys_state, 2) = 0  //
   AND bitand(sys_state, 4) = 0 //
 ```
 
----
 #### Rule "state_alarms" in detail
 <img src="./images/AWS/Rules_state_alarms_03_.png" alt="AWS example data" width="700">
 
@@ -185,7 +184,7 @@ FROM 'iot-course/OleksiiPok/telemetry'
 WHERE sys_state <> 0
 ```
 
----
+
 #### Rule "temperature_alarm" in detail
 <img src="./images/AWS/Rules_temperature_alarm_03_.png" alt="AWS example data" width="700">
 
