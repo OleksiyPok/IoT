@@ -7,5 +7,5 @@
 #include "../../telemetry/telemetry.h"
 
 // ---------------------------------
-bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
-                                   size_t bufferSize);
+bool serializeTelemetryArduinoJson(const Telemetry &telemetry, uint8_t sequence,
+                                   char *buffer, size_t bufferSize);

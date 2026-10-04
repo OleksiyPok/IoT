@@ -6,8 +6,8 @@
 #include <stddef.h>
 
 // ---------------------------------
-bool serializeTelemetry(const Telemetry &telemetry, char *buffer,
-                        size_t bufferSize);
-bool serializeStatus(const Telemetry &telemetry, char *buffer,
+bool serializeTelemetry(const Telemetry &telemetry, uint8_t sequence,
+                        char *buffer, size_t bufferSize);
+bool serializeStatus(const Telemetry &telemetry, uint8_t sequence, char *buffer,
                      size_t bufferSize);
 bool serializeCommands(const char *commands, char *buffer, size_t bufferSize);

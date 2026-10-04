@@ -11,6 +11,8 @@
 #include "mqtt_publish.h"
 
 // ---------------------------------
+
+static uint8_t MqttMessageSequence = 0;
 static bool publishMqttMessage(const char *topic, const char *payload);
 
 #define TELEMETRY_PAYLOAD_BUFFER_SIZE 512
@@ -22,7 +24,9 @@ static bool publishMqttMessage(const char *topic, const char *payload);
 
 bool publishStatus(const Telemetry &telemetry) {
   char payload[STATUS_PAYLOAD_BUFFER_SIZE];
-  if (!serializeStatus(telemetry, payload, sizeof(payload))) {
+  const uint8_t sequence = MqttMessageSequence;
+
+  if (!serializeStatus(telemetry, sequence, payload, sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize status");
     return true;
   }
@@ -31,12 +35,17 @@ bool publishStatus(const Telemetry &telemetry) {
     return false;
   }
 
+  MqttMessageSequence++;
+
   return true;
 }
 
 bool publishTelemetry(const Telemetry &telemetry) {
   char payload[TELEMETRY_PAYLOAD_BUFFER_SIZE];
-  if (!serializeTelemetry(telemetry, payload, sizeof(payload))) {
+  const uint8_t sequence = MqttMessageSequence;
+
+  if (!serializeTelemetry(telemetry, MqttMessageSequence, payload,
+                          sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize sensors");
     return true;
   }
@@ -44,6 +53,8 @@ bool publishTelemetry(const Telemetry &telemetry) {
   if (!publishMqttMessage(TOPIC_TELEMETRY, payload)) {
     return false;
   }
+
+  MqttMessageSequence++;
 
   return true;
 }

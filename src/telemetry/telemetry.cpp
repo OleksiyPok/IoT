@@ -15,9 +15,6 @@
 
 // ---------------------------------
 
-static uint8_t sequenceCounter = 0;
-
-// ---------------------------------
 void initTelemetry(Telemetry &telemetry) {
   telemetry.uptime = millis() / 1000;
   telemetry.version = TELEMETRY_PROTOCOL_VERSION;
@@ -34,9 +31,6 @@ void updateTelemetry(Telemetry &telemetry) {
 
   // Update "uptime"
   telemetry.uptime = millis() / 1000;
-
-  // Update sequence
-  telemetry.sequence = sequenceCounter++;
 }
 
 void updateStaleStatus(Telemetry &telemetry) {

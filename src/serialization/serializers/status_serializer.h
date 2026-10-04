@@ -7,5 +7,5 @@
 #include "../../telemetry/telemetry.h"
 
 // ---------------------------------
-bool serializeStatusSnprintf(const Telemetry &data, char *buffer,
-                             size_t bufferSize);
+bool serializeStatusSnprintf(const Telemetry &data, uint8_t sequence,
+                             char *buffer, size_t bufferSize);

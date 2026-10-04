@@ -14,24 +14,20 @@
 #include "serializers/status_serializer.h"
 
 // ---------------------------------
-bool serializeTelemetry(const Telemetry &telemetry, char *buffer,
-                        size_t bufferSize) {
-
+bool serializeTelemetry(const Telemetry &telemetry, uint8_t sequence,
+                        char *buffer, size_t bufferSize) {
 #if defined(TELEMETRY_SERIALIZER_ARDUINO_JSON)
-
-  return serializeTelemetryArduinoJson(telemetry, buffer, bufferSize);
-
+  return serializeTelemetryArduinoJson(telemetry, sequence, buffer, bufferSize);
 #else
-
-  return serializeTelemetrySnprintf(telemetry, buffer, bufferSize);
-
+  return serializeTelemetrySnprintf(telemetry, sequence, buffer, bufferSize);
 #endif
 }
 
-bool serializeStatus(const Telemetry &telemetry, char *buffer,
+bool serializeStatus(const Telemetry &telemetry, uint8_t sequence, char *buffer,
                      size_t bufferSize) {
-  return serializeStatusSnprintf(telemetry, buffer, bufferSize);
+  return serializeStatusSnprintf(telemetry, sequence, buffer, bufferSize);
 };
+
 bool serializeCommands(const char *commands, char *buffer, size_t bufferSize) {
   return serializeCommandsSnprintf(commands, buffer, bufferSize);
 };

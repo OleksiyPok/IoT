@@ -14,6 +14,8 @@
 #define SERVER_URL "http://httpbun.com/post" // HTTP POST
 
 // ---------------------------------
+
+static uint8_t httpMessageSequence = 0;
 static void sendData(const Telemetry &telemetry);
 
 // ---------------------------------
@@ -33,7 +35,9 @@ static void sendData(const Telemetry &telemetry) {
 
   char payload[512];
 
-  if (!serializeTelemetry(telemetry, payload, sizeof(payload))) {
+  if (!serializeTelemetry(telemetry,
+
+                          httpMessageSequence, payload, sizeof(payload))) {
 
     Serial.println("[HTTP] Failed to serialize telemetry");
     http.end();
@@ -50,6 +54,7 @@ static void sendData(const Telemetry &telemetry) {
       http.POST(reinterpret_cast<uint8_t *>(payload), strlen(payload));
 
   if (httpCode == 200) {
+    httpMessageSequence++;
     Serial.println(
         "[HTTP] Server response: '200' (The server has received the data)");
     Serial.println("------------");

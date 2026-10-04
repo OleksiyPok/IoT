@@ -8,7 +8,7 @@
 
 // ---------------------------------
 bool deserializeTelemetry(const char *buffer, size_t bufferSize,
-                          Telemetry &data) {
+                          uint8_t sequence, Telemetry &data) {
 
   if (buffer == nullptr || bufferSize == 0) {
     return false;
@@ -44,7 +44,6 @@ bool deserializeTelemetry(const char *buffer, size_t bufferSize,
   data.device_id = doc["device_id"].as<uint64_t>();
   data.timestamp = doc["timestamp"].as<uint32_t>();
   data.uptime = doc["uptime"].as<uint32_t>();
-  data.sequence = doc["sequence"].as<uint8_t>();
   data.systemState = doc["sys_state"].as<uint16_t>();
 
   // DHT

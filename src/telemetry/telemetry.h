@@ -28,7 +28,6 @@ struct Telemetry {
   uint64_t device_id;
   uint32_t timestamp;
   uint32_t uptime;
-  uint8_t sequence;
   DHTData dht;
   LDRData ldr;
 
@@ -43,7 +42,7 @@ struct Telemetry {
 //   uint16_t ledState;
 // };
 
-#define TELEMETRY_PROTOCOL_VERSION 3
+#define TELEMETRY_PROTOCOL_VERSION 4
 
 void initTelemetry(Telemetry &telemetry);
 void updateTelemetry(Telemetry &telemetry);

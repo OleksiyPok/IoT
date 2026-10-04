@@ -6,8 +6,8 @@
 #include "telemetry_serializer.h"
 
 // ---------------------------------
-bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
-                                size_t bufferSize) {
+bool serializeTelemetrySnprintf(const Telemetry &telemetry, uint8_t sequence,
+                                char *buffer, size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
     return false;
@@ -35,7 +35,7 @@ bool serializeTelemetrySnprintf(const Telemetry &telemetry, char *buffer,
       "},"
       "\"sys_state\":%u}",
       telemetry.version, telemetry.device_id, telemetry.timestamp,
-      telemetry.uptime, telemetry.sequence, telemetry.dht.temperature,
+      telemetry.uptime, sequence, telemetry.dht.temperature,
       telemetry.dht.humidity, telemetry.dht.updated, telemetry.dht.status,
       telemetry.ldr.raw, telemetry.ldr.lux, telemetry.ldr.updated,
       telemetry.ldr.status, telemetry.systemState);

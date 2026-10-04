@@ -6,8 +6,8 @@
 #include "telemetry_serializer_aj.h"
 
 // ---------------------------------
-bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
-                                   size_t bufferSize) {
+bool serializeTelemetryArduinoJson(const Telemetry &telemetry, uint8_t sequence,
+                                   char *buffer, size_t bufferSize) {
 
   if (buffer == nullptr || bufferSize == 0) {
     return false;
@@ -19,7 +19,7 @@ bool serializeTelemetryArduinoJson(const Telemetry &telemetry, char *buffer,
   doc["device_id"] = telemetry.device_id;
   doc["timestamp"] = telemetry.timestamp;
   doc["uptime"] = telemetry.uptime;
-  doc["sequence"] = telemetry.sequence;
+  doc["sequence"] = sequence;
   doc["type"] = "statuses";
 
   JsonObject dht = doc.createNestedObject("dht");

@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <stddef.h>
 #include "../../telemetry/telemetry.h"
+#include <stddef.h>
 
 // ---------------------------------
 bool deserializeTelemetry(const char *buffer, size_t bufferSize,
-                          Telemetry &data);
+                          uint8_t sequence, Telemetry &data);
