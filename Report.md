@@ -34,7 +34,7 @@
 
 #### Policies in JSON
 
-##### Policies of "aws-iot-rule-StoreTelemetry-action-1-role-iot_rule_db_role"
+##### Policy for "aws-iot-rule-StoreTelemetry-action-1-role-iot_rule_db_role"
 
 ```
 {
@@ -48,7 +48,7 @@
 ```  
 
 
-##### Policies of "aws-iot-rule-StoreTelemetry-erroraction-role-iot_rule_cw_role"
+##### Policy for "aws-iot-rule-StoreTelemetry-erroraction-role-iot_rule_cw_role"
 
 ```
 {
@@ -69,7 +69,7 @@
 }
 ```
 
-##### Policies of "aws-iot-rule-state_alarms-action-1-role-iot_rule_cw_role"
+##### Policy for "aws-iot-rule-state_alarms-action-1-role-iot_rule_cw_role"
 ```
 {
     "Version": "2012-10-17",
@@ -90,7 +90,7 @@
 ```
 
 
-##### Policies of "aws-iot-rule-state_alarms-erroraction-role-iot_rule_cw_role"
+##### Policy for "aws-iot-rule-state_alarms-erroraction-role-iot_rule_cw_role"
 ```
 {
     "Version": "2012-10-17",
@@ -111,7 +111,7 @@
 ```
 
 
-##### Policies of "aws-iot-rule-temperature_alarm-action-1-role-iot_rule_cw_role"
+##### Policy for "aws-iot-rule-temperature_alarm-action-1-role-iot_rule_cw_role"
 ```
 {
     "Version": "2012-10-17",
@@ -132,7 +132,7 @@
 ```
 
 
-##### Policies of "aws-iot-rule-temperature_alarm-erroraction-role-iot_rule_cw_role"
+##### Policy for "aws-iot-rule-temperature_alarm-erroraction-role-iot_rule_cw_role"
 ```
 {
     "Version": "2012-10-17",
@@ -156,14 +156,14 @@
 ---
 ### Rules
 
-#### Rules overview
+#### Rule overview
 <img src="./images/AWS/Rules_01_.png" alt="AWS example data" width="700">
 
 
-#### Rule "StoreTelemetry" in detail
+#### Rule "StoreTelemetry" details
 <img src="./images/AWS/Rules_StoreTelemetry_03_.png" alt="AWS example data" width="700">
 
-##### SQL query for rule "StoreTelemetry"
+##### SQL query for the "StoreTelemetry" rule
 ```
 SELECT *,
        timestamp() AS received_at,
