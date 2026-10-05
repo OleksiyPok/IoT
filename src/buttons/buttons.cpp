@@ -8,17 +8,12 @@
 #include "buttons.h"
 #include "buttons_config.h"
 
-
 // ---------------------------------
 #define BUTTON_0_MASK BUTTON_COMMAND_MASK
 #define BUTTON_1_MASK BUTTON_SILENT_MASK
-#define BUTTON_2_MASK BUTTON_2
+#define BUTTON_2_MASK BUTTON_LIGHT_MANUAL_MASK
 #define BUTTON_3_MASK BUTTON_WIFI_DISABLE_MASK
 
-#define BUTTON_0_FIXED false
-#define BUTTON_1_FIXED true
-#define BUTTON_2_FIXED false
-#define BUTTON_3_FIXED false
 
 uint32_t lastDebounce0 = 0;
 uint32_t lastDebounce1 = 0;

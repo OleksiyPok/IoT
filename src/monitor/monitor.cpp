@@ -127,6 +127,8 @@ static void printSystemState(const Telemetry &telemetry) {
   printStatusBit("TIME_ERR", telemetry.systemState, SYSTEM_TIME_ERR_MASK);
   printStatusBit("MQTT_ERR", telemetry.systemState, SYSTEM_MQTT_ERR_MASK);
   printStatusBit("WIFI_ERR", telemetry.systemState, SYSTEM_WIFI_ERR_MASK);
+
+  printStatusBit("LIGHT", telemetry.systemState, SYSTEM_LIGHT_MANUAL_MASK);
 }
 
 static void printDhtTelemetryStatus(const Telemetry &telemetry) {

@@ -43,11 +43,17 @@ static void handleCommand(const Telemetry &telemetry) {
 
   if ((telemetry.buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
-    setCommand(MANUAL_READ_COMMAND);
+    setCommand(COMMAND_01);
   }
 }
 
 static void updateLedState(Telemetry &telemetry) {
+
+  if (telemetry.systemState & SYSTEM_LIGHT_MANUAL_MASK) {
+    telemetry.ledState |= INDICATION_LIGHT_MANUAL_MASK;
+  } else {
+    telemetry.ledState &= ~INDICATION_LIGHT_MANUAL_MASK;
+  }
 
   if (telemetry.systemState & SYSTEM_COMMAND_MASK) {
     telemetry.ledState |= INDICATION_COMMAND_MASK;

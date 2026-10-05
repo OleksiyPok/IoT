@@ -10,7 +10,7 @@
 
 #define BUTTON_COMMAND_MASK (1U << 0)
 #define BUTTON_SILENT_MASK (1U << 1)
-#define BUTTON_2 (1U << 2)
+#define BUTTON_LIGHT_MANUAL_MASK (1U << 2)
 #define BUTTON_WIFI_DISABLE_MASK (1U << 3)
 
 // ---------------------------------

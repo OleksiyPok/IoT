@@ -24,6 +24,10 @@ void updateSystemState(Telemetry &telemetry) {
     telemetry.systemState |= SYSTEM_COMMAND_MASK;
   }
 
+  if (telemetry.buttonsState & BUTTON_LIGHT_MANUAL_MASK) {
+    telemetry.systemState |= SYSTEM_LIGHT_MANUAL_MASK;
+  }
+
   if (telemetry.buttonsState & BUTTON_SILENT_MASK) {
     telemetry.systemState |= SYSTEM_SILENT_MASK;
   }

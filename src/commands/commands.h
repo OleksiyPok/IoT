@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include <Arduino.h>
+#include "commands_config.h"
 
-// ---------------------------------
-static const char MANUAL_READ_COMMAND[] = "manual_read";
 // ---------------------------------
 
 void setCommand(const char *name);

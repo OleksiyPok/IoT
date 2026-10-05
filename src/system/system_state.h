@@ -14,9 +14,11 @@
 #define SYSTEM_MQTT_ERR_MASK (1U << 6) // MQTT error
 #define SYSTEM_WIFI_ERR_MASK (1U << 7) // Wi-Fi error
 
-#define SYSTEM_COMMAND_MASK (1U << 8)
+#define SYSTEM_LIGHT_MANUAL_MASK (1U << 8) // light manual
+#define SYSTEM_COMMAND_MASK (1U << 9)
 
-#define SYSTEM_STATE_MANAGED_MASK (SYSTEM_SILENT_MASK | SYSTEM_COMMAND_MASK)
+#define SYSTEM_STATE_MANAGED_MASK                                              \
+  (SYSTEM_SILENT_MASK | SYSTEM_COMMAND_MASK | SYSTEM_LIGHT_MANUAL_MASK)
 
 #define SYSTEM_STATE_ERR_INIT_MASK                                             \
   (SYSTEM_LDR_ERR_MASK | SYSTEM_DHT_ERR_MASK | SYSTEM_TIME_ERR_MASK |          \
