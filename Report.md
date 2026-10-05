@@ -174,10 +174,6 @@ WHERE bitand(sys_state, 2) = 0  // SYSTEM_LDR_ERR
   AND bitand(sys_state, 4) = 0  // SYSTEM_DHT_ERR
 ```
 
-
-SYSTEM_DHT_ERR_MASK (1U << 2)
-
-
 #### Rule "state_alarms" in detail
 <img src="./images/AWS/Rules_state_alarms_03_.png" alt="AWS example data" width="700">
 
@@ -194,7 +190,6 @@ WHERE sys_state <> 0
 
 ##### SQL query for rule "temperature_alarm"
 ```
-SELECT dht
 SELECT dht
 FROM 'iot-course/OleksiiPok/telemetry'
 WHERE bitand(sys_state, 2) = 0 
