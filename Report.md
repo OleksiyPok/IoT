@@ -7,11 +7,11 @@
 ## IoT Core Configuration
 ### Roles
 
-#### Roles overview
+#### Role overview
 
 <img src="./images/AWS/Roles_01_.png" alt="AWS example data" width="700">
 
-#### Roles in detail
+#### Role detail
 
 #### iot_rule_db_role
 <img src="./images/AWS/Roles_iot_rule_db_role_01_.png" alt="AWS example data" width="700">
@@ -21,18 +21,18 @@
 
 
 ---
-### Roles Policies
+### Role Policies
 
-#### Roles policies overview
+#### Role policies overview
 
 <img src="./images/AWS/Policies_01_.png" alt="AWS example data" width="700">
 
-#### Policies in detail
+#### Policy detail
 
 <img src="./images/AWS/Policies_02_.png" alt="AWS example data" width="700">
 
 
-#### Policies in the JSON
+#### Policies in JSON
 
 ##### Policies of "aws-iot-rule-StoreTelemetry-action-1-role-iot_rule_db_role"
 
