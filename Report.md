@@ -14,9 +14,11 @@
 #### Role detail
 
 #### iot_rule_db_role
+
 <img src="./images/AWS/Roles_iot_rule_db_role_01_.png" alt="AWS example data" width="700">
 
 #### iot_rule_cw_role
+
 <img src="./images/AWS/Roles_iot_rule_cw_role_01_.png" alt="AWS example data" width="700">
 
 
@@ -157,10 +159,12 @@
 ### Rules
 
 #### Rule overview
+
 <img src="./images/AWS/Rules_01_.png" alt="AWS example data" width="700">
 
 
 #### Rule "StoreTelemetry" details
+
 <img src="./images/AWS/Rules_StoreTelemetry_03_.png" alt="AWS example data" width="700">
 
 ##### SQL query for the "StoreTelemetry" rule
@@ -175,6 +179,7 @@ WHERE bitand(sys_state, 2) = 0  // SYSTEM_LDR_ERR
 ```
 
 #### Rule "state_alarms" in detail
+
 <img src="./images/AWS/Rules_state_alarms_03_.png" alt="AWS example data" width="700">
 
 ##### SQL query for rule "state_alarms" 
@@ -214,7 +219,8 @@ AND dht.temperature > 28
 
 ### MQTT Input Messages
 
-*Messages in the "Silent mode" and "Normal mode"* 
+*Messages in the "Silent mode" and "Normal mode"*
+
 <img src="./images/AWS/Mqtt_input_01_.png" alt="AWS example data" width="700">
 
 
@@ -222,6 +228,7 @@ AND dht.temperature > 28
 ### DynamoDB Tables
 
 *DynamoDB > Explore items > iot_telemetry*
+
 <img src="./images/AWS/Tables_03_.png" alt="AWS example data" width="700">
 
 
@@ -230,23 +237,29 @@ AND dht.temperature > 28
 
 #### "telemetry_alarms"
 *CloudWatch > Log management > /aws/iot/rules/telemetry_alarms*
+
 <img src="./images/AWS/Logs_telemetry_alarms_01_.png" alt="AWS example data" width="700">
 
 *CloudWatch > Log management > /aws/iot/rules/telemetry_alarms (one)*
+
 <img src="./images/AWS/Logs_telemetry_alarms_02_.png" alt="AWS example data" width="700">
 
 
 #### "state_alarms"
 *CloudWatch > Log management > /aws/iot/rules/state_alarms*
+
 <img src="./images/AWS/Logs_state_alarms_01_.png" alt="AWS example data" width="700">
 
 *CloudWatch > Log management > /aws/iot/rules/state_alarms (one)*
+
 <img src="./images/AWS/Logs_state_alarms_02_.png" alt="AWS example data" width="700">
 
 
 #### "errors"
 *CloudWatch > Log management > /aws/iot/rules/errors*
+
 <img src="./images/AWS/Logs_errors_01_.png" alt="AWS example data" width="700">
 
 *CloudWatch > Log management > /aws/iot/rules/errors* (one)
+
 <img src="./images/AWS/Logs_errors_02_.png" alt="AWS example data" width="700">
