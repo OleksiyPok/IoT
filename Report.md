@@ -198,13 +198,13 @@ AND dht.temperature > 28
 ```
 
 
-### Tables
+### DynamoDB Tables
 
 <img src="./images/AWS/Tables_01_.png" alt="AWS example data" width="700">
 
 
 
-### Logs
+### CloudWatch Logs
 
 <img src="./images/AWS/Logs_01_.png" alt="AWS example data" width="700">
 
@@ -215,6 +215,7 @@ AND dht.temperature > 28
 ### MQTT Input Messages
 
 _Messages in the "Silent mode" and "Normal mode"_ 
+
 <img src="./images/AWS/Mqtt_input_01_.png" alt="AWS example data" width="700">
 
 
@@ -222,6 +223,7 @@ _Messages in the "Silent mode" and "Normal mode"_
 ### DynamoDB Tables
 
 _DynamoDB > Explore items > iot_telemetry_
+
 <img src="./images/AWS/Tables_03_.png" alt="AWS example data" width="700">
 
 
