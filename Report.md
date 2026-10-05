@@ -215,23 +215,23 @@ AND dht.temperature > 28
 
 
 
-## Examples of received and processed data
+## Examples of Received and Processed data
 
-### MQTT input messages
+### MQTT Input Messages
 
 _Messages in the "Silent mode" and "Normal mode"_ 
 <img src="./images/AWS/Mqtt_input_01_.png" alt="AWS example data" width="700">
 
 
 
-### Tables
+### DynamoDB Tables
 
 _DynamoDB > Explore items > iot_telemetry_
 <img src="./images/AWS/Tables_03_.png" alt="AWS example data" width="700">
 
 
 
-### Logs
+### CloudWatch Logs
 
 #### "telemetry_alarms"
 _CloudWatch > Log management > /aws/iot/rules/telemetry_alarms_
