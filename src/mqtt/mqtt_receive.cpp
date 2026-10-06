@@ -19,23 +19,23 @@ void handleMqttMessage(const char *topic, const uint8_t *payload,
     setIncomingCommand(command);
   }
 
-  //   if (topic == nullptr || payload == nullptr || length == 0) {
-  //     return;
-  //   }
+  if (topic == nullptr || payload == nullptr || length == 0) {
+    return;
+  }
 
-  // #if defined(DEBUG_MODE)
+#if defined(DEBUG_MODE)
 
-  //   Serial.println("[MQTT] Received from topic: ");
-  //   Serial.print("       \"");
-  //   Serial.println(topic);
-  //   Serial.println("\"");
-  //   Serial.print("[MQTT] Payload: ");
+  Serial.println("[MQTT] Received from topic: ");
+  Serial.print("       \"");
+  Serial.println(topic);
+  Serial.println("\"");
+  Serial.print("[MQTT] Payload: ");
 
-  //   for (size_t i = 0; i < length; ++i) {
-  //     Serial.write(payload[i]);
-  //   }
+  for (size_t i = 0; i < length; ++i) {
+    Serial.write(payload[i]);
+  }
 
-  //   Serial.println();
+  Serial.println();
 
-  // #endif
+#endif
 }

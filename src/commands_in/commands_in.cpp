@@ -41,6 +41,10 @@ void handleIncomingCommands(Telemetry &telemetry) {
     if (command.value == CommandValue::Off) {
       telemetry.buttonsState &= ~BUTTON_LIGHT_MANUAL_MASK;
     }
+
+    if (command.value == CommandValue::Toggle) {
+      telemetry.buttonsState ^= BUTTON_LIGHT_MANUAL_MASK;
+    }
   }
 
   clearIncomingCommand();

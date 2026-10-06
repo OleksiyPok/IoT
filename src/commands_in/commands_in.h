@@ -8,7 +8,7 @@ enum class CommandTarget { None, Led };
 
 enum class CommandAction { None, Set };
 
-enum class CommandValue { None, On, Off };
+enum class CommandValue { None, On, Off, Toggle };
 
 struct IncomingCommand {
   CommandTarget target;

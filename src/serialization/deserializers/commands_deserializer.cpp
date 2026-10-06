@@ -49,6 +49,8 @@ bool deserializeCommand(const char *topic, const char *buffer,
     command.value = CommandValue::On;
   } else if (strcmp(value, "off") == 0) {
     command.value = CommandValue::Off;
+  } else if (strcmp(value, "toggle") == 0) {
+    command.value = CommandValue::Toggle;
   } else {
     return false;
   }
