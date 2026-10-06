@@ -10,8 +10,10 @@
 #include "serializers/telemetry_serializer.h"
 #endif
 
+#include "deserializers/commands_deserializer.h"
 #include "serializers/commands_serializer.h"
 #include "serializers/status_serializer.h"
+
 
 // ---------------------------------
 bool serializeTelemetry(const Telemetry &telemetry, uint8_t sequence,

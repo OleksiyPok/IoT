@@ -4,6 +4,7 @@
 #include <WiFi.h>
 
 #include "../indication/indication.h"
+#include "../project_config.h"
 #include "../secrets.h"
 #include "../system/system_state.h"
 #include "../telemetry/telemetry.h"
@@ -131,6 +132,14 @@ bool connectWifi() {
     Serial.println("[Wi-Fi] Connected");
     Serial.print("[Wi-Fi] IP: ");
     Serial.println(WiFi.localIP());
+
+#if defined(DEBUG_MODE)
+    Serial.print("[WiFi] Gateway: ");
+    Serial.println(WiFi.gatewayIP());
+
+    Serial.print("[WiFi] DNS: ");
+    Serial.println(WiFi.dnsIP());
+#endif
 
     wifiConnecting = false;
     wifiConnectionAttempts = 0;

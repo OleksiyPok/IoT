@@ -6,7 +6,8 @@
 #include "actions/actions.h"
 #include "app_config.h"
 #include "buttons/buttons.h"
-#include "commands/commands.h"
+#include "commands_in/commands_in.h"
+#include "commands_out/commands_out.h"
 #include "dht_sensor/dht_sensor.h"
 #include "http/http.h"
 #include "indication/indication.h"
@@ -109,6 +110,9 @@ void loop() {
     lastMqttCheckConnectionMs = now;
     handleMqttConnection(telemetry);
   }
+
+  // Incoming commands
+  handleIncomingCommands(telemetry);
 
   // System state
   updateSystemState(telemetry);

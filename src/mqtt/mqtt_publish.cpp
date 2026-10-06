@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "../commands_out/commands_out.h"
 #include "../indication/indication.h"
 #include "../monitor/monitor.h"
 #include "../serialization/serialization.h"
@@ -60,7 +61,7 @@ bool publishTelemetry(const Telemetry &telemetry) {
 }
 
 bool publishCommands() {
-  const char *command = getCommand();
+  const char *command = getOutgoingCommand();
 
   if (command == nullptr) {
     return false;
@@ -71,26 +72,29 @@ bool publishCommands() {
     return false;
   }
 
-  if (!publishMqttMessage(TOPIC_COMMANDS, payload)) {
+  if (!publishMqttMessage(TOPIC_COMMANDS_OUT, payload)) {
     return false;
   }
 
-  clearCommand();
+  clearOutgoingCommand();
 
   return true;
 }
 
 static bool publishMqttMessage(const char *topic, const char *payload) {
-#if defined(DEBUG_MODE)
-  Serial.println("[MQTT] Publishing to the topic:");
-  Serial.println(topic);
-  printMonitorPayload(payload);
-#endif
 
   const bool ok = mqttPublish(topic, payload);
 
   if (ok) {
     requestIndication(IndicationType::MQTT_PUBLISH);
+#if defined(DEBUG_MODE)
+    Serial.println("[MQTT] Published:");
+    Serial.print("       \"");
+    Serial.print(topic);
+    Serial.println("\"");
+
+    printMonitorPayload(payload);
+#endif
   }
 
   return ok;

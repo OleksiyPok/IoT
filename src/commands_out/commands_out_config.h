@@ -1,4 +1,4 @@
-// src/commands/commands_config.h
+// src/commands_out/commands_out_config.h
 
 #pragma once
 

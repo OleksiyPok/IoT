@@ -2,7 +2,7 @@
 
 #include "actions.h"
 #include "../buttons/buttons.h"
-#include "../commands/commands.h"
+#include "../commands_out/commands_out.h"
 #include "../dht_sensor/dht_sensor.h"
 #include "../indication/indication.h"
 #include "../ldr_sensor/ldr_sensor.h"
@@ -43,7 +43,7 @@ static void handleCommand(const Telemetry &telemetry) {
 
   if ((telemetry.buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
-    setCommand(COMMAND_01);
+    setOutgoingCommand(COMMAND_01);
   }
 }
 
