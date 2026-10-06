@@ -21,6 +21,6 @@ static const char *currentTimezone = DEFAULT_TIMEZONE;
 
 #define TIME_SYNC_INTERVAL_HOURS 24
 #define TIME_SYNC_RETRY_INTERVAL_MS 5000
-#define TIME_SYNC_TIMEOUT_MS 5000
+#define TIME_SYNC_TIMEOUT_MS 30000
 
 // ---------------------------------
