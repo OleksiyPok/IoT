@@ -7,6 +7,7 @@
 #include "../wifi/wifi.h"
 #include "mqtt_config.h"
 #include "mqtt_connection.h"
+#include "mqtt_receive.h"
 
 // ---------------------------------
 
@@ -31,6 +32,8 @@ void initMqtt() {
   }
 
   mqttService.init();
+  mqttService.setCallback(handleMqttMessage);
+
   mqttInitialized = true;
 }
 
@@ -58,9 +61,23 @@ static bool connectMQTT(uint64_t deviceId) {
   const bool connected = mqttService.connect(clientId);
 
   if (connected) {
+
+    if (!mqttService.subscribe(TOPIC_COMMANDS)) {
+
+      Serial.print("[MQTT] Failed to subscribe: ");
+      Serial.println(TOPIC_COMMANDS);
+
+      mqttService.disconnect();
+      mqttLastStatus = MqttStatus::Disconnected;
+
+      return false;
+    }
+
     mqttLastStatus = MqttStatus::Connected;
 
     Serial.println("[MQTT] Connected");
+    Serial.print("[MQTT] Subscribed: ");
+    Serial.println(TOPIC_COMMANDS);
     Serial.println();
 
     mqttConnectionAttempts = 0;

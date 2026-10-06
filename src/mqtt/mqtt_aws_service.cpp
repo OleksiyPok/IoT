@@ -15,6 +15,20 @@ static PubSubClient mqttClient(wifiClientSecure);
 
 // ---------------------------------
 
+static MqttMessageCallback mqttMessageCallback = nullptr;
+
+static void handleMqttMessage(char *topic, uint8_t *payload,
+                              unsigned int length) {
+
+  if (mqttMessageCallback == nullptr) {
+    return;
+  }
+
+  mqttMessageCallback(topic, payload, length);
+}
+
+// ---------------------------------
+
 void MqttAwsService::init() {
 
   wifiClientSecure.setCACert(AWS_CERT_CA);
@@ -58,6 +72,23 @@ bool MqttAwsService::publish(const char *topic, const char *payload) {
   }
 
   return mqttClient.publish(topic, payload);
+}
+
+// ---------------------------------
+
+bool MqttAwsService::subscribe(const char *topic) {
+
+  if (!mqttClient.connected() || topic == nullptr) {
+    return false;
+  }
+
+  return mqttClient.subscribe(topic);
+}
+
+void MqttAwsService::setCallback(MqttMessageCallback callback) {
+
+  mqttMessageCallback = callback;
+  mqttClient.setCallback(handleMqttMessage);
 }
 
 // ---------------------------------

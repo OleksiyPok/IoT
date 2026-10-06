@@ -12,5 +12,7 @@ public:
   void disconnect() override;
   void loop() override;
   bool publish(const char *topic, const char *payload) override;
+  bool subscribe(const char *topic) override;
+  void setCallback(MqttMessageCallback callback) override;
   MqttStatus status() override;
 };

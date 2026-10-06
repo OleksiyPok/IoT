@@ -8,8 +8,24 @@
 #include "mqtt_config.h"
 #include "mqtt_test_service.h"
 
+// ---------------------------------
+
 static WiFiClient wifiClient;
 static PubSubClient mqttClient(wifiClient);
+
+static MqttMessageCallback mqttMessageCallback = nullptr;
+
+static void handleMqttMessage(char *topic, uint8_t *payload,
+                              unsigned int length) {
+
+  if (mqttMessageCallback == nullptr) {
+    return;
+  }
+
+  mqttMessageCallback(topic, payload, length);
+}
+
+// ---------------------------------
 
 void MqttTestService::init() {
   mqttClient.setServer(MQTT_TEST_BROKER, MQTT_TEST_PORT);
@@ -35,6 +51,21 @@ bool MqttTestService::publish(const char *topic, const char *payload) {
   }
 
   return mqttClient.publish(topic, payload);
+}
+
+bool MqttTestService::subscribe(const char *topic) {
+
+  if (!mqttClient.connected() || topic == nullptr) {
+    return false;
+  }
+
+  return mqttClient.subscribe(topic);
+}
+
+void MqttTestService::setCallback(MqttMessageCallback callback) {
+
+  mqttMessageCallback = callback;
+  mqttClient.setCallback(handleMqttMessage);
 }
 
 MqttStatus MqttTestService::status() {
