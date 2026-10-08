@@ -5,8 +5,8 @@
 // ---------------------------------
 
 // Uncomment exactly one service
-// #define MQTT_SERVICE_AWS
-#define MQTT_SERVICE_TEST
+#define MQTT_SERVICE_AWS
+// #define MQTT_SERVICE_TEST
 
 // ---------------------------------
 
