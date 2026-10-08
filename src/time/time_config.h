@@ -15,11 +15,11 @@ static const char *currentTimezone = LOCAL_TIMEZONE;
 static const char *currentTimezone = DEFAULT_TIMEZONE;
 #endif
 
-#define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_HOURS * 60UL * 60UL * 1000UL)
+#define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_MIN * 60UL * 1000UL)
 
 // ---------------------------------
 
-#define TIME_SYNC_INTERVAL_HOURS 24
+#define TIME_SYNC_INTERVAL_MIN 5
 #define TIME_SYNC_RETRY_INTERVAL_MS 5000
 #define TIME_SYNC_TIMEOUT_MS 30000
 
