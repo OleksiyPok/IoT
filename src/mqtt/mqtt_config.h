@@ -35,7 +35,7 @@ using MqttServiceType = MqttAwsService;
 #define TOPIC_COMMANDS_IN MQTT_TOP_TOPIC "/commands/#"
 #define TOPIC_COMMANDS_OUT MQTT_TOP_TOPIC "/commands"
 #define TOPIC_TELEMETRY MQTT_TOP_TOPIC "/telemetry"
-#define TOPIC_EVENTS_MQTT_TOP_TOPIC "/events"
+#define TOPIC_EVENTS MQTT_TOP_TOPIC "/events"
 
 #define MQTT_SOCKET_TIMEOUT_SEC 30
 #define MQTT_KEEP_ALIVE 60

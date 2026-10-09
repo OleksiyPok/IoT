@@ -28,7 +28,7 @@ void syncTime() {
 
   sntp_set_sync_status(SNTP_SYNC_STATUS_RESET);
 
-  configTime(0, 0, NTP_SERVER);
+  configTime(0, 0, NTP_SERVER_1, NTP_SERVER_2, NTP_SERVER_3);
 
   setenv("TZ", currentTimezone, 1);
   tzset();

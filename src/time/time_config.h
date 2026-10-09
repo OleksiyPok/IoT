@@ -2,7 +2,9 @@
 
 #pragma once
 
-static const char *NTP_SERVER = "pool.ntp.org";
+static const char *NTP_SERVER_1 = "pool.ntp.org";
+static const char *NTP_SERVER_2 = "time.aws.com";
+static const char *NTP_SERVER_3 = "europe.pool.ntp.org";
 
 // Set local timezone here.
 // Leave undefined to use UTC.
