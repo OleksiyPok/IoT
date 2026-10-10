@@ -20,6 +20,7 @@ static bool publishMqttMessage(const char *topic, const char *payload);
 #define SENSORS_PAYLOAD_BUFFER_SIZE 256
 #define STATUS_PAYLOAD_BUFFER_SIZE 256
 #define COMMANDS_PAYLOAD_BUFFER_SIZE 128
+#define EVENTS_PAYLOAD_BUFFER_SIZE 128
 
 // ---------------------------------
 
@@ -82,17 +83,18 @@ bool publishCommands() {
 }
 
 bool publishLedChanged(bool isOn) {
-  char payload[64];
+  char payload[EVENTS_PAYLOAD_BUFFER_SIZE];
 
-  const int length = snprintf(payload, sizeof(payload),
-                              "{\"event\":\"led_changed\",\"value\":\"%s\"}",
-                              isOn ? "on" : "off");
-
-  if (length < 0 || static_cast<size_t>(length) >= sizeof(payload)) {
+  if (!serializeLedChanged(isOn, payload, sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize event");
     return false;
   }
 
-  return publishMqttMessage(TOPIC_EVENTS, payload);
+  if (!publishMqttMessage(TOPIC_EVENTS, payload)) {
+    return false;
+  }
+
+  return true;
 }
 
 static bool publishMqttMessage(const char *topic, const char *payload) {

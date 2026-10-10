@@ -12,8 +12,8 @@
 
 #include "deserializers/commands_deserializer.h"
 #include "serializers/commands_serializer.h"
+#include "serializers/events_serializer.h"
 #include "serializers/status_serializer.h"
-
 
 // ---------------------------------
 bool serializeTelemetry(const Telemetry &telemetry, uint8_t sequence,
@@ -32,4 +32,8 @@ bool serializeStatus(const Telemetry &telemetry, uint8_t sequence, char *buffer,
 
 bool serializeCommands(const char *commands, char *buffer, size_t bufferSize) {
   return serializeCommandsSnprintf(commands, buffer, bufferSize);
+};
+
+bool serializeLedChanged(const bool isOn, char *buffer, size_t bufferSize) {
+  return serializeLedChangedSnprintf(isOn, buffer, bufferSize);
 };
