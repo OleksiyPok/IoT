@@ -20,35 +20,35 @@ static const char *currentTimezone = DEFAULT_TIMEZONE;
 // ---------------------------------
 
 // Interval between automatic NTP synchronization attempts, in minutes
-#define TIME_SYNC_INTERVAL_MIN 5
+#define NTP_SYNC_INTERVAL_MIN 5
 // Interval between automatic NTP synchronization attempts, in milliseconds
-#define TIME_SYNC_INTERVAL_MS (TIME_SYNC_INTERVAL_MIN * 60UL * 1000UL)
+#define NTP_SYNC_INTERVAL_MS (NTP_SYNC_INTERVAL_MIN * 60UL * 1000UL)
 // Minimum interval between retry checks, in milliseconds
-#define TIME_SYNC_RETRY_INTERVAL_MS 5000
+#define NTP_SYNC_RETRY_INTERVAL_MS 5000
 // Maximum time to wait for an NTP synchronization attempt to complete, in
 // milliseconds
-#define TIME_SYNC_TIMEOUT_MS 30000
+#define NTP_SYNC_TIMEOUT_MS 30000
 
 // ---------------------------------
 
-#if TIME_SYNC_INTERVAL_MIN <= 0
-#error "TIME_SYNC_INTERVAL_MIN must be greater than 0"
+#if NTP_SYNC_INTERVAL_MIN <= 0
+#error "NTP_SYNC_INTERVAL_MIN must be greater than 0"
 #endif
 
-#if TIME_SYNC_RETRY_INTERVAL_MS <= 0
-#error "TIME_SYNC_RETRY_INTERVAL_MS must be greater than 0"
+#if NTP_SYNC_RETRY_INTERVAL_MS <= 0
+#error "NTP_SYNC_RETRY_INTERVAL_MS must be greater than 0"
 #endif
 
-#if TIME_SYNC_TIMEOUT_MS <= 0
-#error "TIME_SYNC_TIMEOUT_MS must be greater than 0"
+#if NTP_SYNC_TIMEOUT_MS <= 0
+#error "NTP_SYNC_TIMEOUT_MS must be greater than 0"
 #endif
 
-#if TIME_SYNC_RETRY_INTERVAL_MS >= TIME_SYNC_TIMEOUT_MS
-#error "TIME_SYNC_RETRY_INTERVAL_MS must be less than TIME_SYNC_TIMEOUT_MS"
+#if NTP_SYNC_RETRY_INTERVAL_MS >= NTP_SYNC_TIMEOUT_MS
+#error "NTP_SYNC_RETRY_INTERVAL_MS must be less than NTP_SYNC_TIMEOUT_MS"
 #endif
 
-#if TIME_SYNC_TIMEOUT_MS >= TIME_SYNC_INTERVAL_MS
-#error "TIME_SYNC_TIMEOUT_MS must be less than TIME_SYNC_INTERVAL_MS"
+#if NTP_SYNC_TIMEOUT_MS >= NTP_SYNC_INTERVAL_MS
+#error "NTP_SYNC_TIMEOUT_MS must be less than NTP_SYNC_INTERVAL_MS"
 #endif
 
 // ---------------------------------

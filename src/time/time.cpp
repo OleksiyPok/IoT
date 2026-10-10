@@ -43,7 +43,7 @@ void handleTimeSynchronization() {
     }
 
     // Current attempt timed out.
-    if (now - timeSyncStartedAt >= TIME_SYNC_TIMEOUT_MS) {
+    if (now - timeSyncStartedAt >= NTP_SYNC_TIMEOUT_MS) {
 
       timeSyncPending = false;
 
@@ -57,7 +57,7 @@ void handleTimeSynchronization() {
   if (!timeSynchronized) {
 
     if (timeLastAttemptAt == 0 ||
-        now - timeLastAttemptAt >= TIME_SYNC_RETRY_INTERVAL_MS) {
+        now - timeLastAttemptAt >= NTP_SYNC_RETRY_INTERVAL_MS) {
 
       startTimeSynchronization();
     }
@@ -66,7 +66,7 @@ void handleTimeSynchronization() {
   }
 
   // Periodic synchronization.
-  if (now - timeLastSynchronizedAt >= TIME_SYNC_INTERVAL_MS) {
+  if (now - timeLastSynchronizedAt >= NTP_SYNC_INTERVAL_MS) {
 
     startTimeSynchronization();
   }
