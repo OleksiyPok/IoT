@@ -81,6 +81,20 @@ bool publishCommands() {
   return true;
 }
 
+bool publishLedChanged(bool isOn) {
+  char payload[64];
+
+  const int length = snprintf(payload, sizeof(payload),
+                              "{\"event\":\"led_changed\",\"value\":\"%s\"}",
+                              isOn ? "on" : "off");
+
+  if (length < 0 || static_cast<size_t>(length) >= sizeof(payload)) {
+    return false;
+  }
+
+  return publishMqttMessage(TOPIC_EVENTS, payload);
+}
+
 static bool publishMqttMessage(const char *topic, const char *payload) {
 
   const bool ok = mqttPublish(topic, payload);

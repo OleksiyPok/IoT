@@ -9,6 +9,7 @@
 #include "commands_in/commands_in.h"
 #include "commands_out/commands_out.h"
 #include "dht_sensor/dht_sensor.h"
+#include "events/events.h"
 #include "http/http.h"
 #include "indication/indication.h"
 #include "ldr_sensor/ldr_sensor.h"
@@ -28,6 +29,7 @@ uint32_t lastWiFiCheckConnectionMs = 0;
 uint32_t lastMqttCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
+uint32_t lastCheckEventsMs = 0;
 uint32_t lastIndicationChangeMs = 0;
 uint32_t lastStaleWatchdogMs = 0;
 uint32_t lastLdrSensorReadMs = 0;
@@ -116,6 +118,12 @@ void loop() {
   if (now - lastActionsMs >= ACTIONS_MS) {
     lastActionsMs = now;
     handleActions(telemetry);
+  }
+
+  // Events
+  if (now - lastCheckEventsMs >= EVENTS_MS) {
+    lastCheckEventsMs = now;
+    handleEvents(telemetry);
   }
 
   // Telemetry

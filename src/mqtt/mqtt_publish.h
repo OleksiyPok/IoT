@@ -9,3 +9,5 @@
 bool publishStatus(const Telemetry &telemetry);
 bool publishTelemetry(const Telemetry &telemetry);
 bool publishCommands();
+
+bool publishLedChanged(bool isOn);
