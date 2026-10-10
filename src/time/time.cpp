@@ -46,6 +46,7 @@ void handleTimeSynchronization() {
     if (now - timeSyncStartedAt >= NTP_SYNC_TIMEOUT_MS) {
 
       timeSyncPending = false;
+      timeLastAttemptAt = now;
 
       Serial.println("[NTP] Synchronization timeout");
     }

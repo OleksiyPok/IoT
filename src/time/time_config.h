@@ -43,10 +43,6 @@ static const char *currentTimezone = DEFAULT_TIMEZONE;
 #error "NTP_SYNC_TIMEOUT_MS must be greater than 0"
 #endif
 
-#if NTP_SYNC_RETRY_INTERVAL_MS >= NTP_SYNC_TIMEOUT_MS
-#error "NTP_SYNC_RETRY_INTERVAL_MS must be less than NTP_SYNC_TIMEOUT_MS"
-#endif
-
 #if NTP_SYNC_TIMEOUT_MS >= NTP_SYNC_INTERVAL_MS
 #error "NTP_SYNC_TIMEOUT_MS must be less than NTP_SYNC_INTERVAL_MS"
 #endif
