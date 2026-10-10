@@ -1,7 +1,6 @@
 // src/time/time.cpp
 
 #include <Arduino.h>
-#include <esp_sntp.h>
 #include <time.h>
 
 #include "../project_config.h"
@@ -12,55 +11,76 @@
 
 static bool timeSyncPending = false;
 static bool timeSynchronized = false;
-static uint32_t timeSyncStartedAt = 0;
 
+static uint32_t timeSyncStartedAt = 0;
+static uint32_t timeLastAttemptAt = 0;
+static uint32_t timeLastSynchronizedAt = 0;
+
+static void startTimeSynchronization();
 static void printCurrentTime();
 
 // ---------------------------------
 
-void syncTime() {
+void handleTimeSynchronization() {
 
+  const uint32_t now = millis();
+
+  // An NTP synchronization is currently in progress.
   if (timeSyncPending) {
+
+    const time_t currentTime = time(nullptr);
+
+    // NTP synchronization completed.
+    if (currentTime >= 100000) {
+
+      timeSyncPending = false;
+      timeSynchronized = true;
+      timeLastSynchronizedAt = now;
+
+      printCurrentTime();
+
+      return;
+    }
+
+    // Current attempt timed out.
+    if (now - timeSyncStartedAt >= TIME_SYNC_TIMEOUT_MS) {
+
+      timeSyncPending = false;
+
+      Serial.println("[NTP] Synchronization timeout");
+    }
+
     return;
   }
 
-  Serial.println("[NTP] Synchronizing time...");
+  // Initial synchronization or retry after failure.
+  if (!timeSynchronized) {
 
-  sntp_set_sync_status(SNTP_SYNC_STATUS_RESET);
+    if (timeLastAttemptAt == 0 ||
+        now - timeLastAttemptAt >= TIME_SYNC_RETRY_INTERVAL_MS) {
 
-  configTime(0, 0, NTP_SERVER_1, NTP_SERVER_2, NTP_SERVER_3);
-
-  setenv("TZ", currentTimezone, 1);
-  tzset();
-
-  sntp_set_sync_interval(TIME_SYNC_INTERVAL_MS);
-  sntp_restart();
-
-  timeSyncPending = true;
-  timeSynchronized = false;
-  timeSyncStartedAt = millis();
-}
-
-bool isTimeSynchronized() {
-
-  if (sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED) {
-    timeSyncPending = false;
-    if (!timeSynchronized) {
-      timeSynchronized = true;
-      printCurrentTime();
+      startTimeSynchronization();
     }
+
+    return;
   }
 
-  if (timeSyncPending && millis() - timeSyncStartedAt >= TIME_SYNC_TIMEOUT_MS) {
-    timeSyncPending = false;
-  }
+  // Periodic synchronization.
+  if (now - timeLastSynchronizedAt >= TIME_SYNC_INTERVAL_MS) {
 
-  return timeSynchronized;
+    startTimeSynchronization();
+  }
 }
+
+bool isTimeSynchronized() { return timeSynchronized; }
 
 void invalidateTimeSync() {
   timeSyncPending = false;
   timeSynchronized = false;
+
+  timeSyncStartedAt = 0;
+  timeLastAttemptAt = 0;
+  timeLastSynchronizedAt = 0;
 }
 
 time_t getCurrentTimestamp() { return time(nullptr); }
@@ -101,6 +121,26 @@ void setTimezone(const char *timezone) {
 
   setenv("TZ", currentTimezone, 1);
   tzset();
+}
+
+static void startTimeSynchronization() {
+
+  if (timeSyncPending) {
+    return;
+  }
+
+  Serial.println("[NTP] Synchronizing time...");
+
+  configTime(0, 0, NTP_SERVER_1, NTP_SERVER_2, NTP_SERVER_3);
+
+  setenv("TZ", currentTimezone, 1);
+  tzset();
+
+  const uint32_t now = millis();
+
+  timeSyncPending = true;
+  timeSyncStartedAt = now;
+  timeLastAttemptAt = now;
 }
 
 static void printCurrentTime() {

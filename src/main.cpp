@@ -20,13 +20,11 @@
 #include "system/system_state.h"
 #include "telemetry/telemetry.h"
 #include "time/time.h"
-#include "time/time_config.h"
 #include "wifi/wifi.h"
 
 // ---------------------------------
 
 uint32_t lastWiFiCheckConnectionMs = 0;
-uint32_t lastTimeSyncRequestMs = 0;
 uint32_t lastMqttCheckConnectionMs = 0;
 uint32_t lastButtonsReadMs = 0;
 uint32_t lastActionsMs = 0;
@@ -92,16 +90,13 @@ void loop() {
 
   // Time synchronization
   if (!isWifiConnected()) {
-    lastTimeSyncRequestMs = 0;
+    invalidateTimeSync();
+  } else {
+    handleTimeSynchronization();
+  }
 
-  } else if (!isTimeSynchronized()) {
-    if (lastTimeSyncRequestMs == 0 ||
-        now - lastTimeSyncRequestMs >= TIME_SYNC_RETRY_INTERVAL_MS) {
-      lastTimeSyncRequestMs = now;
-      syncTime();
-    }
-
-  } else if (isWifiConnected() && isTimeSynchronized()) {
+  // MQTT initialization
+  if (isWifiConnected() && isTimeSynchronized()) {
     initMqtt();
   }
 

@@ -6,8 +6,8 @@
 
 // ---------------------------------
 
-// Request NTP synchronization.
-void syncTime();
+// Handle non-blocking NTP synchronization.
+void handleTimeSynchronization();
 
 // Check whether the requested NTP synchronization has completed.
 bool isTimeSynchronized();

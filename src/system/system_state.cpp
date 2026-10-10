@@ -49,8 +49,6 @@ void updateSystemState(Telemetry &telemetry) {
   // Wi-Fi error confirmation.
   if (isWifiConnected()) {
     telemetry.systemState &= ~SYSTEM_WIFI_ERR_MASK;
-  } else {
-    invalidateTimeSync();
   }
 
   // Time error confirmation.
