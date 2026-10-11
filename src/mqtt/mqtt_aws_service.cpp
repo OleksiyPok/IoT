@@ -82,7 +82,7 @@ bool MqttAwsService::subscribe(const char *topic) {
     return false;
   }
 
-  return mqttClient.subscribe(topic);
+  return mqttClient.subscribe(topic, MQTT_SUBSCRIBE_QOS);
 }
 
 void MqttAwsService::setCallback(MqttMessageCallback callback) {

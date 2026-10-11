@@ -32,6 +32,9 @@ using MqttServiceType = MqttAwsService;
 
 #define MQTT_TOP_TOPIC "iot-course/OleksiiPok"
 
+#define MQTT_SUBSCRIBE_QOS 0
+#define MQTT_PUBLISH_QOS 0
+
 #define TOPIC_COMMANDS_IN MQTT_TOP_TOPIC "/commands/#"
 #define TOPIC_COMMANDS_OUT MQTT_TOP_TOPIC "/commands"
 #define TOPIC_TELEMETRY MQTT_TOP_TOPIC "/telemetry"
@@ -45,4 +48,13 @@ using MqttServiceType = MqttAwsService;
 
 #define MQTT_BUFFER_SIZE 512
 
+// ---------------------------------
+
+#if MQTT_PUBLISH_QOS != 0
+#error "PubSubClient supports only QoS 0 for publishing"
+#endif
+
+#if MQTT_SUBSCRIBE_QOS < 0 || MQTT_SUBSCRIBE_QOS > 1
+#error "MQTT_SUBSCRIBE_QOS must be 0 or 1"
+#endif
 // ---------------------------------
