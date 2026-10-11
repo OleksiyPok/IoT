@@ -1,252 +1,190 @@
 [🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
 
-
 # IoT Project
 
 <img src="../images/wokwi-A.png" alt="Project Circuit" width="700">
 
 ## Project Description
 
-The project is an ESP32 firmware for monitoring environmental conditions, processing device states, and communicating telemetry.
+ESP32 firmware for environmental monitoring, local indication, and remote control through MQTT. The firmware reads a DHT sensor and an LDR, validates measurements, maintains sensor and system status, synchronizes time with NTP, and exchanges telemetry, events, and commands with an MQTT broker.
 
-The firmware is organized into independent modules for:
+The code is split into modules so sensor handling, state aggregation, actions, indication, networking, and JSON serialization remain separate.
 
-* DHT22 temperature and humidity monitoring;
+## Features
 
-* LDR ambient light measurement and lux calculation;
+- DHT temperature and humidity measurement.
+- LDR ADC measurement and conversion to illuminance in lux.
+- Sensor reading validation, alarm flags, device-error flags, and stale-data detection.
+- Aggregated system-state register for sensor and connection errors.
+- Wi-Fi connection handling, reconnection attempts, and NTP synchronization.
+- MQTT connection to AWS IoT Core using TLS and device certificates, or to a public test broker selected in configuration.
+- Periodic telemetry publication, status serialization support, outgoing command publication, incoming LED commands, and LED-change events.
+- LED indication for light-control mode, light thresholds, temperature/humidity alarms, silent mode, command activity, Wi-Fi connection, and MQTT publication.
+- Serial Monitor diagnostics, including bit-level status output and formatted MQTT payloads when debug mode is enabled.
 
-* telemetry and status processing;
+## Hardware and Buttons
 
-* buttons and device actions;
+Pin assignments are in `src/hardware_config.h`. Check them against the wiring before uploading.
 
-* LED indication;
+| Button | Default pin | Behaviour |
+|---|---:|---|
+| Button 0 | `BUTTON_0_PIN` | Momentary action: sets the outgoing command `manual_trigger` and attempts to publish it. |
+| Button 1 | `BUTTON_1_PIN` | Fixed/toggle state: enables or disables silent mode. DHT sampling is paused while silent mode is active; LDR sampling continues. |
+| Button 2 | `BUTTON_2_PIN` | Fixed/toggle state: enables or disables manual light mode. |
+| Button 3 | `BUTTON_3_PIN` | Momentary test action: disconnects Wi-Fi. The normal connection manager may later reconnect. |
 
-* Wi-Fi and NTP time synchronization;
+The button pins are currently configured as `18`, `19`, `5`, and `4`, respectively. `BUTTON_0_FIXED` through `BUTTON_3_FIXED` in `src/buttons/buttons_config.h` define whether a button state is momentary or retained. Debounce timing is configured there as well.
 
-* MQTT communication;
+## LED Indication
 
-* Serial Monitor diagnostics.
+LED pins are configured in `src/hardware_config.h`; indication patterns are configured in `src/indication/indication_config.h`.
 
-## Project Structure
+- **Manual light** — reflects the manual light-control state.
+- **Automatic/light-low indication** — reflects the LDR light-low status.
+- **Light minimum/maximum** — indicates the configured lux alarm states.
+- **Temperature minimum/maximum** — indicates DHT temperature alarm states.
+- **Humidity minimum/maximum** — corresponding indication states are supported in the code; physical pins may be left undefined in the hardware configuration.
+- **Silent mode** — indicates the silent-mode state.
+- **Command** — indicates command activity.
+- **Built-in LED** — used for Wi-Fi connection and MQTT publication patterns.
 
-The main modules are:
+Each indication can be configured as continuous or blinking, with its own blink count and on/off intervals.
 
-* `dht_sensor` — temperature, humidity, validation, alarms, and sensor status;
+## Telemetry Model
 
-* `ldr_sensor` — ADC reading, lux calculation, validation, alarms, and sensor status;
+The common `Telemetry` structure is defined in `src/telemetry/telemetry.h`. It contains:
 
-* `telemetry` — common device data, timestamps, uptime, sequence, and STALE watchdog;
+- protocol version, device ID, Unix timestamp, and uptime;
+- DHT data: temperature, humidity, last successful update time, update uptime, and status flags;
+- LDR data: raw ADC value, calculated lux, last successful update time, update uptime, and status flags;
+- button state, aggregated system state, and LED indication state.
 
-* `system` — aggregated system state;
-
-* `buttons` — physical button input;
-
-* `actions` — device commands and LED state processing;
-
-* `indication` — LED indication patterns;
-
-* `wifi` — Wi-Fi connection management;
-
-* `time` — NTP synchronization and timezone;
-
-* `mqtt` — MQTT connection, publishing, and services;
-
-* `serialization` — telemetry, status, and command JSON;
-
-* `monitor` — debug output.
-
-## Telemetry Data
-
-The internal telemetry structure contains:
-
-* protocol version;
-
-* device ID;
-
-* timestamp;
-
-* uptime;
-
-* sequence number;
-
-* DHT22 data;
-
-* LDR data;
-
-* button state;
-
-* system state;
-
-* LED state.
-
-DHT22 data contains:
-
-* temperature;
-
-* humidity;
-
-* last successful update time;
-
-* update uptime;
-
-* status.
-
-LDR data contains:
-
-* raw ADC value;
-
-* calculated lux;
-
-* last successful update time;
-
-* update uptime;
-
-* status.
+The telemetry update routine refreshes the timestamp and uptime. Sensor data and system state are updated by their respective modules.
 
 ## Sensor Limits and Thresholds
 
-Temperature, humidity, and illumination are checked using three types of configured values:
+Threshold values are defined symbolically in the sensor configuration files. Adjust them for the sensor, circuit, and deployment; do not hard-code thresholds in application logic.
 
-* **valid limits** define the range in which the measured data is considered valid;
+**DHT** — `src/dht_sensor/dht_config.h`
 
-* **alarm thresholds** define conditions that require an alarm status;
+- `DHT_TEMPERATURE_VALID_MIN`, `DHT_TEMPERATURE_VALID_MAX`
+- `DHT_HUMIDITY_VALID_MIN`, `DHT_HUMIDITY_VALID_MAX`
+- `DHT_TEMPERATURE_ALARM_MIN`, `DHT_TEMPERATURE_ALARM_MAX`
+- `DHT_HUMIDITY_ALARM_MIN`, `DHT_HUMIDITY_ALARM_MAX`
 
-* **device limits** are used to detect sensor or device errors.
+**LDR** — `src/ldr_sensor/ldr_config.h`
 
-For DHT22:
+- `LDR_ADC_VALID_MIN`, `LDR_ADC_VALID_MAX`
+- `LDR_LUX_VALID_MIN`, `LDR_LUX_VALID_MAX`
+- `LDR_LUX_ALARM_MIN`, `LDR_LUX_ALARM_MAX`
+- `LDR_LUX_THRESHOLD_LIGHT_LOW`
 
-* `DHT_TEMPERATURE_VALID_MIN`;
+Valid limits determine whether a reading is acceptable. Alarm thresholds set alarm/status flags and drive LED indications; an alarm does not automatically mean a sensor read error. Device/read errors and invalid data are represented separately in the sensor status.
 
-* `DHT_TEMPERATURE_VALID_MAX`;
+## System State, Status, and STALE
 
-* `DHT_TEMPERATURE_ALARM_MIN`;
+### System state register
 
-* `DHT_TEMPERATURE_ALARM_MAX`;
+`systemState` is a bit field managed by `src/system/system_state.cpp`. It combines user-operating states and communication/sensor error flags, including:
 
-* `DHT_HUMIDITY_VALID_MIN`;
+- `SILENT` — silent mode;
+- `LDR_ERR`, `DHT_ERR` — sensor errors;
+- `TIME_ERR` — time synchronization error;
+- `MQTT_ERR`, `WIFI_ERR` — communication errors;
+- `LIGHT_MANUAL` — manual light-control mode;
+- `COMMAND` — command activity.
 
-* `DHT_HUMIDITY_VALID_MAX`;
+Error flags are initialized as active and cleared only when the corresponding condition is confirmed to be normal. The register is recalculated by the system-state module; sensor-specific status remains in the DHT and LDR data structures.
 
-* `DHT_HUMIDITY_ALARM_MIN`;
+### Sensor status and STALE
 
-* `DHT_HUMIDITY_ALARM_MAX`.
+DHT and LDR maintain separate status bit fields. These include device/read errors, invalid data, stale data, and their sensor-specific alarm states.
 
-For LDR:
-
-* `LDR_ADC_VALID_MIN`;
-
-* `LDR_ADC_VALID_MAX`;
-
-* `LDR_LUX_VALID_MIN`;
-
-* `LDR_LUX_VALID_MAX`;
-
-* `LDR_LUX_ALARM_MIN`;
-
-* `LDR_LUX_ALARM_MAX`;
-
-* `LDR_LUX_THRESHOLD_LIGHT_LOW`.
-
-A sensor receives an `ERROR` status when the sensor read fails or when measured data is outside its valid range.
-
-Crossing an alarm threshold does not by itself mean `ERROR`; it sets the corresponding alarm status.
-
-## STATE, STALE and Status Aggregation
-
-### STATE
-
-`systemState` is a bit-field representing the current system conditions.
-
-It contains managed states such as:
-
-* silent mode;
-
-* command activity;
-
-and system error states for:
-
-* DHT;
-
-* LDR;
-
-* Wi-Fi;
-
-* time synchronization;
-
-* MQTT.
-
-Error bits are initialized as active and are cleared only after the corresponding condition is confirmed to be normal.
-
-### STALE
-
-`STALE` is a sensor-data freshness flag.
-
-The watchdog periodically sets `STALE` for DHT and LDR data. A successful sensor read clears the corresponding `STALE` flag. If a read fails, `STALE` remains active.
-
-Thus, `STALE` indicates that a new successful sensor update has not been confirmed.
-
-### Status Aggregation
-
-Sensor status is maintained separately for DHT and LDR.
-
-`systemState` aggregates the important sensor and communication errors into system-level error flags. LED indication and other actions use these states without duplicating the underlying sensor data.
+The stale watchdog periodically marks both sensor datasets as `STALE`. A successful new reading clears the relevant stale flag. If a new reading is not successfully confirmed, the stale state remains active. The watchdog interval is derived from the sensor/telemetry intervals in `src/app_config.h`.
 
 ## MQTT Communication
 
-The device communicates with an MQTT broker through the configured MQTT service.
+The selected service is controlled by `src/mqtt/mqtt_config.h`. Exactly one service must be enabled:
 
-The MQTT interface uses three message types:
+- `MQTT_SERVICE_AWS` — AWS IoT Core over TLS;
+- `MQTT_SERVICE_TEST` — public test broker, configured in `src/secrets.h`.
 
-* `telemetry` — sensor data together with common telemetry fields and system state;
+The current topic prefix is `MQTT_TOP_TOPIC` (`iot-course/OleksiiPok`). Topics are derived from that prefix:
 
-* `status` — DHT, LDR, and system status information;
+| Purpose | Topic |
+|---|---|
+| Telemetry and status destination | `.../telemetry` |
+| Events | `.../events` |
+| Outgoing commands | `.../commands` |
+| Incoming command subscription | `.../commands/#` |
 
-* `commands` — device commands.
+Change `MQTT_TOP_TOPIC` to match the topics authorized by the AWS IoT policy and used by your AWS IoT Rules/backend.
 
-Telemetry and status messages include:
+### Message types
 
-* protocol version;
+- **Telemetry** — JSON containing protocol version, device ID, timestamp, uptime, sequence, DHT readings/status, LDR readings/status, and `sys_state`.
+- **Status** — serializer for common device fields and DHT, LDR, and system status.
+- **Outgoing command** — JSON command message. Button 0 currently triggers `manual_trigger`.
+- **Incoming command** — JSON commands are parsed and mapped to LED set operations (`on`, `off`, or `toggle`).
+- **Event** — `led_changed` is published when the manual-light LED state changes, including changes initiated locally or by an incoming MQTT command. The event includes a timestamp and `value` (`on`/`off`).
 
-* device ID;
+The MQTT publishing layer uses QoS 0 for publication because the configured PubSubClient implementation supports QoS 0 publishing. Subscription QoS is configured separately. Telemetry publication cadence and reconnection behaviour are configurable.
 
-* timestamp;
+## Configuration Reference
 
-* uptime;
+| File | What to configure |
+|---|---|
+| `src/secrets.h` (created from `src/secrets_example.h`) | Wi-Fi credentials, AWS endpoint and certificates, and test-broker settings. Keep real secrets out of version control. |
+| `src/app_config.h` | Sensor read intervals, telemetry update/stale timing, MQTT publication cadence, and diagnostic/memory-check intervals. |
+| `src/hardware_config.h` | DHT/LDR pins, button pins, and LED pins for the actual circuit. |
+| `src/project_config.h` | `DEBUG_MODE` and the optional ArduinoJson telemetry serializer selection. |
+| `src/buttons/buttons_config.h` | Button debounce and fixed/momentary behaviour. |
+| `src/dht_sensor/dht_config.h` | DHT valid limits and temperature/humidity alarm thresholds. |
+| `src/ldr_sensor/ldr_config.h` | ADC/lux valid limits and illumination alarm/light-low thresholds. |
+| `src/mqtt/mqtt_config.h` | MQTT service, topic prefix, QoS, socket timeout, keep-alive, reconnect timing/attempts, and buffer size. |
+| `src/wifi/wifi_config.h` | Wi-Fi timeout, reconnect interval, attempt count, and retry-cycle delay. |
+| `src/time/time_config.h` | NTP servers, local timezone, synchronization interval, retry interval, and timeout. |
+| `src/indication/indication_config.h` | LED indication mode and blink patterns. |
+| `src/commands_out/commands_out_config.h` | Outgoing command names. |
+| `src/serialization/serialization_config.h` | JSON serialization/deserialization options. |
 
-* sequence number;
+## Build and Run
 
-* DHT status;
+1. Open the complete project in VS Code with PlatformIO and select the configured ESP32 environment.
+2. Create `src/secrets.h` from `src/secrets_example.h`.
+3. Fill in the Wi-Fi credentials and select the intended MQTT service.
+4. For AWS IoT Core, set `AWS_IOT_ENDPOINT`, `AWS_CERT_CA`, `AWS_CERT_CRT`, and `AWS_CERT_PRIVATE`. Use the CA certificate, device certificate, and matching private key for the registered AWS IoT Thing/device.
+5. Set `MQTT_TOP_TOPIC` to the prefix expected by the AWS IoT policy and rules. Ensure the device client ID/Thing name, certificate permissions, endpoint, topic ARNs, IoT Rules, and backend/DynamoDB schema agree.
+6. Confirm hardware pins and sensor thresholds, then build and upload the firmware.
+7. Open Serial Monitor at **115200 baud**. With `DEBUG_MODE` enabled, inspect sensor status, system-state bits, connection messages, and published JSON.
 
-* LDR status;
+The example secrets file is a template: replace every placeholder with valid values. Never commit `secrets.h`, private keys, or production credentials.
 
-* system state.
+## Project Structure
 
-Telemetry additionally contains DHT temperature and humidity and LDR raw ADC and lux values.
-
-Commands are serialized as JSON command messages.
-
-## Configuration
-
-Main operating intervals are defined in `src/app_config.h`.
-
-Hardware pins are defined in `src/hardware_config.h`.
-
-Sensor limits and alarm thresholds are defined in:
-
-* `src/dht_sensor/dht_config.h`;
-
-* `src/ldr_sensor/ldr_config.h`.
-
-MQTT service and topics are defined in `src/mqtt/mqtt_config.h`.
-
-Timezone and NTP settings are defined in `src/time/time_config.h`.
-
-## Debug Monitor
-
-When `DEBUG_MODE` is enabled, the Serial Monitor provides information about sensor data, system state, connection events, and MQTT payloads.
-
-##
-
-[🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
+- `src/main.cpp` — initialization and periodic non-blocking application loop.
+- `src/app_config.h` — application intervals.
+- `src/hardware_config.h` — hardware pin mapping.
+- `src/project_config.h` — debug and serializer build options.
+- `src/secrets_example.h`, `src/secrets.h` — credentials template and local secrets.
+- `src/dht_sensor/` — DHT acquisition, validation, alarms, and status.
+- `src/ldr_sensor/` — ADC acquisition, lux calculation, validation, alarms, and status.
+- `src/telemetry/` — common telemetry model, timestamp/uptime, and stale watchdog.
+- `src/system/` — system-state register and aggregated error flags.
+- `src/buttons/` — button interrupts, debouncing, and button state.
+- `src/actions/` — command triggers and mapping system/sensor state to LED state.
+- `src/indication/` — LED outputs and indication patterns.
+- `src/commands_in/`, `src/commands_out/` — incoming and outgoing command state.
+- `src/events/` — change detection and LED-change event publishing.
+- `src/wifi/` — Wi-Fi connection management.
+- `src/time/` — NTP synchronization, timestamps, and timezone.
+- `src/mqtt/` — MQTT service selection, connection/reconnection, publishing, receiving, and topic configuration.
+- `src/serialization/` — JSON serializers and command/telemetry deserializers.
+- `src/monitor/` — Serial Monitor diagnostics and payload formatting.
+- `src/device_info/` — device identification.
+- `src/http/` — HTTP support.
+- `src/aws/` — AWS-related support.
+- `src/memory/` — memory diagnostics support.
 
 ---
+[🇬🇧 English](./README.en.md) | [🇺🇦 Українська](./README.uk.md)
