@@ -6,7 +6,7 @@
 
 // ---------------------------------
 
-#define COMMAND_01 "manual_read"
+#define COMMAND_01 "manual_trigger"
 #define COMMAND_02 "command_02"
 #define COMMAND_03 "command_03"
 
