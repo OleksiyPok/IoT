@@ -10,5 +10,5 @@
 #define LDR_ADC_VALID_MAX 4045  // depends on current conditions
 
 #define LDR_LUX_ALARM_MIN 10
-#define LDR_LUX_THRESHOLD_LIGHT_LOW 600
-#define LDR_LUX_ALARM_MAX 10000
+#define LDR_LUX_THRESHOLD_LIGHT_LOW 400
+#define LDR_LUX_ALARM_MAX 1000
