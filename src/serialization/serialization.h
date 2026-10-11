@@ -17,3 +17,6 @@ bool deserializeCommand(const char *topic, const char *buffer,
                         size_t bufferSize, IncomingCommand &command);
 
 bool serializeLedChanged(const bool isOn, char *buffer, size_t bufferSize);
+
+bool serializeEvent(const char *event, const char *value, char *buffer,
+                    size_t bufferSize);

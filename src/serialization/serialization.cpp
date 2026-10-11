@@ -37,3 +37,8 @@ bool serializeCommands(const char *commands, char *buffer, size_t bufferSize) {
 bool serializeLedChanged(const bool isOn, char *buffer, size_t bufferSize) {
   return serializeLedChangedSnprintf(isOn, buffer, bufferSize);
 };
+
+bool serializeEvent(const char *event, const char *value, char *buffer,
+                    size_t bufferSize) {
+  return serializeEventSnprintf(event, value, buffer, bufferSize);
+}

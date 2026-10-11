@@ -7,33 +7,35 @@
 #include "events_serializer.h"
 
 // ---------------------------------
-bool serializeLedChangedSnprintf(bool isOn, char *buffer, size_t bufferSize) {
-  if (buffer == nullptr || bufferSize == 0) {
+
+bool serializeEventSnprintf(const char *event, const char *value, char *buffer,
+                            size_t bufferSize) {
+  if (event == nullptr || buffer == nullptr || bufferSize == 0) {
     return false;
   }
 
   const time_t timestamp = time(nullptr);
 
   const int length =
-      snprintf(buffer, bufferSize,
-               "{\"timestamp\":%" PRIu32 ","
-               "\"event\":\"led_changed\","
-               "\"value\":\"%s\"}",
-               static_cast<uint32_t>(timestamp), isOn ? "on" : "off");
+      value == nullptr
+          ? snprintf(buffer, bufferSize,
+                     "{\"timestamp\":%" PRIu32 ",\"event\":\"%s\"}",
+                     static_cast<uint32_t>(timestamp), event)
+          : snprintf(buffer, bufferSize,
+                     "{\"timestamp\":%" PRIu32
+                     ",\"event\":\"%s\",\"value\":\"%s\"}",
+                     static_cast<uint32_t>(timestamp), event, value);
 
-  if (length < 0) {
+  if (length < 0 || static_cast<size_t>(length) >= bufferSize) {
     buffer[0] = '\0';
-    Serial.println("[SERIALIZER] ERROR: snprintf formatting failed");
-    return false;
-  }
-
-  if (static_cast<size_t>(length) >= bufferSize) {
-    buffer[0] = '\0';
-    Serial.printf("[SERIALIZER] ERROR: message too large: %d bytes, buffer: "
-                  "%u bytes\r\n",
-                  length, static_cast<unsigned int>(bufferSize));
+    Serial.println("[SERIALIZER] ERROR: Event serialization failed");
     return false;
   }
 
   return true;
+}
+
+bool serializeLedChangedSnprintf(bool isOn, char *buffer, size_t bufferSize) {
+  return serializeEventSnprintf("led_changed", isOn ? "on" : "off", buffer,
+                                bufferSize);
 }

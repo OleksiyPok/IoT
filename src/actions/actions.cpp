@@ -40,10 +40,10 @@ static void handleWifiTest(const Telemetry &telemetry) {
 }
 
 static void handleCommand(const Telemetry &telemetry) {
-
   if ((telemetry.buttonsState & BUTTON_COMMAND_MASK) &&
       !(previousButtonsState & BUTTON_COMMAND_MASK)) {
     setOutgoingCommand(COMMAND_01);
+    publishManualTrigger(telemetry);
   }
 }
 

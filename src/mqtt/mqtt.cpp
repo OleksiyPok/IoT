@@ -28,3 +28,10 @@ void handleMqttCommands() {
 
   publishCommands();
 }
+
+bool publishManualTrigger(const Telemetry &telemetry) {
+  const bool telemetryPublished = publishTelemetry(telemetry);
+  const bool eventPublished = publishEvent("manual_trigger");
+
+  return telemetryPublished && eventPublished;
+}

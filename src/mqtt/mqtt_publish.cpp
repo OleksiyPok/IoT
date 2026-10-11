@@ -84,18 +84,18 @@ bool publishCommands() {
 }
 
 bool publishLedChanged(bool isOn) {
+  return publishEvent("led_changed", isOn ? "on" : "off");
+}
+
+bool publishEvent(const char *event, const char *value) {
   char payload[EVENTS_PAYLOAD_BUFFER_SIZE];
 
-  if (!serializeLedChanged(isOn, payload, sizeof(payload))) {
+  if (!serializeEvent(event, value, payload, sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize event");
     return false;
   }
 
-  if (!publishMqttMessage(TOPIC_EVENTS, payload)) {
-    return false;
-  }
-
-  return true;
+  return publishMqttMessage(TOPIC_EVENTS, payload);
 }
 
 static bool publishMqttMessage(const char *topic, const char *payload) {
