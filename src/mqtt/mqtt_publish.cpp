@@ -30,7 +30,7 @@ bool publishStatus(const Telemetry &telemetry) {
 
   if (!serializeStatus(telemetry, sequence, payload, sizeof(payload))) {
     Serial.println("[MQTT] Failed to serialize status");
-    return true;
+    return false;
   }
 
   if (!publishMqttMessage(TOPIC_TELEMETRY, payload)) {
@@ -46,10 +46,9 @@ bool publishTelemetry(const Telemetry &telemetry) {
   char payload[TELEMETRY_PAYLOAD_BUFFER_SIZE];
   const uint8_t sequence = MqttMessageSequence;
 
-  if (!serializeTelemetry(telemetry, MqttMessageSequence, payload,
-                          sizeof(payload))) {
-    Serial.println("[MQTT] Failed to serialize sensors");
-    return true;
+  if (!serializeTelemetry(telemetry, sequence, payload, sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize telemetry");
+    return false;
   }
 
   if (!publishMqttMessage(TOPIC_TELEMETRY, payload)) {
@@ -69,7 +68,9 @@ bool publishCommands() {
   }
 
   char payload[COMMANDS_PAYLOAD_BUFFER_SIZE];
+
   if (!serializeCommands(command, payload, sizeof(payload))) {
+    Serial.println("[MQTT] Failed to serialize command");
     return false;
   }
 
