@@ -155,7 +155,7 @@ void loop() {
   }
 
   // Data send
-  if (now - lastSendDataMs >= DATA_SEND_INTERVAL_MS) {
+  if (now - lastSendDataMs >= TEST_HTTP_DATA_SEND_INTERVAL_MS) {
     lastSendDataMs = now;
     // handleSendData(telemetry);
   }

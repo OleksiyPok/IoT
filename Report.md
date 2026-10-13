@@ -1,10 +1,15 @@
-# AWS IoT Core
+# AWS Services 
 
 ## Document Contents
 - IoT Core configuration
 - Examples of received and processed data
 
-## IoT Core Configuration
+## IoT Services Configuration
+### AWS IoT - Manage - Things 
+```
+arn:aws:iot:eu-central-1:873775216285:thing/39628656607504
+```
+
 ### Roles
 
 #### Role overview
