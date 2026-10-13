@@ -9,6 +9,7 @@
 
 <img src="./images/AWS/Things_01.png" alt="AWS example data" width="700">
 
+#### Policies in JSON
 
 ```
 {
