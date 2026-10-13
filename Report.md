@@ -1,10 +1,57 @@
 # AWS IoT Core
 
 ## Document Contents
-- IoT Core configuration
+- AWS configuration
 - Examples of received and processed data
 
 ## IoT Core Configuration
+### Things
+
+<img src="./images/AWS/Things_01.png" alt="AWS example data" width="700">
+
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:eu-central-1:873775216285:client/39628656607504"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": [
+        "arn:aws:iot:eu-central-1:873775216285:topic/iot-course/OleksiiPok/telemetry",
+        "arn:aws:iot:eu-central-1:873775216285:topic/iot-course/OleksiiPok/commands",
+        "arn:aws:iot:eu-central-1:873775216285:topic/iot-course/OleksiiPok/events"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": "arn:aws:iot:eu-central-1:873775216285:topicfilter/iot-course/OleksiiPok/commands/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Receive",
+      "Resource": "arn:aws:iot:eu-central-1:873775216285:topic/iot-course/OleksiiPok/commands/*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iot:GetThingShadow",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iot:UpdateThingShadow",
+      "Resource": "*"
+    }
+  ]
+}
+```
+
 ### Roles
 
 #### Role overview
