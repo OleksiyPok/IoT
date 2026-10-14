@@ -2,156 +2,156 @@
 
 # IoT-проєкт
 
-<img src="../images/wokwi-A.png" alt="ESP32 IoT project circuit" width="700">
+<img src="../images/wokwi-A.png" alt="Електрична схема IoT-проєкту на ESP32" width="700">
 
 ## Опис проєкту
 
 Прошивка ESP32 для моніторингу довкілля, локальної світлодіодної індикації та віддаленої взаємодії через MQTT.
 
-Прошивка зчитує температуру, вологість та освітленість; перевіряє дані датчиків; підтримує статуси датчиків і зведений стан системи; синхронізує годинник пристрою через NTP; керує з’єднаннями Wi-Fi та MQTT; обмінюється телеметрією, повідомленнями про статус, командами й подіями із зовнішніми сервісами.
+Прошивка зчитує температуру, вологість та освітленість; перевіряє дані датчиків; підтримує статуси датчиків і зведений стан системи; синхронізує годинник пристрою через NTP; керує з'єднаннями Wi-Fi та MQTT; обмінюється телеметрією, повідомленнями про стан, командами й подіями із зовнішніми сервісами.
 
-Код поділено на модулі з чітко визначеними обов’язками. Публічні інтерфейси оголошено у заголовних файлах, конфігурацію за можливості згруповано в окремих заголовках, а головний цикл застосунку координує роботу модулів. Спільна модель `Telemetry` передає між модулями вимірювання датчиків і стан застосунку.
+Код поділено на модулі з чітко визначеними обов'язками. Публічні інтерфейси оголошено у заголовних файлах, конфігурацію за можливості згруповано в окремих заголовках, а головний цикл застосунку координує роботу модулів. Спільна модель `Telemetry` передає між модулями результати вимірювань датчиків і стан застосунку.
 
-Цей README описує архітектуру прошивки та розташування конфігурації, яку розробники можуть змінювати, а також місця розширення функціональності. Залежні від середовища значення наведено через назви констант і змінних, а не через фіксовані налаштування.
+Цей README описує архітектуру прошивки, розташування конфігурації, яку розробники можуть змінювати, а також можливості розширення функціональності. Залежні від середовища параметри наведено через назви констант і змінних, а не через фіксовані значення налаштувань.
 
 ## Огляд архітектури
 
-Точка входу застосунку — `src/main.cpp`. Вона ініціалізує інтерфейс моніторингу, спільну модель телеметрії, датчики, кнопки, підсистему індикації та підсистему Wi-Fi. Головний цикл планує періодичні операції за допомогою перевірок часу, що минув, і констант конфігурації з `src/app_config.h`.
+Точка входу застосунку — `src/main.cpp`. Вона ініціалізує підсистему моніторингу, спільну модель телеметрії, датчики, кнопки, підсистему індикації та підсистему Wi-Fi. Головний цикл планує періодичні операції за допомогою перевірок часу, що минув, і конфігураційних констант із `src/app_config.h`.
 
 Головний цикл координує такі завдання:
 
 - Ініціалізація спільної моделі телеметрії та модулів взаємодії з пристроєм.
-- Підтримка з’єднання Wi-Fi та обробка повторних спроб підключення.
+- Підтримання з'єднання Wi-Fi та обробка повторних спроб підключення.
 - Зчитування стану кнопок і оновлення регістру стану кнопок.
-- Зчитування вимірювань і підтримка статусів окремих датчиків.
-- Позначення вимірювань як застарілих під час запуску контролю застарілих даних.
-- Синхронізація системного часу за наявності Wi-Fi.
-- Ініціалізація та підтримка MQTT-з’єднання за виконання необхідних умов.
-- Приймання MQTT-повідомлень і обробка прийнятих команд.
+- Зчитування вимірювань і підтримання статусів окремих датчиків.
+- Позначення вимірювань як застарілих під час виконання перевірки актуальності даних.
+- Синхронізація системного часу за наявності з'єднання Wi-Fi.
+- Ініціалізація та підтримання MQTT-з'єднання за виконання необхідних умов.
+- Приймання MQTT-повідомлень і обробка отриманих команд.
 - Перерахунок зведеного регістру стану системи.
 - Виконання дій, ініційованих кнопками, та обчислення логічного стану LED.
 - Виявлення змін стану LED і постановка подій у чергу на публікацію.
-- Оновлення часової позначки пристрою та часу роботи.
-- Публікація телеметрії або статусу, а також очікуваних вихідних команд і подій.
-- За потреби — виведення діагностичної інформації, передавання через HTTP і діагностика пам’яті.
+- Оновлення часової позначки пристрою та часу його роботи.
+- Публікація телеметрії або повідомлень про стан, а також очікуваних вихідних команд і подій.
+- За потреби — виведення діагностичної інформації, передавання даних через HTTP і діагностика пам'яті.
 
-Цикл координує виклики модулів, але не містить деталей реалізації драйверів датчиків, форматування повідомлень, сервісів з’єднання чи фізичних шаблонів LED. Більшість періодичних операцій керується через `src/app_config.h`. За потреби підсистеми підтримують власний внутрішній стан.
+Цикл координує виклики модулів, але не містить деталей реалізації драйверів датчиків, форматування повідомлень, сервісів з'єднання чи шаблонів фізичної індикації LED. Більшість періодичних операцій налаштовується через `src/app_config.h`. За потреби підсистеми підтримують власний внутрішній стан.
 
 ## Можливості
 
-- DHT sensor acquisition for temperature and relative humidity.
-- LDR ADC acquisition and conversion to illuminance.
-- Sensor-specific measurement validation and alarm detection.
-- Separate status flags for device errors, invalid measurements, stale data, and alarm conditions.
-- Aggregated system-state register for operating modes and subsystem errors.
-- Button processing with interrupt-based press detection and debounce handling.
-- Configurable fixed or momentary button behaviour.
-- Centralized application action processing.
-- Logical LED-state calculation separated from GPIO output and indication patterns.
-- Configurable continuous and blinking LED indications.
-- Wi-Fi connection management and reconnection handling.
-- NTP clock synchronization, retry handling, and timezone configuration.
-- Selectable MQTT service implementation.
-- MQTT telemetry, status, command, and event publication.
-- MQTT message reception and incoming-command deserialization.
-- LED-change event detection with deferred publication when MQTT is unavailable.
-- Selectable telemetry serializer implementation.
-- Serial Monitor diagnostics and optional payload output.
-- Optional HTTP telemetry transmission.
-- Device identification and optional memory diagnostics.
+- Зчитування показників датчика DHT: температури та відносної вологості.
+- Зчитування аналогових значень АЦП датчика LDR і перетворення їх на показники освітленості.
+- Перевірка вимірювань кожного датчика та виявлення аварійних порогових значень.
+- Окремі прапорці стану для помилок пристрою, некоректних вимірювань, застарілих даних і аварійних умов.
+- Зведений регістр стану системи для режимів роботи та помилок підсистем.
+- Обробка кнопок із виявленням натискань через переривання та усуненням брязкоту контактів.
+- Налаштування фіксованого або моментального режиму роботи кнопок.
+- Централізована обробка дій застосунку.
+- Обчислення логічного стану LED окремо від керування GPIO та шаблонів індикації.
+- Налаштування постійної та миготливої світлодіодної індикації.
+- Керування з'єднанням Wi-Fi та обробка повторних підключень.
+- Синхронізація годинника через NTP, обробка повторних спроб і налаштування часового поясу.
+- Можливість вибору реалізації MQTT-сервісу.
+- Публікація телеметрії, повідомлень про стан, команд і подій через MQTT.
+- Приймання MQTT-повідомлень і десеріалізація отриманих команд.
+- Виявлення змін стану LED із відкладеною публікацією, якщо MQTT недоступний.
+- Можливість вибору реалізації серіалізатора телеметрії.
+- Діагностика через Serial Monitor і можливість виведення сформованих повідомлень.
+- Необов'язкове передавання телеметрії через HTTP.
+- Ідентифікація пристрою та необов'язкова діагностика пам'яті.
 
 ## Структура проєкту
 
-The firmware source code is organized under `src/`. Project-level build and dependency configuration files are located in the project root. Review those files when changing the PlatformIO environment, board, framework, or library dependencies.
+Вихідний код прошивки розташовано в каталозі `src/`. Конфігураційні файли збирання проєкту та залежностей містяться в кореневому каталозі. Переглядайте ці файли, якщо потрібно змінити середовище PlatformIO, плату, фреймворк або бібліотечні залежності.
 
-| Module or file | Призначення |
-| --- | --- |
-| `src/main.cpp` | Initialization and main loop; schedules module handlers and coordinates subsystem lifecycle. |
-| `src/app_config.h` | Application scheduling intervals and periodic-operation timing. |
-| `src/hardware_config.h` | Призначення GPIO for sensors, buttons, and LEDs. |
-| `src/project_config.h` | Debug-build option and telemetry serializer selection. |
-| `src/secrets_example.h` | Template for Wi-Fi credentials, MQTT test-broker settings, AWS IoT endpoint, and certificate material. |
-| `src/secrets.h` | Local environment credentials and connection parameters consumed by the firmware; maintain this file locally and keep secrets out of version control. |
-| `src/actions/` | Maps button and system/sensor state to application actions and logical LED states. |
-| `src/buttons/` | Button initialization, interrupt handling, debounce processing, and button-state updates. |
-| `src/commands_in/` | Internal model and state storage for incoming commands, plus command execution against application state. |
-| `src/commands_out/` | Pending outgoing-command state and configured command names. |
-| `src/dht_sensor/` | DHT measurement acquisition, validation, alarm detection, and status flags. |
-| `src/ldr_sensor/` | LDR acquisition, illuminance calculation, validation, and status flags. |
-| `src/telemetry/` | Shared telemetry structures, device metadata initialization, timestamp/uptime updates, and stale-data handling. |
-| `src/system/` | Aggregated system-state register and subsystem error management. |
-| `src/indication/` | LED indication masks, pattern configuration, and physical output control. |
-| `src/events/` | LED-state change detection, pending-event state, and event publication coordination. |
-| `src/wifi/` | Wi-Fi initialization, connection attempts, status tracking, and reconnection logic. |
-| `src/time/` | NTP synchronization, timestamp access, and timezone management. |
-| `src/mqtt/` | MQTT service abstraction, service selection, connection management, publication, reception, and topic configuration. |
-| `src/serialization/` | Common serialization interface, message serializers, and incoming-message deserializers. |
-| `src/monitor/` | Serial Monitor initialization, telemetry diagnostics, and optional payload output. |
-| `src/device_info/` | Device identifier retrieval and device information output. |
-| `src/http/` | Optional HTTP telemetry transmission. |
-| `src/aws/` | AWS-related integration support; MQTT transport implementation is in `src/mqtt/`. |
-| `src/memory/` | Runtime memory diagnostics. |
+| Модуль або файл         | Призначення                                                                                                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/main.cpp`          | Точка входу, ініціалізація та головний цикл; планування викликів обробників і координація життєвого циклу підсистем.                                                   |
+| `src/app_config.h`      | Інтервали планування та періодичність виконання операцій застосунку.                                                                                                   |
+| `src/hardware_config.h` | Призначення GPIO для датчиків, кнопок і світлодіодів.                                                                                                                  |
+| `src/project_config.h`  | Налаштування режиму налагодження та вибір серіалізатора телеметрії.                                                                                                    |
+| `src/secrets_example.h` | Шаблон налаштувань облікових даних Wi-Fi, тестового MQTT-брокера, кінцевої точки AWS IoT та сертифікатів.                                                              |
+| `src/secrets.h`         | Локальні облікові дані середовища та параметри з'єднання, які використовує прошивка; файл має залишатися локальним і не повинен потрапляти до системи контролю версій. |
+| `src/actions/`          | Перетворення станів кнопок, системи й датчиків на дії застосунку та логічні стани LED.                                                                                 |
+| `src/buttons/`          | Ініціалізація кнопок, обробка переривань, усунення брязкоту контактів та оновлення стану кнопок.                                                                       |
+| `src/commands_in/`      | Внутрішня модель і зберігання стану вхідних команд, а також виконання команд щодо стану застосунку.                                                                    |
+| `src/commands_out/`     | Зберігання стану очікуваних вихідних команд і визначення їхніх назв.                                                                                                   |
+| `src/dht_sensor/`       | Зчитування показників DHT, перевірка вимірювань, виявлення аварійних умов і підтримання прапорців стану.                                                               |
+| `src/ldr_sensor/`       | Зчитування показників LDR, обчислення освітленості, перевірка вимірювань і підтримання прапорців стану.                                                                |
+| `src/telemetry/`        | Спільні структури телеметрії, ініціалізація метаданих пристрою, оновлення часової позначки й часу роботи, обробка застарілих даних.                                    |
+| `src/system/`           | Зведений регістр стану системи та керування помилками підсистем.                                                                                                       |
+| `src/indication/`       | Маски світлодіодної індикації, налаштування шаблонів і керування фізичними виходами.                                                                                   |
+| `src/events/`           | Виявлення змін стану LED, зберігання стану очікуваних подій і координація їх публікації.                                                                               |
+| `src/wifi/`             | Ініціалізація Wi-Fi, спроби підключення, відстеження стану з'єднання та логіка повторного підключення.                                                                 |
+| `src/time/`             | Синхронізація NTP, отримання часових позначок і керування часовим поясом.                                                                                              |
+| `src/mqtt/`             | Абстракція MQTT-сервісу, вибір реалізації, керування з'єднанням, публікація та приймання повідомлень, налаштування топіків.                                            |
+| `src/serialization/`    | Спільний інтерфейс серіалізації, серіалізатори повідомлень і десеріалізатори вхідних повідомлень.                                                                      |
+| `src/monitor/`          | Ініціалізація Serial Monitor, діагностика телеметрії та необов'язкове виведення сформованих повідомлень.                                                               |
+| `src/device_info/`      | Отримання ідентифікатора пристрою та виведення інформації про нього.                                                                                                   |
+| `src/http/`             | Необов'язкове передавання телеметрії через HTTP.                                                                                                                       |
+| `src/aws/`              | Допоміжні засоби інтеграції з AWS; реалізація MQTT-транспорту міститься в `src/mqtt/`.                                                                                 |
+| `src/memory/`           | Діагностика пам'яті під час виконання.                                                                                                                                 |
 
-Each module's public interface is declared in its header file. Prefer extending an existing module through its public interface rather than adding subsystem-specific logic to `main.cpp`.
+Публічний інтерфейс кожного модуля оголошено в його заголовному файлі. Під час розширення функціональності надавайте перевагу використанню публічного інтерфейсу відповідного модуля, а не додаванню логіки окремих підсистем до `main.cpp`.
 
 ## Карта конфігурації
 
-Use the configuration header responsible for the setting being changed. Avoid duplicating configuration values in unrelated modules.
+Для зміни параметрів використовуйте заголовний файл конфігурації, який відповідає за відповідне налаштування. Не дублюйте конфігураційні значення в непов'язаних модулях.
 
-| File | Що налаштовувати або перевіряти |
-| --- | --- |
-| `src/app_config.h` | Scheduling and intervals for buttons, actions, events, indication updates, Wi-Fi/MQTT checks, sensor reads, telemetry updates, stale-data checks, MQTT publication, HTTP test transmission, monitoring, and memory diagnostics. |
-| `src/hardware_config.h` | Sensor, button, built-in LED, and indication LED Призначення GPIO. |
-| `src/project_config.h` | `DEBUG_MODE` and `TELEMETRY_SERIALIZER_ARDUINO_JSON`. |
-| `src/secrets_example.h` / local `src/secrets.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `MQTT_TEST_BROKER`, `MQTT_TEST_PORT`, `AWS_IOT_ENDPOINT`, `MQTT_AWS_PORT`, `AWS_CERT_CA`, `AWS_CERT_CRT`, and `AWS_CERT_PRIVATE`; review the optional client/thing identity setting when used by the selected service. |
-| `src/buttons/buttons_config.h` | `BUTTON_DEBOUNCE_TIME_MS` and the `BUTTON_*_FIXED` behaviour switches. |
-| `src/dht_sensor/dht_config.h` | DHT temperature and humidity validity limits and alarm thresholds. |
-| `src/ldr_sensor/ldr_config.h` | LDR ADC and illuminance validity limits, illuminance alarm thresholds, and the low-light threshold. |
-| `src/indication/indication_config.h` | Per-indication `INDICATION_*_MODE`, `INDICATION_*_BLINK_COUNT`, `INDICATION_*_BLINK_ON_MS`, and `INDICATION_*_BLINK_OFF_MS` settings. |
-| `src/wifi/wifi_config.h` | Wi-Fi retry interval, connection timeout, retry-cycle delay, and maximum attempts. |
-| `src/time/time_config.h` | `NTP_SERVER_1`, `NTP_SERVER_2`, `NTP_SERVER_3`, `LOCAL_TIMEZONE`, `DEFAULT_TIMEZONE`, and NTP synchronization/retry/timeout constants. |
-| `src/mqtt/mqtt_config.h` | MQTT service selection, topic prefix and topic constants, QoS, socket timeout, keep-alive, reconnect policy, and message buffer capacity. |
-| `src/commands_out/commands_out_config.h` | Symbolic outgoing command names such as `COMMAND_01`, `COMMAND_02`, and `COMMAND_03`. |
-| `src/commands_in/commands_in_config.h` | Incoming-command configuration declarations; command types and current command state are defined in `commands_in.h` and `commands_in.cpp`. |
-| `src/serialization/serialization_config.h` | `TELEMETRY_JSON_DOCUMENT_SIZE` for the ArduinoJson telemetry serializer. |
-| `src/http/http.cpp` | `SERVER_URL`, the HTTP endpoint used by the optional HTTP transmission path. |
+| Файл                                                | Що налаштовувати або перевіряти                                                                                                                                                                                                                           |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app_config.h`                                  | Інтервали планування й періодичність обробки кнопок, дій, подій, індикації, перевірок Wi-Fi/MQTT, зчитування датчиків, оновлення телеметрії, перевірки застарілих даних, публікації MQTT, тестового передавання HTTP, моніторингу та діагностики пам'яті. |
+| `src/hardware_config.h`                             | Призначення GPIO для датчиків, кнопок, вбудованого LED і світлодіодів індикації.                                                                                                                                                                          |
+| `src/project_config.h`                              | `DEBUG_MODE` і `TELEMETRY_SERIALIZER_ARDUINO_JSON`.                                                                                                                                                                                                       |
+| `src/secrets_example.h` / локальний `src/secrets.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `MQTT_TEST_BROKER`, `MQTT_TEST_PORT`, `AWS_IOT_ENDPOINT`, `MQTT_AWS_PORT`, `AWS_CERT_CA`, `AWS_CERT_CRT` і `AWS_CERT_PRIVATE`; за потреби перевірте налаштування ідентифікатора клієнта або пристрою для вибраного сервісу. |
+| `src/buttons/buttons_config.h`                      | `BUTTON_DEBOUNCE_TIME_MS` і перемикачі режиму роботи кнопок `BUTTON_*_FIXED`.                                                                                                                                                                             |
+| `src/dht_sensor/dht_config.h`                       | Допустимі межі температури та вологості DHT, а також аварійні порогові значення.                                                                                                                                                                          |
+| `src/ldr_sensor/ldr_config.h`                       | Допустимі межі значень АЦП LDR та освітленості, аварійні порогові значення освітленості й поріг низького освітлення.                                                                                                                                      |
+| `src/indication/indication_config.h`                | Налаштування режиму кожного типу індикації: `INDICATION_*_MODE`, `INDICATION_*_BLINK_COUNT`, `INDICATION_*_BLINK_ON_MS` і `INDICATION_*_BLINK_OFF_MS`.                                                                                                    |
+| `src/wifi/wifi_config.h`                            | Інтервал повторного підключення Wi-Fi, тайм-аут з'єднання, затримка між циклами повторних спроб і максимальна кількість спроб.                                                                                                                            |
+| `src/time/time_config.h`                            | `NTP_SERVER_1`, `NTP_SERVER_2`, `NTP_SERVER_3`, `LOCAL_TIMEZONE`, `DEFAULT_TIMEZONE` і константи інтервалів, повторних спроб та тайм-аутів синхронізації NTP.                                                                                             |
+| `src/mqtt/mqtt_config.h`                            | Вибір MQTT-сервісу, префікс і константи топіків, QoS, тайм-аут сокета, інтервал підтримання з'єднання, політика повторного підключення та місткість буфера повідомлень.                                                                                   |
+| `src/commands_out/commands_out_config.h`            | Символьні назви вихідних команд, зокрема `COMMAND_01`, `COMMAND_02` і `COMMAND_03`.                                                                                                                                                                       |
+| `src/commands_in/commands_in_config.h`              | Оголошення конфігурації вхідних команд; типи команд і поточний стан команди визначено в `commands_in.h` і `commands_in.cpp`.                                                                                                                              |
+| `src/serialization/serialization_config.h`          | `TELEMETRY_JSON_DOCUMENT_SIZE` для серіалізатора телеметрії ArduinoJson.                                                                                                                                                                                  |
+| `src/http/http.cpp`                                 | `SERVER_URL` — кінцева точка HTTP для необов'язкового передавання даних.                                                                                                                                                                                  |
 
-Build environment, board selection, framework configuration, and library dependencies are managed by the project-level build configuration above `src/`. Review those files when changing the PlatformIO environment or dependencies.
+Середовище збирання, вибір плати, налаштування фреймворку та бібліотечні залежності визначаються у файлах конфігурації збирання проєкту, розташованих вище за каталог `src/`. Переглядайте їх у разі зміни середовища PlatformIO або залежностей.
 
 ## Конфігурація обладнання
 
-Призначення GPIO are declared in `src/hardware_config.h`. Change the assignments there when adapting the firmware to a different circuit; sensor logic and indication logic should not need to know the physical pin mapping.
+Призначення GPIO оголошено в `src/hardware_config.h`. Змінюйте відповідні призначення під час адаптації прошивки до іншої електричної схеми. Логіка датчиків та індикації не повинна залежати від фізичного розташування контактів.
 
-| Функція обладнання | Константи конфігурації |
-| --- | --- |
-| LDR analog input | `LDR_ADC_PIN` |
-| DHT data input | `DHT_PIN` |
-| Входи кнопок | `BUTTON_0_PIN`, `BUTTON_1_PIN`, `BUTTON_2_PIN`, `BUTTON_3_PIN` |
-| Вбудований LED | `LED_BUILTIN_PIN` |
-| Індикація команди | `LED_COMMAND_PIN` |
-| Індикація ручного освітлення | `LED_LIGHT_MANUAL_PIN` |
-| Automatic/low-light indication | `LED_LIGHT_AUTO_PIN` |
-| Minimum/maximum illuminance indications | `LED_LIGHT_MIN_PIN`, `LED_LIGHT_MAX_PIN` |
-| Minimum/maximum temperature indications | `LED_TEMPERATURE_MIN_PIN`, `LED_TEMPERATURE_MAX_PIN` |
-| Індикація тихого режиму | `LED_SILENT_PIN` |
-| Індикація вологості | `LED_HUMIDITY_MIN_PIN`, `LED_HUMIDITY_MAX_PIN` |
+| Функція обладнання                                    | Константи конфігурації                                         |
+| ----------------------------------------------------- | -------------------------------------------------------------- |
+| Аналоговий вхід LDR                                   | `LDR_ADC_PIN`                                                  |
+| Вхід даних DHT                                        | `DHT_PIN`                                                      |
+| Входи кнопок                                          | `BUTTON_0_PIN`, `BUTTON_1_PIN`, `BUTTON_2_PIN`, `BUTTON_3_PIN` |
+| Вбудований LED                                        | `LED_BUILTIN_PIN`                                              |
+| Індикація команди                                     | `LED_COMMAND_PIN`                                              |
+| Індикація ручного освітлення                          | `LED_LIGHT_MANUAL_PIN`                                         |
+| Індикація автоматичного режиму / низької освітленості | `LED_LIGHT_AUTO_PIN`                                           |
+| Індикація мінімальної та максимальної освітленості    | `LED_LIGHT_MIN_PIN`, `LED_LIGHT_MAX_PIN`                       |
+| Індикація мінімальної та максимальної температури     | `LED_TEMPERATURE_MIN_PIN`, `LED_TEMPERATURE_MAX_PIN`           |
+| Індикація тихого режиму                               | `LED_SILENT_PIN`                                               |
+| Індикація мінімальної та максимальної вологості       | `LED_HUMIDITY_MIN_PIN`, `LED_HUMIDITY_MAX_PIN`                 |
 
-The humidity pin definitions are currently commented in `hardware_config.h`. Enable and assign them only when the circuit and the indication implementation support those outputs. Logical indication masks are independent of the physical Призначення GPIO.
+Визначення контактів індикації вологості наразі закоментовано в `hardware_config.h`. Вмикайте їх і призначайте контакти лише тоді, коли електрична схема та реалізація індикації підтримують відповідні виходи. Логічні маски індикації не залежать від фізичного призначення GPIO.
 
 ## Обробка кнопок
 
-Button processing is implemented in `src/buttons/`. `initButtons()` initializes the input subsystem, and `handleButtons()` processes input state and updates `Telemetry.buttonsState`.
+Обробку кнопок реалізовано в `src/buttons/`. Функція `initButtons()` ініціалізує підсистему введення, а `handleButtons()` обробляє стан входів і оновлює `Telemetry.buttonsState`.
 
-Interrupt handlers record press activity; the regular loop applies debounce and the configured fixed/momentary behaviour. Button input processing is intentionally separate from action execution.
+Обробники переривань фіксують активність натискання. Основний цикл виконує усунення брязкоту контактів і застосовує налаштований фіксований або моментальний режим роботи. Обробку введення від кнопок навмисно відокремлено від виконання дій.
 
-The button masks declared in `src/buttons/buttons.h` are:
+Маски кнопок, оголошені в `src/buttons/buttons.h`:
 
 - `BUTTON_COMMAND_MASK` — тригер вихідної команди.
-- `BUTTON_SILENT_MASK` — вхід тихого режиму.
-- `BUTTON_LIGHT_MANUAL_MASK` — режим ручного освітлення.
-- `BUTTON_WIFI_DISABLE_MASK` — тестова дія відключення Wi-Fi.
+- `BUTTON_SILENT_MASK` — увімкнення тихого режиму.
+- `BUTTON_LIGHT_MANUAL_MASK` — режим ручного керування освітленням.
+- `BUTTON_WIFI_DISABLE_MASK` — тестова дія для відключення Wi-Fi.
 
-Button behaviour is configured in `src/buttons/buttons_config.h`:
+Режими роботи кнопок налаштовуються в `src/buttons/buttons_config.h`:
 
 - `BUTTON_DEBOUNCE_TIME_MS`
 - `BUTTON_0_FIXED`
@@ -159,21 +159,21 @@ Button behaviour is configured in `src/buttons/buttons_config.h`:
 - `BUTTON_2_FIXED`
 - `BUTTON_3_FIXED`
 
-A fixed button retains its logical state after release; a momentary button clears its state when released. Check the button implementation before changing the mapping between physical button numbers and state masks.
+Кнопка у фіксованому режимі зберігає свій логічний стан після відпускання. Кнопка в моментальному режимі скидає стан після відпускання. Перед зміною відповідності між фізичними номерами кнопок і масками стану перевірте реалізацію обробки кнопок.
 
 ## Зчитування даних датчиків і статуси
 
-Each sensor module owns acquisition, validation, sensor-specific status, and updates to its section of `Telemetry`. The common model is declared in `src/telemetry/telemetry.h`; sensor status masks are declared in the corresponding sensor header.
+Кожен модуль датчика відповідає за зчитування показників, перевірку вимірювань, підтримання власних статусів і оновлення відповідної частини `Telemetry`. Спільну модель оголошено в `src/telemetry/telemetry.h`, а маски статусів кожного датчика — у відповідному заголовному файлі.
 
 ### Датчик DHT
 
-The DHT implementation is in `src/dht_sensor/`.
+Реалізація DHT міститься в `src/dht_sensor/`.
 
-- `initDhtSensor()` initializes the sensor.
-- `handleDhtSensor()` reads and processes the measurement.
-- `DHTData` stores `temperature`, `humidity`, `updated`, `uptime`, and `status`.
+- `initDhtSensor()` — ініціалізує датчик.
+- `handleDhtSensor()` — зчитує та обробляє вимірювання.
+- `DHTData` зберігає `temperature`, `humidity`, `updated`, `uptime` і `status`.
 
-Validity limits and alarm thresholds are configured in `src/dht_sensor/dht_config.h`:
+Допустимі межі та аварійні порогові значення налаштовуються в `src/dht_sensor/dht_config.h`:
 
 - `DHT_TEMPERATURE_VALID_MIN`
 - `DHT_TEMPERATURE_VALID_MAX`
@@ -184,7 +184,7 @@ Validity limits and alarm thresholds are configured in `src/dht_sensor/dht_confi
 - `DHT_HUMIDITY_ALARM_MIN`
 - `DHT_HUMIDITY_ALARM_MAX`
 
-The status masks in `src/dht_sensor/dht_sensor.h` distinguish normal operation, device errors, stale data, invalid data, temperature alarms, humidity alarms, and initialization/error defaults:
+Маски статусу в `src/dht_sensor/dht_sensor.h` розрізняють нормальну роботу, помилки пристрою, застарілі дані, некоректні дані, аварійні температурні умови, аварійні умови вологості та початкові стани помилки:
 
 - `STATUS_DHT_OK`
 - `STATUS_DHT_DEVICE_ERR`
@@ -198,13 +198,13 @@ The status masks in `src/dht_sensor/dht_sensor.h` distinguish normal operation, 
 
 ### Датчик LDR
 
-The LDR implementation is in `src/ldr_sensor/`.
+Реалізація LDR міститься в `src/ldr_sensor/`.
 
-- `initLdrSensor()` initializes the analog input and sensor state.
-- `handleLdrSensor()` acquires the ADC value, calculates illuminance, validates the result, and updates status.
-- `LDRData` stores `raw`, `lux`, `updated`, `uptime`, and `status`.
+- `initLdrSensor()` — ініціалізує аналоговий вхід і стан датчика.
+- `handleLdrSensor()` — зчитує значення АЦП, обчислює освітленість, перевіряє результат та оновлює статус.
+- `LDRData` зберігає `raw`, `lux`, `updated`, `uptime` і `status`.
 
-Validity and threshold configuration is in `src/ldr_sensor/ldr_config.h`:
+Допустимі межі та порогові значення налаштовуються в `src/ldr_sensor/ldr_config.h`:
 
 - `LDR_ADC_VALID_MIN`
 - `LDR_ADC_VALID_MAX`
@@ -214,7 +214,7 @@ Validity and threshold configuration is in `src/ldr_sensor/ldr_config.h`:
 - `LDR_LUX_ALARM_MAX`
 - `LDR_LUX_THRESHOLD_LIGHT_LOW`
 
-Маски статусу in `src/ldr_sensor/ldr_sensor.h` include:
+Маски статусу в `src/ldr_sensor/ldr_sensor.h` охоплюють:
 
 - `STATUS_LDR_OK`
 - `STATUS_LDR_DEVICE_ERR`
@@ -225,37 +225,37 @@ Validity and threshold configuration is in `src/ldr_sensor/ldr_config.h`:
 - `STATUS_LDR_LIGHT_LOW`
 - `STATUS_LDR_ERR_INIT`
 
-Device/read errors, invalid measurements, stale data, and alarm conditions are represented separately. Preserve this distinction when adding new validation rules: an invalid reading is not equivalent to a valid reading outside an alarm threshold.
+Помилки пристрою або зчитування, некоректні вимірювання, застарілі дані й аварійні умови представлені окремо. Зберігайте це розмежування під час додавання нових правил перевірки: некоректне вимірювання не еквівалентне коректному вимірюванню, що виходить за аварійний поріг.
 
 ## Спільна модель телеметрії
 
-The shared data model is declared in `src/telemetry/telemetry.h`. `Telemetry` is the common in-memory representation used by the application modules.
+Спільну модель даних оголошено в `src/telemetry/telemetry.h`. `Telemetry` — це загальне внутрішнє представлення даних, яке використовують модулі застосунку.
 
-| Поле | Призначення |
-| --- | --- |
-| `version` | Версія протоколу телеметрії. |
-| `device_id` | Ідентифікатор пристрою. |
-| `timestamp` | Поточна часова позначка пристрою. |
-| `uptime` | Час роботи пристрою. |
-| `dht` | DHT measurements, update metadata, and status. |
-| `ldr` | LDR measurements, update metadata, and status. |
-| `buttonsState` | Регістр стану кнопок. |
-| `systemState` | Зведений регістр стану системи. |
-| `ledState` | Регістр логічного стану LED-індикації. |
+| Поле           | Призначення                                      |
+| -------------- | ------------------------------------------------ |
+| `version`      | Версія протоколу телеметрії.                     |
+| `device_id`    | Ідентифікатор пристрою.                          |
+| `timestamp`    | Поточна часова позначка пристрою.                |
+| `uptime`       | Час роботи пристрою.                             |
+| `dht`          | Вимірювання DHT, метадані оновлення та статус.   |
+| `ldr`          | Вимірювання LDR, метадані оновлення та статус.   |
+| `buttonsState` | Регістр стану кнопок.                            |
+| `systemState`  | Зведений регістр стану системи.                  |
+| `ledState`     | Регістр логічного стану світлодіодної індикації. |
 
-`DHTData` contains `temperature`, `humidity`, `updated`, `uptime`, and `status`. `LDRData` contains `raw`, `lux`, `updated`, `uptime`, and `status`. The protocol version is identified by `TELEMETRY_PROTOCOL_VERSION`.
+`DHTData` містить `temperature`, `humidity`, `updated`, `uptime` і `status`. `LDRData` містить `raw`, `lux`, `updated`, `uptime` і `status`. Версія протоколу визначається через `TELEMETRY_PROTOCOL_VERSION`.
 
-The telemetry lifecycle functions are:
+Функції життєвого циклу телеметрії:
 
-- `initTelemetry()` initializes metadata and application-state fields.
-- `updateTelemetry()` refreshes the timestamp and uptime.
-- `updateStaleStatus()` marks sensor data as stale when called by the application watchdog.
+- `initTelemetry()` — ініціалізує метадані та поля стану застосунку.
+- `updateTelemetry()` — оновлює часову позначку та час роботи пристрою.
+- `updateStaleStatus()` — позначає дані датчиків як застарілі під час виклику механізмом контролю актуальності даних.
 
-Modules should update only the fields for which they are responsible. The serialization layer chooses which fields are exposed in external message formats; not every in-memory field is included in telemetry JSON.
+Модулі мають оновлювати лише ті поля, за які вони відповідають. Рівень серіалізації визначає, які поля передаються в зовнішніх повідомленнях. Не всі поля внутрішньої моделі включено до JSON телеметрії.
 
 ## Регістр стану системи
 
-The aggregated state is managed by `src/system/system_state.cpp`, with masks declared in `src/system/system_state.h`. The register is stored in `Telemetry.systemState`; `updateSystemState()` recalculates managed operating-state bits and clears subsystem error bits after the relevant subsystem is confirmed healthy.
+Зведений стан керується в `src/system/system_state.cpp`, а маски оголошено в `src/system/system_state.h`. Регістр зберігається в `Telemetry.systemState`. Функція `updateSystemState()` перераховує керовані біти стану режимів роботи та скидає біти помилок підсистем після підтвердження їхньої справності.
 
 Маски:
 
@@ -270,41 +270,41 @@ The aggregated state is managed by `src/system/system_state.cpp`, with masks dec
 - `SYSTEM_STATE_MANAGED_MASK`
 - `SYSTEM_STATE_ERR_INIT_MASK`
 
-The system-state register aggregates selected application modes and subsystem errors. Sensor-specific detail remains in `Telemetry.dht.status` and `Telemetry.ldr.status`; do not replace those flags with the aggregate error bits.
+Регістр стану системи об'єднує вибрані режими роботи застосунку та помилки підсистем. Детальна інформація про датчики залишається в `Telemetry.dht.status` і `Telemetry.ldr.status`. Не замінюйте ці прапорці зведеними бітами помилок системи.
 
 ## Обробка застарілих даних
 
-Stale-data handling is coordinated by `src/main.cpp` and implemented through the telemetry module. The relevant constants are declared in `src/app_config.h`:
+Контроль актуальності даних координується в `src/main.cpp` і реалізується через модуль телеметрії. Відповідні константи оголошено в `src/app_config.h`:
 
 - `TELEMETRY_UPDATE_INTERVAL_MS`
 - `SENSOR_STALE_AFTER_CYCLES`
 - `SENSOR_STALE_INTERVAL_MS`
 
-The watchdog marks both sensor datasets stale when it runs. A successful sensor update is responsible for clearing the relevant stale flag in the sensor module. Stale status indicates that data has not been refreshed as expected; it is distinct from a device error or an invalid measurement.
+Під час запуску механізм контролю позначає дані обох датчиків як застарілі. Після успішного оновлення датчик відповідає за скидання відповідного прапорця застарілих даних у власному модулі. Такий статус означає, що дані не було оновлено в очікуваний термін. Він відрізняється від помилки пристрою або некоректного вимірювання.
 
-When changing sensor sampling intervals, review the telemetry update and stale-data timing constants together so that the stale watchdog remains consistent with the acquisition schedule.
+У разі зміни інтервалів зчитування датчиків переглядайте також інтервали оновлення телеметрії та контролю застарілих даних, щоб механізм контролю відповідав розкладу зчитування.
 
 ## Дії та стан LED
 
-Application actions are implemented in `src/actions/`. `handleActions()` processes button-triggered operations and updates the logical LED-state register, `Telemetry.ledState`.
+Логіку дій застосунку реалізовано в `src/actions/`. Функція `handleActions()` обробляє операції, ініційовані кнопками, і оновлює регістр логічного стану LED `Telemetry.ledState`.
 
-The action module handles the тригер вихідної команди and the тестова дія відключення Wi-Fi. It also maps the current system and sensor states to indication masks:
+Модуль дій обробляє тригер вихідної команди та тестову дію відключення Wi-Fi. Він також зіставляє поточний стан системи й датчиків із масками індикації:
 
-- `SYSTEM_LIGHT_MANUAL_MASK` to `INDICATION_LIGHT_MANUAL_MASK`.
-- `SYSTEM_COMMAND_MASK` to `INDICATION_COMMAND_MASK`.
-- `SYSTEM_SILENT_MASK` to `INDICATION_SILENT_MASK`.
-- LDR alarm and low-light status to the corresponding illuminance indications.
-- DHT temperature and humidity alarm status to their corresponding indications.
+- `SYSTEM_LIGHT_MANUAL_MASK` відповідає `INDICATION_LIGHT_MANUAL_MASK`.
+- `SYSTEM_COMMAND_MASK` відповідає `INDICATION_COMMAND_MASK`.
+- `SYSTEM_SILENT_MASK` відповідає `INDICATION_SILENT_MASK`.
+- Аварійні статуси LDR і статус низької освітленості визначають відповідні індикатори освітленості.
+- Аварійні статуси температури й вологості DHT визначають відповідні індикатори температури та вологості.
 
-The logical state is separate from physical GPIO output. Change the state mapping in `src/actions/actions.cpp`; change output pins in `src/hardware_config.h`; change output patterns in `src/indication/indication_config.h`.
+Логічний стан відокремлено від фізичного керування GPIO. Змінюйте зіставлення станів у `src/actions/actions.cpp`, призначення вихідних контактів — у `src/hardware_config.h`, а шаблони індикації — у `src/indication/indication_config.h`.
 
 ## Світлодіодна індикація
 
-The indication subsystem is implemented in `src/indication/`. `initIndication()` initializes the outputs, `requestIndication()` requests transient subsystem indications, and `handleLedIndication()` applies the logical `ledState` to the outputs. `startStartupBlink()` is available for startup indication.
+Підсистему індикації реалізовано в `src/indication/`. Функція `initIndication()` ініціалізує виходи, `requestIndication()` запитує тимчасову індикацію підсистем, а `handleLedIndication()` застосовує логічний стан `ledState` до виходів. Функція `startStartupBlink()` використовується для індикації запуску.
 
-`IndicationMode` represents continuous or blinking behaviour. `IndicationPattern` describes a pattern, and `LedIndicationState` stores the output mask, pin, pattern, and runtime state for pattern execution. `IndicationType` identifies transient indications such as MQTT publication and Wi-Fi connection activity.
+`IndicationMode` визначає режим постійного світіння або миготіння. `IndicationPattern` описує шаблон індикації, а `LedIndicationState` зберігає маску виходів, контакт, шаблон і поточний стан виконання шаблону. `IndicationType` визначає типи тимчасової індикації, наприклад публікацію MQTT та підключення Wi-Fi.
 
-Logical masks declared in `src/indication/indication.h` include:
+Логічні маски, оголошені в `src/indication/indication.h`:
 
 - `INDICATION_LIGHT_MIN_MASK`
 - `INDICATION_LIGHT_MAX_MASK`
@@ -318,71 +318,77 @@ Logical masks declared in `src/indication/indication.h` include:
 - `INDICATION_COMMAND_MASK`
 - `ALL_INDICATION_MASK`
 
-Pattern settings are declared in `src/indication/indication_config.h`. The per-indication groups use `INDICATION_*_MODE`, `INDICATION_*_BLINK_COUNT`, `INDICATION_*_BLINK_ON_MS`, and `INDICATION_*_BLINK_OFF_MS`, including startup, command, light, temperature, humidity, silent, MQTT publication, and Wi-Fi connection indications.
+Налаштування шаблонів оголошено в `src/indication/indication_config.h`. Для кожного типу індикації використовуються групи параметрів `INDICATION_*_MODE`, `INDICATION_*_BLINK_COUNT`, `INDICATION_*_BLINK_ON_MS` і `INDICATION_*_BLINK_OFF_MS`. Вони охоплюють індикацію запуску, команди, освітленості, температури, вологості, тихого режиму, публікації MQTT та підключення Wi-Fi.
 
-The humidity indication masks and pattern settings exist in the module, but the corresponding hardware pin definitions are commented in `hardware_config.h`. Hardware and logical configuration must be made consistent before enabling those outputs.
+Маски та налаштування шаблонів індикації вологості існують у модулі, але відповідні визначення контактів наразі закоментовано в `hardware_config.h`. Перед увімкненням цих виходів узгодьте конфігурацію обладнання з логічною конфігурацією.
 
 ## Вхідні та вихідні команди
 
-Commands are separated from transport and application actions.
+Обробку команд відокремлено від транспортного рівня та логіки дій застосунку.
 
 ### Вхідні команди
 
-The incoming-command model is defined in `src/commands_in/commands_in.h` and implemented in `commands_in.cpp`.
+Модель вхідних команд визначено в `src/commands_in/commands_in.h`, а її реалізацію — у `commands_in.cpp`.
 
-- `CommandTarget` identifies the target.
-- `CommandAction` identifies the requested operation.
-- `CommandValue` represents the requested value.
-- `IncomingCommand` groups the target, action, and value.
+- `CommandTarget` визначає ціль команди.
+- `CommandAction` визначає запитувану операцію.
+- `CommandValue` представляє запитуване значення.
+- `IncomingCommand` об'єднує ціль, дію та значення команди.
 
-The public state functions are `setIncomingCommand()`, `getIncomingCommand()`, and `clearIncomingCommand()`. `handleIncomingCommands()` applies an accepted command to the internal application state.
+Публічні функції керування станом:
 
-The current command model includes `CommandTarget::Led`, `CommandAction::Set`, and `CommandValue` members for `On`, `Off`, and `Toggle`. External JSON parsing and validation belong in the deserialization layer, not in the MQTT connection implementation.
+- `setIncomingCommand()` — встановлює вхідну команду.
+- `getIncomingCommand()` — повертає вхідну команду.
+- `clearIncomingCommand()` — очищує стан вхідної команди.
+
+Функція `handleIncomingCommands()` застосовує прийняту команду до внутрішнього стану застосунку.
+
+Поточна модель команд містить `CommandTarget::Led`, `CommandAction::Set` і значення `CommandValue` для операцій `On`, `Off` та `Toggle`. Розбір і перевірка зовнішнього JSON належать до рівня десеріалізації, а не до реалізації MQTT-з'єднання.
 
 ### Вихідні команди
 
-Outgoing command state is managed by `src/commands_out/`.
+Стан вихідних команд обробляється в `src/commands_out/`.
 
-- `setOutgoingCommand()` sets the pending command.
-- `getOutgoingCommand()` returns the pending command name.
-- `clearOutgoingCommand()` clears the pending command.
+- `setOutgoingCommand()` — встановлює команду, що очікує на передавання.
+- `getOutgoingCommand()` — повертає назву команди, що очікує на передавання.
+- `clearOutgoingCommand()` — очищує стан очікуваної команди.
 
-The symbolic names are declared in `src/commands_out/commands_out_config.h` as `COMMAND_01`, `COMMAND_02`, and `COMMAND_03`. The action module sets a command when the associated button transition is detected; the MQTT publication layer serializes and publishes the pending command.
+Символьні назви оголошено в `src/commands_out/commands_out_config.h`: `COMMAND_01`, `COMMAND_02` і `COMMAND_03`. Модуль дій встановлює команду після виявлення відповідного переходу стану кнопки, а рівень публікації MQTT серіалізує та публікує очікувану команду.
 
 ## Події
 
-Event state and detection are implemented in `src/events/`. The public handler is `handleEvents()`.
+Стан і механізм виявлення подій реалізовано в `src/events/`. Публічний обробник — `handleEvents()`.
 
-The current event logic observes the manual-light indication bit in `Telemetry.ledState`. Its first observation initializes the previous state and does not create a change event. A subsequent transition creates a pending LED-change event. If MQTT is unavailable, the event remains pending for a later attempt; after successful publication, the pending state is cleared.
+Поточна логіка подій відстежує біт індикації ручного освітлення в `Telemetry.ledState`. Під час першого зчитування ініціалізується попередній стан, але подія зміни не створюється. Наступний перехід стану створює подію зміни LED, яка очікує на публікацію. Якщо MQTT недоступний, подія залишається в очікуванні до наступної спроби. Після успішної публікації очікуваний стан очищується.
 
-Event message formatting is implemented in `src/serialization/serializers/events_serializer.cpp` and exposed through the common serialization interface. The public serializer functions include `serializeEventSnprintf()` and `serializeLedChangedSnprintf()`. The MQTT publication interface includes `publishLedChanged()` and `publishEvent()`.
+Форматування повідомлень подій реалізовано в `src/serialization/serializers/events_serializer.cpp` і доступне через спільний інтерфейс серіалізації. Публічні функції серіалізації включають `serializeEventSnprintf()` і `serializeLedChangedSnprintf()`. Інтерфейс публікації MQTT містить `publishLedChanged()` і `publishEvent()`.
 
-When changing event behaviour, keep event detection (`src/events/`), message representation (`src/serialization/`), and transport publication (`src/mqtt/`) separate.
+Під час зміни логіки подій зберігайте розділення між виявленням подій (`src/events/`), представленням повідомлень (`src/serialization/`) і транспортною публікацією (`src/mqtt/`).
 
 ## Керування Wi-Fi
 
-Wi-Fi management is implemented in `src/wifi/`.
+Керування Wi-Fi реалізовано в `src/wifi/`.
 
-- `initWiFi()` initializes station mode.
-- `connectWifi()` starts a connection attempt.
-- `disconnectWiFi()` requests disconnection.
-- `isWifiConnected()` reports the tracked connection state.
-- `handleWiFi()` processes connection status, timeouts, and reconnect scheduling.
+- `initWiFi()` — ініціалізує режим станції.
+- `connectWifi()` — запускає спробу підключення.
+- `disconnectWiFi()` — ініціює відключення.
+- `isWifiConnected()` — повертає відстежуваний стан з'єднання.
+- `handleWiFi()` — обробляє стан з'єднання, тайм-аути та планування повторних підключень.
 
-Configuration is in `src/wifi/wifi_config.h`:
+Конфігурація міститься в `src/wifi/wifi_config.h`:
 
 - `WIFI_RECONNECT_INTERVAL_MS`
 - `WIFI_CONNECTION_TIMEOUT_MS`
 - `WIFI_RECONNECT_CYCLE_DELAY_MS`
 - `WIFI_MAX_CONNECTION_ATTEMPTS`
 
-Wi-Fi state is consumed by the time and MQTT subsystems and contributes to the aggregated system-state register. If Wi-Fi is lost, the main loop invalidates time synchronization and waits for connectivity before continuing the normal time/MQTT initialization path.
+Стан Wi-Fi використовується підсистемами часу й MQTT та враховується у зведеному регістрі стану системи. У разі втрати Wi-Fi головний цикл скидає ознаку синхронізації часу й очікує на відновлення з'єднання перед продовженням звичайної послідовності ініціалізації часу та MQTT.
 
 ## Синхронізація часу
 
-Time functions are implemented in `src/time/`; NTP servers, timezone selection, and synchronization timing are configured in `src/time/time_config.h`.
+Функції роботи з часом реалізовано в `src/time/`. NTP-сервери, вибір часового поясу та інтервали синхронізації налаштовуються в `src/time/time_config.h`.
 
-The public interface includes:
+Публічний інтерфейс містить:
 
 - `handleTimeSynchronization()`
 - `isTimeSynchronized()`
@@ -392,34 +398,34 @@ The public interface includes:
 - `getLocalTime()`
 - `setTimezone()`
 
-Configuration identifiers include `NTP_SERVER_1`, `NTP_SERVER_2`, `NTP_SERVER_3`, `LOCAL_TIMEZONE`, `DEFAULT_TIMEZONE`, and `currentTimezone`. Timing is controlled by `NTP_SYNC_INTERVAL_MIN`, `NTP_SYNC_INTERVAL_MS`, `NTP_SYNC_RETRY_INTERVAL_MS`, and `NTP_SYNC_TIMEOUT_MS`.
+Ідентифікатори конфігурації включають `NTP_SERVER_1`, `NTP_SERVER_2`, `NTP_SERVER_3`, `LOCAL_TIMEZONE`, `DEFAULT_TIMEZONE` і `currentTimezone`. Інтервали та тайм-аути керуються через `NTP_SYNC_INTERVAL_MIN`, `NTP_SYNC_INTERVAL_MS`, `NTP_SYNC_RETRY_INTERVAL_MS` і `NTP_SYNC_TIMEOUT_MS`.
 
-The implementation distinguishes an attempt in progress from a successfully synchronized clock. It retries after failure and performs periodic synchronization after success. Device timestamps are retrieved from the system clock; local calendar time uses the configured timezone. The main loop coordinates synchronization with Wi-Fi connectivity and only initializes MQTT when the required Wi-Fi and time conditions are satisfied.
+Реалізація розрізняє процес синхронізації та успішно синхронізований годинник. Після невдалої спроби виконується повторна спроба, а після успішної синхронізації — періодичне оновлення часу. Часові позначки пристрою отримуються із системного годинника, а локальний календарний час визначається відповідно до налаштованого часового поясу. Головний цикл координує синхронізацію зі станом Wi-Fi та ініціалізує MQTT лише за виконання необхідних умов підключення до Wi-Fi й синхронізації часу.
 
 ## Обмін даними через MQTT
 
-MQTT code is organized under `src/mqtt/`. The subsystem separates the service abstraction, service selection, connection lifecycle, publication, and reception.
+Код MQTT організовано в `src/mqtt/`. Підсистема розділяє абстракцію сервісу, вибір реалізації, життєвий цикл з'єднання, публікацію та приймання повідомлень.
 
 ### Вибір сервісу
 
-`src/mqtt/mqtt_config.h` selects the service through `MQTT_SERVICE_AWS` or `MQTT_SERVICE_TEST`. Exactly one service must be enabled. `MqttServiceType` aliases the selected implementation, either `MqttAwsService` or `MqttTestService`.
+У `src/mqtt/mqtt_config.h` реалізацію вибирають через `MQTT_SERVICE_AWS` або `MQTT_SERVICE_TEST`. Має бути активовано рівно один сервіс. Псевдонім типу `MqttServiceType` відповідає вибраній реалізації — `MqttAwsService` або `MqttTestService`.
 
-`MqttService` defines the transport interface used by the MQTT subsystem. Service-specific broker behaviour is implemented in `mqtt_aws_service.cpp` and `mqtt_test_service.cpp`.
+`MqttService` визначає транспортний інтерфейс, який використовує підсистема MQTT. Специфічну для сервісу поведінку брокера реалізовано у файлах `mqtt_aws_service.cpp` і `mqtt_test_service.cpp`.
 
 ### Налаштування топіків
 
-Topics are derived from `MQTT_TOP_TOPIC` in `src/mqtt/mqtt_config.h`:
+Топіки формуються на основі `MQTT_TOP_TOPIC` у `src/mqtt/mqtt_config.h`:
 
-- `TOPIC_COMMANDS_LED` — incoming led command subscription.
-- `TOPIC_COMMANDS_OUT` — outgoing command publication topic.
-- `TOPIC_TELEMETRY` — telemetry publication topic.
-- `TOPIC_EVENTS` — event publication topic.
+- `TOPIC_COMMANDS_LED` — топік підписки для отримання команд керування LED.
+- `TOPIC_COMMANDS_OUT` — топік для публікації вихідних команд.
+- `TOPIC_TELEMETRY` — топік для публікації телеметрії.
+- `TOPIC_EVENTS` — топік для публікації подій.
 
-The subscription filter and outgoing command topic are intentionally distinct. Keep topic definitions consistent with broker authorization, external consumers, and the selected service.
+Фільтр підписки та топік публікації вихідних команд навмисно розділено. Узгоджуйте визначення топіків із правилами авторизації брокера, зовнішніми споживачами повідомлень і вибраною реалізацією сервісу.
 
-### Налаштування з’єднання
+### Налаштування з'єднання
 
-The following constants are defined in `src/mqtt/mqtt_config.h`:
+У `src/mqtt/mqtt_config.h` визначено такі константи:
 
 - `MQTT_SUBSCRIBE_QOS`
 - `MQTT_PUBLISH_QOS`
@@ -430,22 +436,22 @@ The following constants are defined in `src/mqtt/mqtt_config.h`:
 - `MQTT_RECONNECT_CYCLE_DELAY_MS`
 - `MQTT_BUFFER_SIZE`
 
-Compile-time checks validate service selection and supported QoS configuration. Review the selected MQTT client library's capabilities before changing QoS or buffer-related settings.
+Під час компіляції перевіряються вибір сервісу та підтримувані параметри QoS. Перед зміною QoS або параметрів буфера перевірте можливості вибраної бібліотеки MQTT-клієнта.
 
-### Життєвий цикл з’єднання
+### Життєвий цикл з'єднання
 
-The connection interface is declared in `src/mqtt/mqtt_connection.h`:
+Інтерфейс керування з'єднанням оголошено в `src/mqtt/mqtt_connection.h`:
 
 - `initMqtt()`
 - `isMqttConnected()`
 - `handleMqttConnection()`
 - `mqttPublish()`
 
-The connection layer manages service initialization, connection state, subscriptions, and transport publication. It does not own JSON formatting or application-level command semantics.
+Рівень з'єднання керує ініціалізацією сервісу, станом підключення, підписками та транспортною публікацією. Форматування JSON і семантика команд застосунку до його обов'язків не належать.
 
 ### Публікація
 
-Publication interfaces are declared in `src/mqtt/mqtt_publish.h`:
+Інтерфейси публікації оголошено в `src/mqtt/mqtt_publish.h`:
 
 - `publishStatus()`
 - `publishTelemetry()`
@@ -453,80 +459,84 @@ Publication interfaces are declared in `src/mqtt/mqtt_publish.h`:
 - `publishLedChanged()`
 - `publishEvent()`
 
-`handleMqttSensors()` selects telemetry or status publication according to the silent-mode state. `handleMqttCommands()` handles pending outgoing commands. `publishManualTrigger()` coordinates the manual-trigger publication path.
+`handleMqttSensors()` вибирає публікацію телеметрії або повідомлення про стан залежно від стану тихого режиму. `handleMqttCommands()` обробляє вихідні команди, що очікують на передавання. `publishManualTrigger()` координує публікацію команди ручного запуску.
 
-The main loop invokes periodic MQTT publication when connectivity prerequisites are met. `MQTT_PUBLISH_INTERVAL_MS` controls the periodic publication schedule; `TOPIC_*` constants identify the destination topics.
+Головний цикл виконує періодичну публікацію MQTT за наявності необхідних умов підключення. `MQTT_PUBLISH_INTERVAL_MS` визначає періодичність публікації, а константи `TOPIC_*` — цільові топіки.
 
 ### Приймання повідомлень
 
-Incoming message reception is declared in `src/mqtt/mqtt_receive.h`; `handleMqttMessage()` receives the topic and payload and delegates interpretation to the serialization/deserialization layer. The MQTT callback, JSON parsing, internal command model, application action logic, and physical LED output remain separate responsibilities.
+Інтерфейс приймання повідомлень оголошено в `src/mqtt/mqtt_receive.h`. Функція `handleMqttMessage()` отримує топік і корисне навантаження повідомлення та передає їх для обробки рівню серіалізації й десеріалізації.
+
+Зворотний виклик MQTT, розбір JSON, внутрішня модель команд, логіка дій застосунку та фізичне керування LED залишаються окремими зонами відповідальності.
 
 ## Серіалізація та десеріалізація
 
-Serialization is organized under `src/serialization/`. The common interface is declared in `src/serialization/serialization.h`; MQTT code should use this interface rather than depend on individual serializer implementation files.
+Серіалізацію організовано в `src/serialization/`. Спільний інтерфейс оголошено в `src/serialization/serialization.h`. Код MQTT має використовувати цей інтерфейс, а не залежати безпосередньо від файлів окремих реалізацій серіалізаторів.
 
 ### Серіалізація телеметрії
 
-The default formatter is implemented in `src/serialization/serializers/telemetry_serializer.cpp` and exposes `serializeTelemetrySnprintf()`. An alternative ArduinoJson implementation is in `telemetry_serializer_aj.cpp` and exposes `serializeTelemetryArduinoJson()`.
+Серіалізатор за замовчуванням реалізовано в `src/serialization/serializers/telemetry_serializer.cpp`; він надає функцію `serializeTelemetrySnprintf()`. Альтернативна реалізація на основі ArduinoJson міститься в `telemetry_serializer_aj.cpp` і надає `serializeTelemetryArduinoJson()`.
 
-The selection switch is `TELEMETRY_SERIALIZER_ARDUINO_JSON` in `src/project_config.h`. The ArduinoJson document capacity is configured by `TELEMETRY_JSON_DOCUMENT_SIZE` in `src/serialization/serialization_config.h`.
+Перемикач `TELEMETRY_SERIALIZER_ARDUINO_JSON` визначено в `src/project_config.h`. Місткість документа ArduinoJson налаштовується через `TELEMETRY_JSON_DOCUMENT_SIZE` у `src/serialization/serialization_config.h`.
 
-The common `serializeTelemetry()` interface selects the implementation. The outgoing telemetry representation includes device metadata, sequence information, DHT measurements and status, LDR measurements and status, and the aggregated system state. The in-memory fields `buttonsState` and `ledState` are not part of the current telemetry JSON representation. Keep both serializer implementations consistent when changing the telemetry message schema.
+Спільний інтерфейс `serializeTelemetry()` вибирає потрібну реалізацію. Зовнішнє представлення телеметрії містить метадані пристрою, інформацію про послідовність повідомлень, вимірювання та статус DHT, вимірювання та статус LDR, а також зведений стан системи. Внутрішні поля `buttonsState` і `ledState` не входять до поточного JSON-представлення телеметрії. Під час зміни схеми повідомлень підтримуйте обидві реалізації серіалізатора узгодженими.
 
 ### Серіалізація статусу
 
-Status serialization is implemented in `src/serialization/serializers/status_serializer.cpp` and exposed through `serializeStatusSnprintf()` and the common `serializeStatus()` interface. It provides device metadata, sequence information, and sensor/system status fields, with a message type that distinguishes it from normal telemetry.
+Серіалізацію повідомлень про стан реалізовано в `src/serialization/serializers/status_serializer.cpp`. Вона доступна через `serializeStatusSnprintf()` і спільний інтерфейс `serializeStatus()`.
+
+Повідомлення містить метадані пристрою, інформацію про послідовність повідомлень, а також поля стану датчиків і системи. Тип повідомлення відрізняє його від звичайної телеметрії.
 
 ### Серіалізація команд
 
-Outgoing command formatting is implemented in `src/serialization/serializers/commands_serializer.cpp`. `serializeCommandsSnprintf()` converts the pending command name into a JSON message. Command names are maintained by the outgoing-command module.
+Форматування вихідних команд реалізовано в `src/serialization/serializers/commands_serializer.cpp`. Функція `serializeCommandsSnprintf()` перетворює назву команди, що очікує на передавання, на JSON-повідомлення. Назви команд підтримуються модулем вихідних команд.
 
 ### Серіалізація подій
 
-Event formatting is implemented in `src/serialization/serializers/events_serializer.cpp`. `serializeEventSnprintf()` handles a general event and optional value; `serializeLedChangedSnprintf()` formats the LED-change event. The common interface exposes `serializeEvent()` and `serializeLedChanged()`.
+Форматування подій реалізовано в `src/serialization/serializers/events_serializer.cpp`. Функція `serializeEventSnprintf()` формує загальну подію та необов'язкове значення, а `serializeLedChangedSnprintf()` — повідомлення про зміну стану LED. Спільний інтерфейс надає функції `serializeEvent()` і `serializeLedChanged()`.
 
 ### Десеріалізація
 
-Command deserialization is implemented in `src/serialization/deserializers/commands_deserializer.cpp`. `deserializeCommand()` accepts the incoming topic and payload, validates the JSON representation, and maps supported values to `IncomingCommand`.
+Десеріалізацію команд реалізовано в `src/serialization/deserializers/commands_deserializer.cpp`. Функція `deserializeCommand()` приймає вхідний топік і корисне навантаження повідомлення, перевіряє структуру JSON і перетворює підтримувані значення на об'єкт `IncomingCommand`.
 
-A telemetry deserializer interface is also present in `src/serialization/deserializers/telemetry_deserializer.h` through `deserializeTelemetry()`. The external message representation should be parsed at this boundary rather than inside transport or application modules.
+Також передбачено інтерфейс десеріалізації телеметрії `deserializeTelemetry()` у `src/serialization/deserializers/telemetry_deserializer.h`. Розбір зовнішніх повідомлень має виконуватися на цьому рівні, а не всередині транспортних модулів або модулів логіки застосунку.
 
 ## Діагностика та моніторинг
 
-Monitoring is implemented in `src/monitor/`.
+Моніторинг реалізовано в `src/monitor/`.
 
-- `initMonitor()` initializes monitoring.
-- `handleMonitor()` prints diagnostic information from the shared telemetry model.
-- `printMonitorPayload()` prints a formatted payload when `DEBUG_MODE` is enabled.
+- `initMonitor()` — ініціалізує підсистему моніторингу.
+- `handleMonitor()` — виводить діагностичну інформацію зі спільної моделі телеметрії.
+- `printMonitorPayload()` — виводить сформоване повідомлення, якщо активовано `DEBUG_MODE`.
 
-The debug switch is declared in `src/project_config.h`. Monitoring output is separate from serialization and network publication, so diagnostic presentation can be changed without altering the message format or transport behaviour.
+Перемикач режиму налагодження оголошено в `src/project_config.h`. Виведення діагностичної інформації відокремлено від серіалізації та мережевого передавання, тому формат діагностичного виведення можна змінювати без зміни структури повідомлень або поведінки транспортного рівня.
 
-The main loop schedules monitoring through `DATA_MONITOR_INTERVAL_MS` within the `DEBUG_MODE` section.
+Головний цикл планує виконання моніторингу через `DATA_MONITOR_INTERVAL_MS` у блоці `DEBUG_MODE`.
 
 ## Ідентифікація пристрою
 
-Device identification is implemented in `src/device_info/`.
+Ідентифікацію пристрою реалізовано в `src/device_info/`.
 
-- `getDeviceId()` retrieves the device identifier used by the telemetry model.
-- `printDeviceInfo()` outputs device information.
+- `getDeviceId()` — отримує ідентифікатор пристрою, який використовується в моделі телеметрії.
+- `printDeviceInfo()` — виводить інформацію про пристрій.
 
-The identifier is stored in `Telemetry.device_id`. The device-info module encapsulates retrieval and display so that sensor modules and transport code do not need to implement device identification themselves.
+Ідентифікатор зберігається в `Telemetry.device_id`. Модуль інформації про пристрій інкапсулює отримання та виведення ідентифікатора, тому модулям датчиків і транспортному рівню не потрібно реалізовувати цю функціональність самостійно.
 
 ## Підтримка HTTP
 
-Optional HTTP telemetry transmission is implemented in `src/http/`. The public interface is `handleSendData()`.
+Необов'язкове передавання телеметрії через HTTP реалізовано в `src/http/`. Публічний інтерфейс — `handleSendData()`.
 
-The module checks Wi-Fi connectivity, serializes telemetry through the common serialization interface, and sends the resulting JSON payload to `SERVER_URL`, currently defined in `src/http/http.cpp`.
+Модуль перевіряє наявність з'єднання Wi-Fi, серіалізує телеметрію через спільний інтерфейс серіалізації та надсилає сформоване JSON-повідомлення на адресу `SERVER_URL`, визначену в `src/http/http.cpp`.
 
-The application loop contains a scheduled HTTP call site under `DEBUG_MODE`, and that call is currently commented out in `main.cpp`. To enable this path, review both the call site and the endpoint configuration. HTTP transmission is separate from MQTT publication.
+У головному циклі передбачено запланований виклик HTTP у блоці `DEBUG_MODE`, але наразі цей виклик закоментовано в `main.cpp`. Щоб увімкнути передавання, перевірте як місце виклику, так і конфігурацію кінцевої точки. Передавання через HTTP не залежить від публікації MQTT.
 
 ## Інтеграція з AWS
 
-AWS-related support has a directory under `src/aws/`; the AWS IoT MQTT transport implementation is in `src/mqtt/mqtt_aws_service.cpp` and its interface is declared in `mqtt_aws_service.h`.
+Для допоміжних засобів інтеграції з AWS передбачено каталог `src/aws/`. Реалізацію MQTT-транспорту для AWS IoT містить `src/mqtt/mqtt_aws_service.cpp`, а її інтерфейс оголошено в `mqtt_aws_service.h`.
 
-Service selection is controlled by `MQTT_SERVICE_AWS` in `src/mqtt/mqtt_config.h`. AWS connection material is configured through local `src/secrets.h`, based on `src/secrets_example.h`.
+Вибір сервісу керується через `MQTT_SERVICE_AWS` у `src/mqtt/mqtt_config.h`. Параметри з'єднання з AWS задаються в локальному файлі `src/secrets.h`, створеному на основі `src/secrets_example.h`.
 
-The relevant identifiers include:
+Відповідні ідентифікатори:
 
 - `AWS_IOT_ENDPOINT`
 - `AWS_CERT_CA`
@@ -534,81 +544,83 @@ The relevant identifiers include:
 - `AWS_CERT_PRIVATE`
 - `MQTT_AWS_PORT`
 
-The endpoint, client identity, certificate, private key, and trusted CA must correspond to the registered AWS IoT device and its authorization policy. AWS IoT policies, rules, and external consumers must also agree with the topic constants and message formats used by the firmware.
+Кінцева точка, ідентифікатор клієнта, сертифікат, приватний ключ і довірений сертифікат центру сертифікації мають відповідати зареєстрованому пристрою AWS IoT та його політиці авторизації. Політики AWS IoT, правила й зовнішні споживачі повідомлень також мають бути узгоджені з константами топіків і форматами повідомлень, які використовує прошивка.
 
-## Діагностика пам’яті
+## Діагностика пам'яті
 
-Memory diagnostics are implemented in `src/memory/`; the public function is `checkMemory()`.
+Діагностику пам'яті реалізовано в `src/memory/`. Публічна функція — `checkMemory()`.
 
-The module reports runtime memory information using the ESP32 runtime interface. The main loop contains a scheduled invocation under `DEBUG_MODE`, and that call is currently commented out in `main.cpp`. Review the call site and `MEMORY_CHECK_INTERVAL_MS` when enabling or changing memory diagnostics.
+Модуль виводить інформацію про використання пам'яті під час виконання за допомогою інтерфейсу середовища ESP32. У головному циклі передбачено запланований виклик у блоці `DEBUG_MODE`, але наразі цей виклик закоментовано в `main.cpp`. Перевірте місце виклику та `MEMORY_CHECK_INTERVAL_MS`, якщо потрібно ввімкнути діагностику пам'яті або змінити її періодичність.
 
 ## Збирання та запуск
 
-The project is intended for the ESP32 Arduino framework and PlatformIO. Build-environment details are configured in project-level files located above `src/`.
+Проєкт призначено для ESP32 із використанням Arduino Framework і PlatformIO. Параметри середовища збирання налаштовуються у файлах конфігурації проєкту, розташованих вище за каталог `src/`.
 
 ### Налаштування проєкту
 
-1. Open the complete project, including the project-level build configuration.
-2. Verify the selected PlatformIO environment, board, framework, and library dependencies.
-3. Create the local `src/secrets.h` from `src/secrets_example.h`; do not commit credentials or private key material.
-4. Configure `WIFI_SSID` and `WIFI_PASSWORD`.
-5. Select exactly one MQTT service using `MQTT_SERVICE_AWS` or `MQTT_SERVICE_TEST`.
-6. Configure the connection parameters required by the selected service.
-7. For AWS IoT Core, configure `AWS_IOT_ENDPOINT`, `MQTT_AWS_PORT`, `AWS_CERT_CA`, `AWS_CERT_CRT`, and `AWS_CERT_PRIVATE`.
-8. Review `MQTT_TOP_TOPIC` and the derived `TOPIC_*` constants in `src/mqtt/mqtt_config.h`.
-9. Check Призначення GPIO in `src/hardware_config.h` against the actual circuit.
-10. Review sensor validity and alarm thresholds in `dht_config.h` and `ldr_config.h`.
-11. Review button behaviour in `src/buttons/buttons_config.h`.
-12. Review LED indication patterns in `src/indication/indication_config.h`.
-13. Review scheduling and stale-data handling in `src/app_config.h`.
-14. Review NTP servers and timezone selection in `src/time/time_config.h`.
-15. Select the telemetry serializer through `TELEMETRY_SERIALIZER_ARDUINO_JSON` when needed.
-16. Build and upload using the configured PlatformIO environment.
-17. Open the Serial Monitor and inspect connectivity diagnostics, sensor status, system state, and serialized messages.
+1. Відкрийте повний проєкт разом із конфігурацією збирання, розташованою в кореневому каталозі.
+2. Перевірте вибране середовище PlatformIO, плату, фреймворк і бібліотечні залежності.
+3. Створіть локальний файл `src/secrets.h` на основі `src/secrets_example.h`. Не додавайте облікові дані та матеріали приватних ключів до системи контролю версій.
+4. Налаштуйте `WIFI_SSID` і `WIFI_PASSWORD`.
+5. Виберіть рівно один MQTT-сервіс за допомогою `MQTT_SERVICE_AWS` або `MQTT_SERVICE_TEST`.
+6. Налаштуйте параметри з'єднання, необхідні для вибраного сервісу.
+7. Для AWS IoT Core налаштуйте `AWS_IOT_ENDPOINT`, `MQTT_AWS_PORT`, `AWS_CERT_CA`, `AWS_CERT_CRT` і `AWS_CERT_PRIVATE`.
+8. Перевірте `MQTT_TOP_TOPIC` і похідні константи `TOPIC_*` у `src/mqtt/mqtt_config.h`.
+9. Зіставте призначення GPIO в `src/hardware_config.h` із фактичною електричною схемою.
+10. Перевірте допустимі межі вимірювань і аварійні порогові значення датчиків у `dht_config.h` і `ldr_config.h`.
+11. Перевірте режими роботи кнопок у `src/buttons/buttons_config.h`.
+12. Перевірте шаблони світлодіодної індикації в `src/indication/indication_config.h`.
+13. Перевірте інтервали планування та параметри контролю застарілих даних у `src/app_config.h`.
+14. Перевірте NTP-сервери й налаштування часового поясу в `src/time/time_config.h`.
+15. За потреби виберіть серіалізатор телеметрії через `TELEMETRY_SERIALIZER_ARDUINO_JSON`.
+16. Зберіть і завантажте прошивку за допомогою налаштованого середовища PlatformIO.
+17. Відкрийте Serial Monitor і перевірте діагностику з'єднань, статуси датчиків, стан системи та сформовані повідомлення.
 
 ### Секрети та облікові дані
 
-`src/secrets_example.h` is a template, not a location for production credentials. Local `src/secrets.h` contains environment-specific Wi-Fi and broker/AWS connection material. Keep Wi-Fi credentials, private keys, and other secrets out of version control.
+`src/secrets_example.h` — це шаблон, а не місце для зберігання робочих облікових даних. Локальний `src/secrets.h` містить специфічні для середовища облікові дані Wi-Fi та параметри підключення до брокера або AWS. Не додавайте облікові дані Wi-Fi, приватні ключі та інші секрети до системи контролю версій.
 
 ### Узгодженість із зовнішніми сервісами
 
-When using an external MQTT broker or AWS IoT Core, keep the service configuration, device identity, credentials, topic constants, authorization policy, and consuming services aligned. AWS IoT Rules, backend services, and storage components must parse the message structure produced by the selected serializer.
+Під час використання зовнішнього MQTT-брокера або AWS IoT Core узгоджуйте конфігурацію сервісу, ідентифікатор пристрою, облікові дані, константи топіків, політику авторизації та сервіси-споживачі повідомлень. Правила AWS IoT, серверні служби та компоненти зберігання даних мають коректно обробляти структуру повідомлень, сформованих вибраним серіалізатором.
 
 ## Межі модулів і принципи проєктування
 
 ### Спільна модель даних
 
-`Telemetry` is the shared in-memory data model. Sensor modules update their own data structures; the button module updates `buttonsState`; the system-state module maintains `systemState`; and the action module calculates `ledState`. Serialization exposes a selected subset of this state externally.
+`Telemetry` — спільна внутрішня модель даних. Модулі датчиків оновлюють власні структури даних, модуль кнопок оновлює `buttonsState`, модуль стану системи підтримує `systemState`, а модуль дій обчислює `ledState`. Рівень серіалізації передає назовні вибрану частину цього стану.
 
 ### Символьна конфігурація
 
-Hardware mapping, scheduling, validity limits, alarm thresholds, connection behaviour, timezone settings, and indication patterns are declared through named constants in dedicated configuration headers. Update the owning configuration header rather than duplicating values throughout the code.
+Призначення контактів обладнання, інтервали планування, допустимі межі вимірювань, аварійні порогові значення, параметри з'єднань, налаштування часового поясу й шаблони індикації визначаються іменованими константами в окремих заголовних файлах конфігурації. Змінюйте відповідний файл конфігурації, а не дублюйте значення в різних частинах коду.
 
 ### Розділення станів
 
-The firmware keeps separate representations for:
+Прошивка підтримує окремі представлення для:
 
-- Button input state.
-- DHT measurements and status.
-- LDR measurements and status.
-- Aggregated system operation and errors.
-- Logical LED indication state.
-- Incoming command state.
-- Outgoing command state.
-- Pending event state.
-- Wi-Fi connection state.
-- Time synchronization state.
-- MQTT connection state.
+- Стану кнопок.
+- Вимірювань і статусу DHT.
+- Вимірювань і статусу LDR.
+- Зведеного стану системи та помилок підсистем.
+- Логічного стану світлодіодної індикації.
+- Стану вхідної команди.
+- Стану вихідної команди.
+- Стану очікуваної події.
+- Стану з'єднання Wi-Fi.
+- Стану синхронізації часу.
+- Стану з'єднання MQTT.
 
-Each state has a distinct purpose. The system-state and action modules coordinate states where required without collapsing all state into one register.
+Кожне представлення стану має окреме призначення. Модулі стану системи та дій координують взаємопов'язані стани, не об'єднуючи їх в один регістр.
 
 ### Розділення комунікацій
 
-The MQTT service abstraction isolates broker-specific transport behaviour. Connection management, publication, reception, JSON serialization, command deserialization, and application-level command handling have separate responsibilities.
+Абстракція MQTT-сервісу ізолює особливості транспортного рівня конкретного брокера. Керування з'єднанням, публікація, приймання повідомлень, серіалізація JSON, десеріалізація команд і обробка команд на рівні застосунку мають окремі зони відповідальності.
 
 ### Розширюваність
 
-Extend the module that owns the behaviour being changed. Add sensor validation to the sensor module, new indication patterns to the indication configuration and implementation, topic changes to MQTT configuration, and external message-format changes to the serialization layer. Preserve the boundaries between hardware mapping, application state, transport handling, and message representation.
+Розширюйте модуль, який відповідає за потрібну функціональність. Додавайте правила перевірки до модуля відповідного датчика, нові шаблони індикації — до конфігурації та реалізації підсистеми індикації, зміни топіків — до конфігурації MQTT, а зміни зовнішнього формату повідомлень — до рівня серіалізації.
+
+Зберігайте чіткі межі між призначенням контактів обладнання, станом застосунку, обробкою транспортного рівня та представленням повідомлень.
 
 ---
 
