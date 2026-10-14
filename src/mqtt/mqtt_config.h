@@ -35,7 +35,7 @@ using MqttServiceType = MqttAwsService;
 #define MQTT_SUBSCRIBE_QOS 0
 #define MQTT_PUBLISH_QOS 0
 
-#define TOPIC_COMMANDS_IN MQTT_TOP_TOPIC "/commands/#"
+#define TOPIC_COMMANDS_LED MQTT_TOP_TOPIC "/commands/led"
 #define TOPIC_COMMANDS_OUT MQTT_TOP_TOPIC "/commands"
 #define TOPIC_TELEMETRY MQTT_TOP_TOPIC "/telemetry"
 #define TOPIC_EVENTS MQTT_TOP_TOPIC "/events"

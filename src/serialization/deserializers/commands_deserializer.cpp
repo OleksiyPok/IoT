@@ -20,7 +20,7 @@ bool deserializeCommand(const char *topic, const char *buffer,
   command.action = CommandAction::None;
   command.value = CommandValue::None;
 
-  if (TOPIC_COMMANDS_IN) {
+  if (strcmp(topic, TOPIC_COMMANDS_LED) == 0) {
     command.target = CommandTarget::Led;
   } else {
     return false;

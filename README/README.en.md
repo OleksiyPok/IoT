@@ -410,7 +410,7 @@ MQTT code is organized under `src/mqtt/`. The subsystem separates the service ab
 
 Topics are derived from `MQTT_TOP_TOPIC` in `src/mqtt/mqtt_config.h`:
 
-- `TOPIC_COMMANDS_IN` — incoming command subscription filter.
+- `TOPIC_COMMANDS_LED` — incoming led command subscription.
 - `TOPIC_COMMANDS_OUT` — outgoing command publication topic.
 - `TOPIC_TELEMETRY` — telemetry publication topic.
 - `TOPIC_EVENTS` — event publication topic.

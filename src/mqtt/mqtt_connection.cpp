@@ -62,10 +62,10 @@ static bool connectMQTT(uint64_t deviceId) {
 
   if (connected) {
 
-    if (!mqttService.subscribe(TOPIC_COMMANDS_IN)) {
+    if (!mqttService.subscribe(TOPIC_COMMANDS_LED)) {
 
       Serial.print("[MQTT] Failed to subscribe: ");
-      Serial.println(TOPIC_COMMANDS_IN);
+      Serial.println(TOPIC_COMMANDS_LED);
 
       mqttService.disconnect();
       mqttLastStatus = MqttStatus::Disconnected;
@@ -78,7 +78,7 @@ static bool connectMQTT(uint64_t deviceId) {
     Serial.println("[MQTT] Connected");
     Serial.println("[MQTT] Subscribed: ");
     Serial.print("       \"");
-    Serial.print(TOPIC_COMMANDS_IN);
+    Serial.print(TOPIC_COMMANDS_LED);
     Serial.println("\"");
 
     mqttConnectionAttempts = 0;
